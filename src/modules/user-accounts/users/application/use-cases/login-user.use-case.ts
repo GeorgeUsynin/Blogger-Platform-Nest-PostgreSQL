@@ -7,8 +7,6 @@ import {
   REFRESH_TOKEN_STRATEGY_INJECT_TOKEN,
 } from '../constants';
 import { LoginUserDto } from '../dto';
-import { InjectModel } from '@nestjs/mongoose';
-import { Device, type DeviceModelType } from '../../../devices/domain';
 import { DevicesRepository } from '../../../devices/infrastructure';
 
 type TLoginCommandOutput = { accessToken: string; refreshToken: string };
@@ -29,8 +27,6 @@ export class LoginUserUseCase implements ICommandHandler<
     private accessTokenContext: JwtService,
     @Inject(REFRESH_TOKEN_STRATEGY_INJECT_TOKEN)
     private refreshTokenContext: JwtService,
-    @InjectModel(Device.name)
-    private DeviceModel: DeviceModelType,
     private devicesRepository: DevicesRepository,
   ) {}
 
@@ -50,7 +46,7 @@ export class LoginUserUseCase implements ICommandHandler<
     const issuedAt = new Date(iat! * 1000).toISOString();
     const expiresIn = new Date(exp! * 1000).toISOString();
 
-    const newDevice = this.DeviceModel.createDevice({
+    await this.devicesRepository.createDevice({
       userId,
       deviceId: uniqueDeviceId,
       clientIp,
@@ -58,8 +54,6 @@ export class LoginUserUseCase implements ICommandHandler<
       issuedAt,
       expiresIn,
     });
-
-    await this.devicesRepository.save(newDevice);
 
     return { accessToken, refreshToken };
   }

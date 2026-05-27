@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { UserDocument } from '../../../domain';
+import { TUserDB } from '../../../infrastructure/types';
 
 export class UserViewDto {
   @ApiProperty()
@@ -11,16 +11,16 @@ export class UserViewDto {
   @ApiProperty()
   email: string;
 
-  @ApiProperty({ type: Date })
-  createdAt: Date;
+  @ApiProperty()
+  createdAt: string;
 
-  public static mapToView(user: UserDocument): UserViewDto {
+  public static mapToView(user: TUserDB): UserViewDto {
     const dto = new UserViewDto();
 
-    dto.id = user._id.toString();
+    dto.id = user.id.toString();
     dto.email = user.email;
     dto.login = user.login;
-    dto.createdAt = user.createdAt;
+    dto.createdAt = user.createdAt.toISOString();
 
     return dto;
   }

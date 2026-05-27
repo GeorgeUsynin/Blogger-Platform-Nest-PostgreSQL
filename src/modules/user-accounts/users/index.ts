@@ -1,9 +1,15 @@
 export { UsersController, AuthController } from './api';
 export { User, UserSchema } from './domain';
-import { PasswordHasherService, AuthService } from './application';
+import {
+  PasswordHasherService,
+  AuthService,
+  UserCreationService,
+  CodeCreationService,
+} from './application';
 import {
   ConfirmRegistrationUseCase,
-  CreateUserUseCase,
+  CreateUnconfirmedUserUseCase,
+  CreateConfirmedUserUseCase,
   DeleteUserUseCase,
   LoginUserUseCase,
   LogoutUserUseCase,
@@ -21,14 +27,20 @@ import {
   UsersQueryRepository,
   UsersExternalQueryRepository,
   UsersExternalRepository,
+  EmailConfirmationsRepository,
+  PasswordRecoveriesRepository,
 } from './infrastructure';
 
 export const usersProviders = [
+  EmailConfirmationsRepository,
+  PasswordRecoveriesRepository,
   UsersRepository,
   UsersExternalRepository,
   UsersQueryRepository,
   UsersExternalQueryRepository,
   UserAccountsConfig,
+  UserCreationService,
+  CodeCreationService,
 ];
 
 export const authProviders = [
@@ -42,7 +54,8 @@ export const authProviders = [
 export const usersUseCases = [
   LoginUserUseCase,
   RegisterUserUseCase,
-  CreateUserUseCase,
+  CreateUnconfirmedUserUseCase,
+  CreateConfirmedUserUseCase,
   DeleteUserUseCase,
   RecoverPasswordUseCase,
   ConfirmRegistrationUseCase,

@@ -1,4 +1,5 @@
-export * from './create-user.use-case';
+export * from './create-unconfirmed-user.use-case';
+export * from './create-confirmed-user.use-case';
 export * from './delete-user.use-case';
 export * from './login-user.use-case';
 export * from './recover-password.use-case';

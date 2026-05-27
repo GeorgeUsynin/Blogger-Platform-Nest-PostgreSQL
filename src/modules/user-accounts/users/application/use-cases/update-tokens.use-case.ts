@@ -6,13 +6,14 @@ import {
 } from '../constants';
 import { JwtService } from '@nestjs/jwt';
 import { DevicesRepository } from '../../../devices/infrastructure';
+import { UpdateDeviceAttributesRepositoryDto } from '../../../devices/infrastructure/dto';
 
 type TUpdateTokensCommandOutput = { accessToken: string; refreshToken: string };
 
 export class UpdateTokensCommand extends Command<TUpdateTokensCommandOutput> {
   constructor(
     public readonly deviceId: string,
-    public readonly userId: string,
+    public readonly userId: number,
   ) {
     super();
   }
@@ -35,6 +36,12 @@ export class UpdateTokensUseCase implements ICommandHandler<
     deviceId,
     userId,
   }: UpdateTokensCommand): Promise<TUpdateTokensCommandOutput> {
+    const device = await this.devicesRepository.findByDeviceId(deviceId);
+
+    if (!device) {
+      throw new UnauthorizedException();
+    }
+
     // creating access token
     const accessTokenPayload = { userId };
     const accessToken = this.accessTokenContext.sign(accessTokenPayload);
@@ -47,14 +54,16 @@ export class UpdateTokensUseCase implements ICommandHandler<
     const issuedAt = new Date(iat! * 1000).toISOString();
     const expiresIn = new Date(exp! * 1000).toISOString();
 
-    const device = await this.devicesRepository.findByDeviceId(deviceId);
+    const updateDeviceAttributesRepositoryDto: UpdateDeviceAttributesRepositoryDto =
+      {
+        deviceId,
+        issuedAt,
+        expiresIn,
+      };
 
-    if (!device) {
-      throw new UnauthorizedException();
-    }
-
-    device.updateDeviceAttributes(issuedAt, expiresIn);
-    await this.devicesRepository.save(device);
+    await this.devicesRepository.updateDeviceAttributes(
+      updateDeviceAttributesRepositoryDto,
+    );
 
     return { accessToken, refreshToken };
   }

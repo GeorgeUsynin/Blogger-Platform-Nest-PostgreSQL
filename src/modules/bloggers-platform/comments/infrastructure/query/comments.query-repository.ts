@@ -75,7 +75,7 @@ export class CommentsQueryRepository {
 
   async getCommentById(
     id: string,
-    userId?: string,
+    userId?: number,
   ): Promise<CommentReadDto | null> {
     const comment = await this.CommentModel.findById(id).lean().exec();
 

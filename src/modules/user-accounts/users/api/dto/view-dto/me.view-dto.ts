@@ -1,7 +1,7 @@
 import { OmitType } from '@nestjs/mapped-types';
 import { ApiProperty } from '@nestjs/swagger';
 import { UserViewDto } from './user.view-dto';
-import { UserDocument } from '../../../domain';
+import { TUserDB } from '../../../infrastructure/types';
 
 export class MeViewDto extends OmitType(UserViewDto, [
   'createdAt',
@@ -10,12 +10,12 @@ export class MeViewDto extends OmitType(UserViewDto, [
   @ApiProperty()
   userId: string;
 
-  static mapToView(user: UserDocument): MeViewDto {
+  static mapToView(user: TUserDB): MeViewDto {
     const dto = new MeViewDto();
 
     dto.email = user.email;
     dto.login = user.login;
-    dto.userId = user._id.toString();
+    dto.userId = user.id.toString();
 
     return dto;
   }

@@ -1,19 +1,18 @@
 import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { QueryFilter } from 'mongoose';
 import { GetUsersQueryParamsInputDto } from '../../api/dto';
-import { User, UserDocument, type UserModelType } from '../../domain';
+import { DataSource } from 'typeorm';
+import { InjectDataSource } from '@nestjs/typeorm';
+import { TUserDB } from '../types';
+import { UserSortByFields } from '../../api/dto/input-dto/user-sort-by-fields';
+import { SortDirection } from '../../../../../core/dto/base.query-params.input-dto';
 
 @Injectable()
 export class UsersQueryRepository {
-  constructor(
-    @InjectModel(User.name)
-    private UserModel: UserModelType,
-  ) {}
+  constructor(@InjectDataSource() private dataSource: DataSource) {}
 
   async getAllUsers(
     query: GetUsersQueryParamsInputDto,
-  ): Promise<{ items: UserDocument[]; totalCount: number }> {
+  ): Promise<{ items: TUserDB[]; totalCount: number }> {
     const {
       sortBy,
       sortDirection,
@@ -22,36 +21,41 @@ export class UsersQueryRepository {
       searchLoginTerm,
     } = query;
 
-    const filter: QueryFilter<UserDocument> = {};
+    const safeSortBy = Object.values(UserSortByFields).includes(sortBy)
+      ? sortBy
+      : UserSortByFields.CreatedAt;
+    const safeSortDirection = Object.values(SortDirection).includes(
+      sortDirection,
+    )
+      ? sortDirection.toUpperCase()
+      : SortDirection.Asc.toUpperCase();
 
-    if (searchLoginTerm) {
-      filter.$or = filter.$or || [];
-      filter.$or.push({
-        login: { $regex: searchLoginTerm, $options: 'i' },
-      });
-    }
+    const sqlQuery = `
+      SELECT * FROM public."Users" U
+      WHERE (U.LOGIN ILIKE $1 OR U.EMAIL ILIKE $2)
+      AND U."isDeleted" = FALSE
+      ORDER BY U."${safeSortBy}" ${safeSortDirection}
+      LIMIT $3 OFFSET $4
+    `;
 
-    if (searchEmailTerm) {
-      filter.$or = filter.$or || [];
-      filter.$or.push({
-        email: { $regex: searchEmailTerm, $options: 'i' },
-      });
-    }
-
-    const [items, totalCount] = await Promise.all([
-      this.UserModel.find(filter)
-        .sort({ [sortBy]: sortDirection })
-        .skip(query.calculateSkip())
-        .limit(pageSize)
-        .lean()
-        .exec(),
-      this.UserModel.countDocuments(filter).exec(),
+    const rows = await this.dataSource.query<TUserDB[]>(sqlQuery, [
+      `%${searchLoginTerm}%`,
+      `%${searchEmailTerm}%`,
+      pageSize,
+      query.calculateSkip(),
     ]);
 
-    return { items, totalCount };
+    return { items: rows, totalCount: rows.length };
   }
 
-  async getUserById(id: string): Promise<UserDocument | null> {
-    return this.UserModel.findById(id).lean().exec();
+  async getUserById(id: number): Promise<TUserDB | null> {
+    const query = `
+          SELECT * FROM PUBLIC."Users" U
+          WHERE U.ID = $1 AND U."isDeleted" = FALSE
+          `;
+
+    const rows = await this.dataSource.query<TUserDB>(query, [id]);
+
+    return rows[0] ?? null;
   }
 }

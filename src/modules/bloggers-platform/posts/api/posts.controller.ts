@@ -81,6 +81,7 @@ export class PostsController {
   ): Promise<PaginatedViewDto<PostViewDto>> {
     const { items, totalCount } = await this.postsQueryRepository.getAllPosts(
       query,
+      // @ts-expect-error userId type mismatch
       user?.userId,
     );
 
@@ -103,6 +104,7 @@ export class PostsController {
     @Param('id', ObjectIdValidationPipe) id: string,
     @ExtractUserIfExistsFromRequest() user: UserContextDto | null,
   ): Promise<PostViewDto> {
+    // @ts-expect-error userId type mismatch
     const foundPost = await this.findPostByIdOrThrowNotFound(id, user?.userId);
 
     return PostViewDto.mapToView(foundPost);
@@ -124,6 +126,7 @@ export class PostsController {
       await this.commentsQueryRepository.getAllCommentsByPostId(
         postId,
         query,
+        // @ts-expect-error userId type mismatch
         user?.userId,
       );
 
@@ -165,6 +168,7 @@ export class PostsController {
     @ExtractUserFromRequest() user: UserContextDto,
   ) {
     const commentId = await this.commandBus.execute(
+      // @ts-expect-error userId type mismatch
       new CreateCommentCommand(postId, user.userId, body),
     );
 
@@ -192,6 +196,7 @@ export class PostsController {
     const likeStatus = body.likeStatus;
 
     await this.commandBus.execute(
+      // @ts-expect-error userId type mismatch
       new CreateUpdatePostLikeStatusCommand({ postId, userId, likeStatus }),
     );
   }

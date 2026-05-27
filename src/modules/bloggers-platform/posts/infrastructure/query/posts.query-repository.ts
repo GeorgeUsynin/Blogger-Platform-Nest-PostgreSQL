@@ -31,8 +31,9 @@ export class PostsQueryRepository {
   async getAllPostsByBlogId(
     blogId: string,
     query: GetPostsQueryParamsInputDto,
-    userId?: string,
+    userId?: number,
   ): Promise<{ items: PostReadDto[]; totalCount: number }> {
+    // @ts-expect-error userId type mismatch
     return this.findManyWithFilter(query, { blogId }, userId);
   }
 
@@ -103,6 +104,7 @@ export class PostsQueryRepository {
 
     const myStatus = userId
       ? await this.likesQueryRepository.findMyStatusByParentId(
+          // @ts-expect-error userId type mismatch
           userId,
           ParentType.Post,
           id,

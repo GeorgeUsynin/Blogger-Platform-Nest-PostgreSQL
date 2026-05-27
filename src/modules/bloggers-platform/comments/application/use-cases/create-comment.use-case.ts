@@ -42,7 +42,7 @@ export class CreateCommentUseCase implements ICommandHandler<
     if (!foundPost) {
       throw new PostNotFoundError();
     }
-
+    // @ts-expect-error userId type mismatch
     const user = await this.usersExternalRepository.findById(userId);
 
     if (!user) {

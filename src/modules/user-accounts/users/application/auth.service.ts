@@ -1,5 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { UsersRepository } from '../infrastructure';
+import {
+  EmailConfirmationsRepository,
+  UsersRepository,
+} from '../infrastructure';
 import { PasswordHasherService } from './password-hasher.service';
 import { UserContextDto } from '../guards/dto';
 import { EmailNotConfirmedError } from '../../../../core/exceptions';
@@ -8,6 +11,7 @@ import { EmailNotConfirmedError } from '../../../../core/exceptions';
 export class AuthService {
   constructor(
     private usersRepository: UsersRepository,
+    private emailConfirmationsRepository: EmailConfirmationsRepository,
     private passwordHasherService: PasswordHasherService,
   ) {}
 
@@ -27,10 +31,17 @@ export class AuthService {
 
     if (!isValidPassword) return null;
 
-    if (!user.emailConfirmation.isConfirmed) {
+    const emailConfirmation =
+      await this.emailConfirmationsRepository.findEmailConfirmationByUserId(
+        user.id,
+      );
+
+    if (!emailConfirmation) return null;
+
+    if (!emailConfirmation.isConfirmed) {
       throw new EmailNotConfirmedError();
     }
 
-    return { userId: user._id.toString() };
+    return { userId: user.id };
   }
 }

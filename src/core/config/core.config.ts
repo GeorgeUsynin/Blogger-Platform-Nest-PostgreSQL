@@ -42,10 +42,38 @@ export class CoreConfig {
   ) as string;
 
   @IsNotEmpty({
+    message: 'Set Env variable POSTGRESQL_URL, example: localhost',
+  })
+  [ENV_VARIABLE_NAMES.POSTGRESQL_URL]: string = this.configService.get(
+    ENV_VARIABLE_NAMES.POSTGRESQL_URL,
+  ) as string;
+
+  @IsNotEmpty({
+    message: 'Set Env variable PG_USERNAME, example: username',
+  })
+  [ENV_VARIABLE_NAMES.PG_USERNAME]: string = this.configService.get(
+    ENV_VARIABLE_NAMES.PG_USERNAME,
+  ) as string;
+
+  @IsNotEmpty({
+    message: 'Set Env variable PG_PASSWORD, example: 12345678',
+  })
+  [ENV_VARIABLE_NAMES.PG_PASSWORD]: string = this.configService.get(
+    ENV_VARIABLE_NAMES.PG_PASSWORD,
+  ) as string;
+
+  @IsNotEmpty({
     message: 'Set Env variable DB_NAME, example: database-name',
   })
   [ENV_VARIABLE_NAMES.DB_NAME]: string = this.configService.get(
     ENV_VARIABLE_NAMES.DB_NAME,
+  ) as string;
+
+  @IsNotEmpty({
+    message: 'Set Env variable DB_NAME_PG (PostgreSQL), example: database-name',
+  })
+  [ENV_VARIABLE_NAMES.DB_NAME_PG]: string = this.configService.get(
+    ENV_VARIABLE_NAMES.DB_NAME_PG,
   ) as string;
 
   @IsEmail()

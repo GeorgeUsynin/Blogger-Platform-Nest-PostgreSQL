@@ -1,6 +1,9 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { UsersRepository } from '../../infrastructure';
-import { InvalidPasswordRecoveryCode } from '../../../../../core/exceptions';
+import {
+  InvalidPasswordRecoveryCode,
+  PasswordRecoveryCodeExpired,
+} from '../../../../../core/exceptions';
 import { PasswordHasherService } from '../password-hasher.service';
 
 export class NewPasswordCommand {
@@ -28,10 +31,17 @@ export class NewPasswordUseCase implements ICommandHandler<NewPasswordCommand> {
       throw new InvalidPasswordRecoveryCode();
     }
 
-    const passwordHash =
+    if (user.recoveryCode !== recoveryCode) {
+      throw new InvalidPasswordRecoveryCode();
+    }
+
+    if (Date.now() > Date.parse(user.expirationDate.toISOString())) {
+      throw new PasswordRecoveryCodeExpired();
+    }
+
+    const newPasswordHash =
       await this.passwordHasherService.hashPassword(newPassword);
 
-    user.updatePasswordByRecoveryCode(recoveryCode, passwordHash);
-    await this.usersRepository.save(user);
+    await this.usersRepository.updateUserPasswordHash(user.id, newPasswordHash);
   }
 }

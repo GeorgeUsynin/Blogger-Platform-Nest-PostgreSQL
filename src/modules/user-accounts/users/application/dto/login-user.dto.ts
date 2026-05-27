@@ -1,5 +1,5 @@
 export class LoginUserDto {
-  userId: string;
+  userId: number;
   clientIp: string;
   deviceName: string;
 }

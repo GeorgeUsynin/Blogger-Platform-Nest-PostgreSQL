@@ -4,7 +4,7 @@ import { DevicesRepository } from '../../infrastructure';
 export class TerminateAllDevicesExceptCurrentCommand {
   constructor(
     public readonly deviceId: string,
-    public readonly userId: string,
+    public readonly userId: number,
   ) {}
 }
 

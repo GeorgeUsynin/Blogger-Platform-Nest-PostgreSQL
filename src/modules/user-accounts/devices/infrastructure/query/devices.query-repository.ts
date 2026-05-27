@@ -1,25 +1,20 @@
 import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Device, type DeviceModelType, DeviceDocument } from '../../domain';
-
-type FindDevicesFilter = Partial<Pick<DeviceDocument, 'userId'>>;
+import { InjectDataSource } from '@nestjs/typeorm';
+import { DataSource } from 'typeorm';
+import { TDeviceDB } from '../types';
 
 @Injectable()
 export class DevicesQueryRepository {
-  constructor(
-    @InjectModel(Device.name)
-    private DeviceModel: DeviceModelType,
-  ) {}
+  constructor(@InjectDataSource() private dataSource: DataSource) {}
 
-  async getAllByUserId(userId: string): Promise<DeviceDocument[]> {
-    return this.getAllByFilter({ userId });
-  }
+  async getAllByUserId(userId: number): Promise<TDeviceDB[]> {
+    const query = `
+              SELECT * FROM PUBLIC."Devices" D
+              WHERE D."userId" = $1
+              `;
 
-  async getAllByFilter(
-    filter: FindDevicesFilter = {},
-  ): Promise<DeviceDocument[]> {
-    const items = await this.DeviceModel.find(filter).lean().exec();
+    const rows = await this.dataSource.query<TDeviceDB[]>(query, [userId]);
 
-    return items;
+    return rows;
   }
 }

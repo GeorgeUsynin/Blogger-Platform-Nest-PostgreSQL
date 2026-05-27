@@ -20,7 +20,7 @@ export class GetUsersQueryParamsInputDto extends BaseQueryParamsInputDto {
   })
   @IsString()
   @IsOptional()
-  searchLoginTerm: string | null = null;
+  searchLoginTerm: string = '';
 
   @ApiProperty({
     type: String,
@@ -30,5 +30,5 @@ export class GetUsersQueryParamsInputDto extends BaseQueryParamsInputDto {
   })
   @IsString()
   @IsOptional()
-  searchEmailTerm: string | null = null;
+  searchEmailTerm: string = '';
 }

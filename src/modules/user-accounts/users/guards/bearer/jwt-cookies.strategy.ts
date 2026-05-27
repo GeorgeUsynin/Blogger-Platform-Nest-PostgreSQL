@@ -35,11 +35,16 @@ export class JwtCookiesStrategy extends PassportStrategy(
       throw new UnauthorizedException();
     }
 
-    if (!device.isDeviceOwner(userId)) {
+    const isDeviceOwner = device.userId === userId;
+
+    if (!isDeviceOwner) {
       throw new UnauthorizedException();
     }
 
-    if (!device.isIssuedAtMatch(new Date(iat * 1000).toISOString())) {
+    const isIssuedAtMatch =
+      device.issuedAt.toISOString() === new Date(iat * 1000).toISOString();
+
+    if (!isIssuedAtMatch) {
       throw new UnauthorizedException();
     }
 

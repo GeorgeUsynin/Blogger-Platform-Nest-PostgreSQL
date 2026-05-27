@@ -76,6 +76,7 @@ export class CommentsController {
     @ExtractUserFromRequest() user: UserContextDto,
   ): Promise<void> {
     await this.commandBus.execute(
+      // @ts-expect-error userId type mismatch
       new UpdateCommentCommand(user.userId, { ...body, id }),
     );
   }
@@ -96,6 +97,7 @@ export class CommentsController {
     await this.commandBus.execute(
       new CreateUpdateCommentLikeStatusCommand({
         commentId,
+        // @ts-expect-error userId type mismatch
         userId,
         likeStatus,
       }),
@@ -111,6 +113,7 @@ export class CommentsController {
     @Param('id', ObjectIdValidationPipe) id: string,
     @ExtractUserFromRequest() user: UserContextDto,
   ): Promise<void> {
+    // @ts-expect-error userId type mismatch
     await this.commandBus.execute(new DeleteCommentCommand(user.userId, id));
   }
 }

@@ -1,15 +1,20 @@
 import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { User, UserDocument, type UserModelType } from '../domain';
+import { InjectDataSource } from '@nestjs/typeorm';
+import { DataSource } from 'typeorm';
+import { TUserDB } from './types';
 
 @Injectable()
 export class UsersExternalRepository {
-  constructor(
-    @InjectModel(User.name)
-    private UserModel: UserModelType,
-  ) {}
+  constructor(@InjectDataSource() private dataSource: DataSource) {}
 
-  async findById(id: string): Promise<UserDocument | null> {
-    return this.UserModel.findById(id);
+  async findById(id: number): Promise<TUserDB | null> {
+    const query = `
+        SELECT * FROM PUBLIC."Users" U
+        WHERE U.ID = $1 AND U."isDeleted" = FALSE
+        `;
+
+    const rows = await this.dataSource.query<TUserDB[]>(query, [id]);
+
+    return rows[0] ?? null;
   }
 }

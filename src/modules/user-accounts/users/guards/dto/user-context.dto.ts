@@ -1,5 +1,5 @@
 export class UserContextDto {
-  userId: string;
+  userId: number;
 }
 
 export class UserContextWithDeviceIdDto extends UserContextDto {

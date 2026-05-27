@@ -5,10 +5,8 @@ import {
   ICommandHandler,
 } from '@nestjs/cqrs';
 import { CreateUserDto } from '../dto';
-import { UsersRepository } from '../../infrastructure';
-import { UserCreationFailedError } from '../../../../../core/exceptions';
 import { EmailConfirmationRequestedEvent } from '../events';
-import { CreateUserCommand } from './create-user.use-case';
+import { CreateUnconfirmedUserCommand } from './create-unconfirmed-user.use-case';
 import { UserAccountsConfig } from '../../config';
 
 export class RegisterUserCommand {
@@ -18,32 +16,28 @@ export class RegisterUserCommand {
 @CommandHandler(RegisterUserCommand)
 export class RegisterUserUseCase implements ICommandHandler<RegisterUserCommand> {
   constructor(
-    private usersRepository: UsersRepository,
     private commandBus: CommandBus,
     private userAccountsConfig: UserAccountsConfig,
     private eventBus: EventBus,
   ) {}
 
   async execute({ dto }: RegisterUserCommand): Promise<void> {
-    const createdUserId = await this.commandBus.execute(
-      new CreateUserCommand(dto, {
-        shouldBeConfirmed:
-          this.userAccountsConfig.IS_USER_AUTOMATICALLY_CONFIRMED,
-      }),
+    const { email, confirmationCode } = await this.commandBus.execute(
+      new CreateUnconfirmedUserCommand(dto),
     );
 
-    const createdUser = await this.usersRepository.findById(createdUserId);
+    // TODO:
+    // Implement the Outbox Pattern: in the same transaction that creates the user,
+    // persist an “email confirmation requested” event in the database,
+    // then send the email asynchronously via a separate worker with retries,
+    // so events are not lost between commit and publish.
 
-    if (!createdUser) {
-      throw new UserCreationFailedError();
-    }
+    // Why: this guarantees reliability and consistency: either both the user and the email task are saved,
+    // or neither is saved, eliminating the “user created but email event lost” failure window.
 
     if (!this.userAccountsConfig.IS_USER_AUTOMATICALLY_CONFIRMED) {
       this.eventBus.publish(
-        new EmailConfirmationRequestedEvent(
-          createdUser.email,
-          createdUser.emailConfirmation.confirmationCode!,
-        ),
+        new EmailConfirmationRequestedEvent(email, confirmationCode),
       );
     }
   }

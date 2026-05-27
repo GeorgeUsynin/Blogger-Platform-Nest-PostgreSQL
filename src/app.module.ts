@@ -12,11 +12,28 @@ import { AppController } from './app.controller';
 import { CoreModule } from './core';
 import { CoreConfig } from './core/config';
 import { ThrottlerModule } from '@nestjs/throttler';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { DB_TYPE, PG_PORT } from './constants';
 
 @Module({
   imports: [
     configModule,
     CoreModule,
+    TypeOrmModule.forRootAsync({
+      useFactory: (coreConfig: CoreConfig) => {
+        return {
+          type: DB_TYPE,
+          host: coreConfig.POSTGRESQL_URL,
+          port: PG_PORT,
+          username: coreConfig.PG_USERNAME,
+          password: coreConfig.PG_PASSWORD,
+          database: coreConfig.DB_NAME_PG,
+          autoLoadEntities: false,
+          synchronize: false,
+        };
+      },
+      inject: [CoreConfig],
+    }),
     MongooseModule.forRootAsync({
       useFactory: async (coreConfig: CoreConfig) => {
         return {

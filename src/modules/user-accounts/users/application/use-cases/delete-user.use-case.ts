@@ -1,9 +1,13 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { UsersRepository } from '../../infrastructure';
-import { UserNotFoundError } from '../../../../../core/exceptions';
+import {
+  UserAlreadyDeleted,
+  UserNotFoundError,
+} from '../../../../../core/exceptions';
+import { DeleteUserRepositoryDto } from '../../infrastructure/dto';
 
 export class DeleteUserCommand {
-  constructor(public readonly id: string) {}
+  constructor(public readonly id: number) {}
 }
 
 @CommandHandler(DeleteUserCommand)
@@ -17,8 +21,19 @@ export class DeleteUserUseCase implements ICommandHandler<DeleteUserCommand> {
       throw new UserNotFoundError();
     }
 
-    foundUser.makeDeleted();
+    if (foundUser.isDeleted) {
+      throw new UserAlreadyDeleted();
+    }
 
-    await this.usersRepository.save(foundUser);
+    const now = new Date().toISOString();
+
+    const deleteUserRepositoryDto: DeleteUserRepositoryDto = {
+      id: foundUser.id,
+      isDeleted: true,
+      deletedAt: now,
+      updatedAt: now,
+    };
+
+    await this.usersRepository.deleteUser(deleteUserRepositoryDto);
   }
 }

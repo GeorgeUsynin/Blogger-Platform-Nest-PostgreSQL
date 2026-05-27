@@ -31,11 +31,12 @@ export class LikesQueryRepository {
   }
 
   async findMyStatusByParentId(
-    authorId: string,
+    authorId: number,
     parentType: ParentType,
     parentId: string,
   ): Promise<LikeStatus.None | NonNoneLikeStatus> {
     const foundLike = await this.LikeModel.findOne({
+      // @ts-expect-error userId type mismatch
       authorId,
       parentType,
       parentId,

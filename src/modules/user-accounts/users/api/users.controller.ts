@@ -6,6 +6,7 @@ import {
   HttpCode,
   HttpStatus,
   Param,
+  ParseIntPipe,
   Post,
   Query,
   UseGuards,
@@ -25,14 +26,16 @@ import {
   GetAllUsersApi,
   GetUserApi,
 } from './swagger';
-import { ObjectIdValidationPipe } from '../../../../core/pipes';
 import {
   UserCreationFailedError,
   UserNotFoundError,
 } from '../../../../core/exceptions';
 import { BasicAuthGuard } from '../guards/basic';
 import { Public } from '../guards/decorators';
-import { CreateUserCommand, DeleteUserCommand } from '../application/use-cases';
+import {
+  CreateConfirmedUserCommand,
+  DeleteUserCommand,
+} from '../application/use-cases';
 
 @Controller('users')
 @UseGuards(BasicAuthGuard)
@@ -67,7 +70,7 @@ export class UsersController {
   @HttpCode(HttpStatus.OK)
   @GetUserApi()
   async getUserById(
-    @Param('id', ObjectIdValidationPipe) id: string,
+    @Param('id', ParseIntPipe) id: number,
   ): Promise<UserViewDto> {
     const foundUser = await this.usersQueryRepository.getUserById(id);
 
@@ -84,7 +87,7 @@ export class UsersController {
   @CreateUserApi()
   async createUser(@Body() body: CreateUserInputDto): Promise<UserViewDto> {
     const userId = await this.commandBus.execute(
-      new CreateUserCommand(body, { shouldBeConfirmed: true }),
+      new CreateConfirmedUserCommand(body),
     );
 
     const createdUser = await this.usersQueryRepository.getUserById(userId);
@@ -100,9 +103,7 @@ export class UsersController {
   @ApiBasicAuth()
   @HttpCode(HttpStatus.NO_CONTENT)
   @DeleteUserApi()
-  async deleteUser(
-    @Param('id', ObjectIdValidationPipe) id: string,
-  ): Promise<void> {
+  async deleteUser(@Param('id', ParseIntPipe) id: number): Promise<void> {
     await this.commandBus.execute(new DeleteUserCommand(id));
   }
 }
