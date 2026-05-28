@@ -17,10 +17,11 @@ export class CommentsQueryRepository {
   ) {}
 
   async getAllCommentsByPostId(
-    postId: string,
+    postId: number,
     query: GetCommentsQueryParamsInputDto,
-    userId?: string,
+    userId?: number,
   ): Promise<{ items: CommentReadDto[]; totalCount: number }> {
+    //@ts-expect-error change postId type
     return this.findManyWithFilter(query, { postId }, userId);
   }
 

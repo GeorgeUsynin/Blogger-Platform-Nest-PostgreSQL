@@ -6,12 +6,12 @@ import { add } from 'date-fns/add';
 export class CodeCreationService {
   generateCodeWithExpirationDate(ttlHours: number): {
     code: string;
-    expirationDate: string;
+    expirationDate: Date;
   } {
     const code = randomUUID();
     const expirationDate = add(new Date(), {
       hours: ttlHours,
-    }).toISOString();
+    });
 
     return { code, expirationDate };
   }

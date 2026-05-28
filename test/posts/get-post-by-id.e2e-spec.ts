@@ -73,7 +73,7 @@ describe('PostsController (e2e) - GET /api/posts/:id', () => {
 
   it('returns 404 status code if there is no requested post in database', async () => {
     await request(app.getHttpServer())
-      .get('/api/posts/507f1f77bcf86cd799439011')
+      .get('/api/posts/999')
       .expect(HttpStatus.NOT_FOUND);
   });
 });

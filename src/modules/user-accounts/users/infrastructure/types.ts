@@ -21,3 +21,5 @@ export type TPasswordRecoveryDB = {
   recoveryCode: string;
   expirationDate: Date;
 };
+
+export type WithTotalCount<T> = T & { TotalCount: string };

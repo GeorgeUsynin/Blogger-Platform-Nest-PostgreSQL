@@ -320,7 +320,7 @@ describe('PostsController (e2e) - POST /api/posts', () => {
       it('returns 404 status code and proper error object if `blogId` does not exist', async () => {
         const newPost: CreatePostInputDto = {
           title: 'New title',
-          blogId: '507f1f77bcf86cd799439011',
+          blogId: '999',
           shortDescription: 'New short description',
           content: 'New content',
         };

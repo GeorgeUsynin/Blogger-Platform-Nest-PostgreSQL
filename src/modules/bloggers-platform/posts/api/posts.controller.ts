@@ -6,6 +6,7 @@ import {
   HttpCode,
   HttpStatus,
   Param,
+  ParseIntPipe,
   Post,
   Put,
   Query,
@@ -16,7 +17,6 @@ import { ApiBasicAuth, ApiBearerAuth } from '@nestjs/swagger';
 import { PostsQueryRepository } from '../infrastructure';
 import { CommentsQueryRepository } from '../../comments/infrastructure';
 import { PaginatedViewDto } from '../../../../core/dto';
-import { ObjectIdValidationPipe } from '../../../../core/pipes';
 import {
   CommentCreationFailedError,
   PostCreationFailedError,
@@ -81,7 +81,6 @@ export class PostsController {
   ): Promise<PaginatedViewDto<PostViewDto>> {
     const { items, totalCount } = await this.postsQueryRepository.getAllPosts(
       query,
-      // @ts-expect-error userId type mismatch
       user?.userId,
     );
 
@@ -101,10 +100,9 @@ export class PostsController {
   @HttpCode(HttpStatus.OK)
   @GetPostApi()
   async getPostById(
-    @Param('id', ObjectIdValidationPipe) id: string,
+    @Param('id', ParseIntPipe) id: number,
     @ExtractUserIfExistsFromRequest() user: UserContextDto | null,
   ): Promise<PostViewDto> {
-    // @ts-expect-error userId type mismatch
     const foundPost = await this.findPostByIdOrThrowNotFound(id, user?.userId);
 
     return PostViewDto.mapToView(foundPost);
@@ -116,7 +114,7 @@ export class PostsController {
   @HttpCode(HttpStatus.OK)
   @GetAllCommentsByPostIdApi()
   async getAllCommentsByPostId(
-    @Param('postId', ObjectIdValidationPipe) postId: string,
+    @Param('postId', ParseIntPipe) postId: number,
     @Query() query: GetCommentsQueryParamsInputDto,
     @ExtractUserIfExistsFromRequest() user: UserContextDto | null,
   ) {
@@ -126,7 +124,6 @@ export class PostsController {
       await this.commentsQueryRepository.getAllCommentsByPostId(
         postId,
         query,
-        // @ts-expect-error userId type mismatch
         user?.userId,
       );
 
@@ -146,7 +143,11 @@ export class PostsController {
   @HttpCode(HttpStatus.CREATED)
   @CreatePostApi()
   async createPost(@Body() body: CreatePostInputDto): Promise<PostViewDto> {
-    const postId = await this.commandBus.execute(new CreatePostCommand(body));
+    const blogId = Number(body.blogId);
+
+    const postId = await this.commandBus.execute(
+      new CreatePostCommand({ ...body, blogId }),
+    );
 
     const createdPost = await this.postsQueryRepository.getPostById(postId);
 
@@ -163,7 +164,7 @@ export class PostsController {
   @HttpCode(HttpStatus.CREATED)
   @CreateCommentByPostIdApi()
   async createCommentByPostId(
-    @Param('postId', ObjectIdValidationPipe) postId: string,
+    @Param('postId', ParseIntPipe) postId: number,
     @Body() body: CreateCommentInputDto,
     @ExtractUserFromRequest() user: UserContextDto,
   ) {
@@ -188,7 +189,7 @@ export class PostsController {
   @HttpCode(HttpStatus.NO_CONTENT)
   @UpdatePostLikeStatusApi()
   async createUpdatePostLikeStatus(
-    @Param('postId', ObjectIdValidationPipe) postId: string,
+    @Param('postId', ParseIntPipe) postId: string,
     @Body() body: CreateUpdateLikeStatusInputDto,
     @ExtractUserFromRequest() user: UserContextDto,
   ) {
@@ -207,10 +208,13 @@ export class PostsController {
   @HttpCode(HttpStatus.NO_CONTENT)
   @UpdatePostApi()
   async updatePostById(
-    @Param('id', ObjectIdValidationPipe) id: string,
+    @Param('id', ParseIntPipe) id: number,
     @Body() body: UpdatePostInputDto,
   ): Promise<void> {
-    await this.commandBus.execute(new UpdatePostCommand({ ...body, id }));
+    const blogId = Number(body.blogId);
+    await this.commandBus.execute(
+      new UpdatePostCommand({ ...body, blogId, id }),
+    );
   }
 
   @ApiBasicAuth()
@@ -218,13 +222,11 @@ export class PostsController {
   @Delete(':id')
   @DeletePostApi()
   @HttpCode(HttpStatus.NO_CONTENT)
-  async deletePost(
-    @Param('id', ObjectIdValidationPipe) id: string,
-  ): Promise<void> {
+  async deletePost(@Param('id', ParseIntPipe) id: number): Promise<void> {
     await this.commandBus.execute(new DeletePostCommand(id));
   }
 
-  private async findPostByIdOrThrowNotFound(id: string, userId?: string) {
+  private async findPostByIdOrThrowNotFound(id: number, userId?: number) {
     const post = await this.postsQueryRepository.getPostById(id, userId);
     if (!post) throw new PostNotFoundError();
     return post;

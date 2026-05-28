@@ -90,7 +90,7 @@ describe('BlogsController (e2e) - POST /api/blogs/:blogId/posts', () => {
   });
 
   it('returns 404 status code if blog is not found by requested ID', async () => {
-    const fakeRequestedId = '507f1f77bcf86cd799439011';
+    const fakeRequestedId = '999';
     const newPost: CreatePostWithoutBlogIdInputDto = {
       title: 'Sustainable habits',
       shortDescription: 'Simple tips for greener daily routines',

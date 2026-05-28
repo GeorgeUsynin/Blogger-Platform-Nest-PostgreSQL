@@ -1,4 +1,4 @@
-export class DeleteUserRepositoryDto {
+export class DeleteBlogRepositoryDto {
   id: number;
   isDeleted: boolean;
   deletedAt: Date;

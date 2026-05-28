@@ -6,7 +6,7 @@ import {
 } from '../../../../../core/exceptions';
 import { BlogsRepository } from '../../../blogs/infrastructure';
 import { PostsRepository } from '../../infrastructure';
-import { UpdatePostDomainDto } from '../../domain/dto';
+import { UpdatePostRepositoryDto } from '../../infrastructure/dto';
 
 export class UpdatePostCommand {
   constructor(public readonly dto: UpdatePostDto) {}
@@ -30,15 +30,15 @@ export class UpdatePostUseCase implements ICommandHandler<UpdatePostCommand> {
       throw new PostNotFoundError();
     }
 
-    const updatePostDomainDto: UpdatePostDomainDto = {
+    const updatePostRepositoryDto: UpdatePostRepositoryDto = {
+      id: dto.id,
       title: dto.title,
       shortDescription: dto.shortDescription,
       content: dto.content,
       blogId: dto.blogId,
+      updatedAt: new Date(),
     };
 
-    foundPost.updatePost(updatePostDomainDto);
-
-    await this.postsRepository.save(foundPost);
+    await this.postsRepository.updatePost(updatePostRepositoryDto);
   }
 }

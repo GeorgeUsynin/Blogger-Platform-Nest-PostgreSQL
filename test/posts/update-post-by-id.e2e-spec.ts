@@ -342,7 +342,7 @@ describe('PostsController (e2e) - PUT /api/posts/:id', () => {
       it('returns 404 status code and proper error object if `blogId` does not exist', async () => {
         const payload: UpdatePostInputDto = {
           title: 'New title',
-          blogId: '507f1f77bcf86cd799439011',
+          blogId: '999',
           shortDescription: 'New short description',
           content: 'New content',
         };
@@ -387,7 +387,7 @@ describe('PostsController (e2e) - PUT /api/posts/:id', () => {
     };
 
     await request(app.getHttpServer())
-      .put('/api/posts/507f1f77bcf86cd799439011')
+      .put('/api/posts/999')
       .set(basicAuthorization)
       .send(updatedPost)
       .expect(HttpStatus.NOT_FOUND);

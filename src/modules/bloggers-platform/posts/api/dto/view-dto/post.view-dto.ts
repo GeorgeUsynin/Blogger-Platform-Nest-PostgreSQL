@@ -61,16 +61,16 @@ export class PostViewDto {
   public static mapToView(post: PostReadDto): PostViewDto {
     const dto = new PostViewDto();
 
-    dto.id = post._id.toString();
+    dto.id = post.id.toString();
     dto.title = post.title;
     dto.shortDescription = post.shortDescription;
     dto.content = post.content;
     dto.blogName = post.blogName;
-    dto.blogId = post.blogId;
+    dto.blogId = post.blogId.toString();
     dto.createdAt = post.createdAt;
     dto.extendedLikesInfo = {
-      likesCount: post.likesInfo.likesCount,
-      dislikesCount: post.likesInfo.dislikesCount,
+      likesCount: post.likesCount,
+      dislikesCount: post.dislikesCount,
       myStatus: post.myStatus,
       newestLikes: post.newestLikes.map((like) => ({
         addedAt: like.createdAt,

@@ -78,7 +78,7 @@ describe('PostsController (e2e) - DELETE /api/posts/:id', () => {
 
   it('returns 404 status code if the post was not found by requested ID', async () => {
     await request(app.getHttpServer())
-      .delete('/api/posts/507f1f77bcf86cd799439011')
+      .delete('/api/posts/999')
       .set(basicAuthorization)
       .expect(HttpStatus.NOT_FOUND);
   });

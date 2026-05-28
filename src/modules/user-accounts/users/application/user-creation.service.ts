@@ -25,7 +25,7 @@ export class UserCreationService {
     const passwordHash =
       await this.passwordHasherService.hashPassword(password);
 
-    const now = new Date().toISOString();
+    const now = new Date();
 
     const createUserRepositoryDto: CreateUserRepositoryDto = {
       email,

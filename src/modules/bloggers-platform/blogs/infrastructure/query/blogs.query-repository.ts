@@ -1,41 +1,56 @@
 import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { QueryFilter } from 'mongoose';
-import { Blog, BlogDocument, type BlogModelType } from '../../domain';
+import { InjectDataSource } from '@nestjs/typeorm';
+import { DataSource } from 'typeorm';
 import { GetBlogsQueryParamsInputDto } from '../../api/dto';
+import { BlogSortByFields } from '../../api/dto/input-dto/blog-sort-by-fields';
+import { SortDirection } from '../../../../../core/dto/base.query-params.input-dto';
+import { TBlogDB, WithTotalCount } from '../types';
 
 @Injectable()
 export class BlogsQueryRepository {
-  constructor(
-    @InjectModel(Blog.name)
-    private BlogModel: BlogModelType,
-  ) {}
+  constructor(@InjectDataSource() private dataSource: DataSource) {}
 
   async getAllBlogs(
     query: GetBlogsQueryParamsInputDto,
-  ): Promise<{ items: BlogDocument[]; totalCount: number }> {
+  ): Promise<{ items: TBlogDB[]; totalCount: number }> {
     const { sortBy, sortDirection, pageSize, searchNameTerm } = query;
 
-    const filter: QueryFilter<BlogDocument> = {};
+    const safeSortBy = Object.values(BlogSortByFields).includes(sortBy)
+      ? sortBy
+      : BlogSortByFields.CreatedAt;
+    const safeSortDirection = Object.values(SortDirection).includes(
+      sortDirection,
+    )
+      ? sortDirection.toUpperCase()
+      : SortDirection.Asc.toUpperCase();
 
-    if (searchNameTerm) {
-      filter.name = { $regex: searchNameTerm, $options: 'i' };
-    }
+    const sqlQuery = `
+          SELECT B.*, COUNT(*) OVER() as "TotalCount" 
+          FROM public."Blogs" B
+          WHERE B.NAME ILIKE $1 AND B."isDeleted" = FALSE
+          ORDER BY "${safeSortBy}" ${safeSortDirection}
+          LIMIT $2 OFFSET $3
+        `;
 
-    const [items, totalCount] = await Promise.all([
-      this.BlogModel.find(filter)
-        .sort({ [sortBy]: sortDirection })
-        .skip(query.calculateSkip())
-        .limit(pageSize)
-        .lean()
-        .exec(),
-      this.BlogModel.countDocuments(filter).exec(),
-    ]);
+    const rows = await this.dataSource.query<WithTotalCount<TBlogDB>[]>(
+      sqlQuery,
+      [`%${searchNameTerm}%`, pageSize, query.calculateSkip()],
+    );
 
-    return { items, totalCount };
+    return {
+      items: rows,
+      totalCount: rows.length > 0 ? Number(rows[0].TotalCount) : 0,
+    };
   }
 
-  async getBlogById(id: string): Promise<BlogDocument | null> {
-    return this.BlogModel.findById(id).lean().exec();
+  async getBlogById(id: number): Promise<TBlogDB | null> {
+    const query = `
+      SELECT * FROM public."Blogs" B
+      WHERE B.ID = $1 AND B."isDeleted" = FALSE 
+    `;
+
+    const rows = await this.dataSource.query<TBlogDB[]>(query, [id]);
+
+    return rows[0] ?? null;
   }
 }

@@ -53,7 +53,7 @@ describe('BlogsController (e2e) - GET /api/blogs/:id', () => {
   });
 
   it('returns 404 status code if there is no requested blog in database', async () => {
-    const fakeRequestedId = '507f1f77bcf86cd799439011';
+    const fakeRequestedId = '999';
 
     await request(app.getHttpServer())
       .get(`/api/blogs/${fakeRequestedId}`)

@@ -31,12 +31,10 @@ export class TestingController {
   @TestingAllDataApi()
   async deleteAll() {
     const query = `
-    TRUNCATE TABLE "Users" RESTART IDENTITY CASCADE
+    TRUNCATE TABLE "Users", "Blogs"
+    RESTART IDENTITY CASCADE;
     `;
-
     await this.dataSource.query(query);
-    await this.BlogModel.deleteMany();
-    await this.PostModel.deleteMany();
     await this.LikeModel.deleteMany();
     await this.CommentModel.deleteMany();
   }

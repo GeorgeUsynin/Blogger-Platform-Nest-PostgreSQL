@@ -1,8 +1,8 @@
 export class CreateDeviceRepositoryDto {
   deviceId: string;
   userId: number;
-  issuedAt: string;
+  issuedAt: Date;
   deviceName: string;
   clientIp: string;
-  expiresIn: string;
+  expiresIn: Date;
 }

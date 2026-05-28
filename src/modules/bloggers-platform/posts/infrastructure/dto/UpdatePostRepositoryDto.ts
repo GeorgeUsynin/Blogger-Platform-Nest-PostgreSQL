@@ -1,6 +1,8 @@
-export class CreatePostDto {
+export class UpdatePostRepositoryDto {
+  id: number;
   title: string;
   shortDescription: string;
   content: string;
   blogId: number;
+  updatedAt: Date;
 }

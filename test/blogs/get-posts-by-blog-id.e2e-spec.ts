@@ -111,7 +111,7 @@ describe('BlogsController (e2e) - GET /api/blogs/:blogId/posts', () => {
 
   it('returns 404 if blog does not exist', async () => {
     await request(app.getHttpServer())
-      .get('/api/blogs/507f1f77bcf86cd799439011/posts')
+      .get('/api/blogs/999/posts')
       .expect(HttpStatus.NOT_FOUND);
   });
 });

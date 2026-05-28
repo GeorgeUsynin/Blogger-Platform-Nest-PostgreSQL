@@ -11,8 +11,8 @@ export class UserViewDto {
   @ApiProperty()
   email: string;
 
-  @ApiProperty()
-  createdAt: string;
+  @ApiProperty({ type: Date })
+  createdAt: Date;
 
   public static mapToView(user: TUserDB): UserViewDto {
     const dto = new UserViewDto();
@@ -20,7 +20,7 @@ export class UserViewDto {
     dto.id = user.id.toString();
     dto.email = user.email;
     dto.login = user.login;
-    dto.createdAt = user.createdAt.toISOString();
+    dto.createdAt = user.createdAt;
 
     return dto;
   }

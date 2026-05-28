@@ -1,9 +1,10 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { BlogsRepository } from '../../infrastructure';
 import { BlogNotFoundError } from '../../../../../core/exceptions';
+import { DeleteBlogRepositoryDto } from '../../infrastructure/dto';
 
 export class DeleteBlogCommand {
-  constructor(public readonly id: string) {}
+  constructor(public readonly id: number) {}
 }
 @CommandHandler(DeleteBlogCommand)
 export class DeleteBlogUseCase implements ICommandHandler<DeleteBlogCommand> {
@@ -14,8 +15,15 @@ export class DeleteBlogUseCase implements ICommandHandler<DeleteBlogCommand> {
 
     if (!foundBlog) throw new BlogNotFoundError();
 
-    foundBlog.makeDeleted();
+    const now = new Date();
 
-    await this.blogsRepository.save(foundBlog);
+    const deleteBlogRepositoryDto: DeleteBlogRepositoryDto = {
+      id,
+      isDeleted: true,
+      deletedAt: now,
+      updatedAt: now,
+    };
+
+    await this.blogsRepository.deleteBlog(deleteBlogRepositoryDto);
   }
 }

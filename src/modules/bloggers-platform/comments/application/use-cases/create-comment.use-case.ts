@@ -12,7 +12,7 @@ import {
 
 export class CreateCommentCommand extends Command<string> {
   constructor(
-    public readonly postId: string,
+    public readonly postId: number,
     public readonly userId: string,
     public readonly dto: CreateCommentDto,
   ) {
@@ -51,6 +51,7 @@ export class CreateCommentUseCase implements ICommandHandler<
 
     const newComment = this.CommentModel.createComment({
       content: dto.content,
+      //@ts-expect-error fix type
       postId,
       userId,
       userLogin: user.login,

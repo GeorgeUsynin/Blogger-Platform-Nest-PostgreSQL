@@ -104,7 +104,7 @@ export class UsersRepository {
       RETURNING ID
     `;
 
-    const rows = await this.dataSource.query<TUserDB[]>(query, [
+    const rows = await this.dataSource.query<{ id: number }[]>(query, [
       login,
       passwordHash,
       email,
@@ -118,14 +118,15 @@ export class UsersRepository {
   async updateUserPasswordHash(
     userId: number,
     passwordHash: string,
+    updatedAt: string,
   ): Promise<void> {
     const query = `
       UPDATE PUBLIC."Users" U
-      SET "passwordHash" = $1
-      WHERE U.ID = $2
+      SET "passwordHash" = $1, "updatedAt" = $2
+      WHERE U.ID = $3 AND U."isDeleted" = FALSE
     `;
 
-    await this.dataSource.query(query, [passwordHash, userId]);
+    await this.dataSource.query(query, [passwordHash, updatedAt, userId]);
   }
 
   async deleteUser(dto: DeleteUserRepositoryDto): Promise<void> {

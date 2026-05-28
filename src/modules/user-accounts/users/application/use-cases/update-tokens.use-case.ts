@@ -51,8 +51,8 @@ export class UpdateTokensUseCase implements ICommandHandler<
     const refreshToken = this.refreshTokenContext.sign(refreshTokenPayload);
 
     const { iat, exp } = this.refreshTokenContext.decode(refreshToken);
-    const issuedAt = new Date(iat! * 1000).toISOString();
-    const expiresIn = new Date(exp! * 1000).toISOString();
+    const issuedAt = new Date(iat! * 1000);
+    const expiresIn = new Date(exp! * 1000);
 
     const updateDeviceAttributesRepositoryDto: UpdateDeviceAttributesRepositoryDto =
       {

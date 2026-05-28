@@ -1,170 +1,120 @@
 import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Post, type PostModelType } from '../../domain';
+import { InjectDataSource } from '@nestjs/typeorm';
+import { DataSource } from 'typeorm';
 import { GetPostsQueryParamsInputDto } from '../../api/dto';
-import { PostReadDto, TNewestLike } from './dto';
-import { LikeDocument, LikeStatus, ParentType } from '../../../likes/domain';
-import { LikesQueryRepository } from '../../../likes/infrastructure';
-import { UsersExternalQueryRepository } from '../../../../user-accounts/users/infrastructure';
+import { PostReadDto } from './dto';
+import { LikeStatus } from '../../../likes/domain';
+import { PostSortByFields } from '../../api/dto/input-dto/posts-sort-by-fields';
+import { SortDirection } from '../../../../../core/dto/base.query-params.input-dto';
+import { TPostDB, WithBlogName, WithTotalCount } from '../types';
 
-type FindPostsFilter = Partial<Pick<Post, 'blogId'>>;
-type TParentNewestLikes = Map<string, LikeDocument[]>;
-type TParentNewestLikesWithLogin = Map<string, TNewestLike[]>;
+type FindPostsFilter = Partial<Pick<TPostDB, 'blogId'>>;
 
-const NEWEST_LIKES_LIMIT = 3;
 @Injectable()
 export class PostsQueryRepository {
-  constructor(
-    @InjectModel(Post.name)
-    private PostModel: PostModelType,
-    private likesQueryRepository: LikesQueryRepository,
-    private usersExternalQueryRepository: UsersExternalQueryRepository,
-  ) {}
+  constructor(@InjectDataSource() private dataSource: DataSource) {}
 
   async getAllPosts(
     query: GetPostsQueryParamsInputDto,
-    userId?: string,
+    userId?: number,
   ): Promise<{ items: PostReadDto[]; totalCount: number }> {
     return this.findManyWithFilter(query, {}, userId);
   }
 
   async getAllPostsByBlogId(
-    blogId: string,
+    blogId: number,
     query: GetPostsQueryParamsInputDto,
     userId?: number,
   ): Promise<{ items: PostReadDto[]; totalCount: number }> {
-    // @ts-expect-error userId type mismatch
     return this.findManyWithFilter(query, { blogId }, userId);
   }
 
   private async findManyWithFilter(
     query: GetPostsQueryParamsInputDto,
     filter: FindPostsFilter = {},
-    userId?: string,
+    userId?: number,
   ): Promise<{ items: PostReadDto[]; totalCount: number }> {
-    const { sortBy, sortDirection, pageSize } = query;
+    const { sortBy, sortDirection, pageSize, pageNumber } = query;
 
-    const [items, totalCount] = await Promise.all([
-      this.PostModel.find(filter)
-        .sort({ [sortBy]: sortDirection })
-        .skip(query.calculateSkip())
-        .limit(pageSize)
-        .lean()
-        .exec(),
-      this.PostModel.countDocuments(filter).exec(),
-    ]);
+    const safeSortBy = Object.values(PostSortByFields).includes(sortBy)
+      ? sortBy
+      : PostSortByFields.CreatedAt;
+    const safeSortDirection = Object.values(SortDirection).includes(
+      sortDirection,
+    )
+      ? sortDirection.toUpperCase()
+      : SortDirection.Asc.toUpperCase();
 
-    if (items.length === 0) {
-      return { items: [], totalCount };
-    }
+    let sqlQuery: string;
+    let params: Array<unknown>;
 
-    const postIds = items.map((post) => post._id.toString());
-
-    const newestLikes = await this.getNewestLikesByPostIds(
-      postIds,
-      NEWEST_LIKES_LIMIT,
-    );
-    const enrichedNewestLikes =
-      await this.enrichNewestLikesWithAuthorLogin(newestLikes);
-
-    if (!userId) {
-      const mappedItems = items.map((post) => ({
-        ...post,
-        myStatus: LikeStatus.None,
-        newestLikes: enrichedNewestLikes.get(post._id.toString()) ?? [],
-      }));
-
-      return { items: mappedItems, totalCount };
+    if (filter.blogId) {
+      // GOOD TO KNOW
+      // COUNT(*) OVER() counts rows after WHERE, but before LIMIT/OFFSET !
+      sqlQuery = `
+          SELECT P.*, B."name" as "blogName",
+          COUNT(*) OVER() as "TotalCount"
+          FROM public."Posts" P
+          JOIN public."Blogs" B
+          ON P."blogId" = B.ID
+          WHERE P."blogId" = $1 AND P."isDeleted" = FALSE
+          ORDER BY "${safeSortBy}" ${safeSortDirection}
+          LIMIT $2 OFFSET $3
+      `;
+      params = [filter.blogId, pageSize, query.calculateSkip()];
     } else {
-      const likes = await this.likesQueryRepository.findLikesByParentIds(
-        userId,
-        ParentType.Post,
-        postIds,
-      );
-      const statusByPostId = new Map(
-        likes.map((like) => [like.parentId.toString(), like.likeStatus]),
-      );
-
-      const mappedItems = items.map((post) => {
-        const id = post._id.toString();
-        return {
-          ...post,
-          myStatus: statusByPostId.get(id) ?? LikeStatus.None,
-          newestLikes: enrichedNewestLikes.get(post._id.toString()) ?? [],
-        };
-      });
-      return { items: mappedItems, totalCount };
+      // GOOD TO KNOW
+      // COUNT(*) OVER() counts rows after WHERE, but before LIMIT/OFFSET !
+      sqlQuery = `
+          SELECT P.*, B."name" as "blogName",
+          COUNT(*) OVER() as "TotalCount"
+          FROM public."Posts" P
+          JOIN public."Blogs" B
+          ON P."blogId" = B.ID
+          WHERE P."isDeleted" = FALSE
+          ORDER BY "${safeSortBy}" ${safeSortDirection}
+          LIMIT $1 OFFSET $2
+      `;
+      params = [pageSize, query.calculateSkip()];
     }
-  }
 
-  async getPostById(id: string, userId?: string): Promise<PostReadDto | null> {
-    const post = await this.PostModel.findById(id).lean().exec();
-
-    if (!post) return null;
-
-    const myStatus = userId
-      ? await this.likesQueryRepository.findMyStatusByParentId(
-          // @ts-expect-error userId type mismatch
-          userId,
-          ParentType.Post,
-          id,
-        )
-      : LikeStatus.None;
-
-    const newestLikes = await this.getNewestLikesByPostIds(
-      [id],
-      NEWEST_LIKES_LIMIT,
-    );
-    const enrichedNewestLikes =
-      await this.enrichNewestLikesWithAuthorLogin(newestLikes);
+    const rows = await this.dataSource.query<
+      WithTotalCount<WithBlogName<TPostDB>>[]
+    >(sqlQuery, params);
 
     return {
-      ...post,
-      myStatus,
-      newestLikes: enrichedNewestLikes.get(id) ?? [],
+      items: rows.map((post) => ({
+        ...post,
+        likesCount: 0,
+        dislikesCount: 0,
+        myStatus: LikeStatus.None,
+        newestLikes: [],
+      })),
+      totalCount: rows.length > 0 ? Number(rows[0].TotalCount) : 0,
     };
   }
 
-  private async getNewestLikesByPostIds(
-    postIds: string[],
-    limit: number,
-  ): Promise<TParentNewestLikes> {
-    const newestLikes =
-      await this.likesQueryRepository.getNewestLikesPerParentId(
-        postIds,
-        ParentType.Post,
-        limit,
-      );
+  async getPostById(id: number, userId?: number): Promise<PostReadDto | null> {
+    const query = `
+          SELECT P.*, B."name" as "blogName" 
+          FROM public."Posts" P
+          JOIN public."Blogs" B
+          ON P."blogId" = B.ID
+          WHERE P.ID = $1 AND P."isDeleted" = FALSE 
+        `;
 
-    return new Map(newestLikes.map((el) => [el.parentId, el.newestLikes]));
-  }
-
-  private async enrichNewestLikesWithAuthorLogin(
-    newestLikes: TParentNewestLikes,
-  ): Promise<TParentNewestLikesWithLogin> {
-    const uniqueAuthorIds = new Set(
-      [...newestLikes.values()].flat().map((like) => like.authorId),
-    );
-    const authors = await this.usersExternalQueryRepository.findUsersByUserIds([
-      ...uniqueAuthorIds,
+    const rows = await this.dataSource.query<WithBlogName<TPostDB>[]>(query, [
+      id,
     ]);
-    const loginByAuthorId = new Map(
-      authors.map((author) => [author._id.toString(), author.login]),
-    );
 
-    const result: TParentNewestLikesWithLogin = new Map();
-
-    for (const [postId, likes] of newestLikes) {
-      result.set(
-        postId,
-        likes.map((like) => ({
-          authorId: like.authorId,
-          authorLogin: loginByAuthorId.get(like.authorId)!,
-          createdAt: like.createdAt,
-        })),
-      );
-    }
-
-    return result;
+    return rows[0]
+      ? {
+          ...rows[0],
+          likesCount: 0,
+          dislikesCount: 0,
+          myStatus: LikeStatus.None,
+          newestLikes: [],
+        }
+      : null;
   }
 }

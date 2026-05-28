@@ -265,7 +265,7 @@ export const createErrorMessages = (values: TValues) => {
           errorsMessages.push(errorMessagesConfig.isRequired('blogId'));
           break;
         case 'isString':
-          errorsMessages.push(errorMessagesConfig.isString('blogId'));
+          errorsMessages.push(errorMessagesConfig.isNumberString('blogId'));
           break;
         case 'blogIdNotExist':
           errorsMessages.push(errorMessagesConfig.blogIdNotExist('blogId'));
@@ -284,6 +284,10 @@ const errorMessagesConfig = {
   }),
   isString: (field: string) => ({
     message: `${field} must be a string`,
+    field,
+  }),
+  isNumberString: (field: string) => ({
+    message: `${field} must be a number string`,
     field,
   }),
   maxLength: (field: string, length: number) => ({

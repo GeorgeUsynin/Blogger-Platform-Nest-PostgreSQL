@@ -6,6 +6,7 @@ import {
   ApiOperation,
   ApiProperty,
   ApiUnauthorizedResponse,
+  OmitType,
 } from '@nestjs/swagger';
 import { SwaggerErrorsMessagesViewDto } from '../../../../../core/dto';
 import { CreatePostInputDto, PostViewDto } from '../dto';

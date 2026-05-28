@@ -41,7 +41,12 @@ export class NewPasswordUseCase implements ICommandHandler<NewPasswordCommand> {
 
     const newPasswordHash =
       await this.passwordHasherService.hashPassword(newPassword);
+    const updatedAt = new Date().toISOString();
 
-    await this.usersRepository.updateUserPasswordHash(user.id, newPasswordHash);
+    await this.usersRepository.updateUserPasswordHash(
+      user.id,
+      newPasswordHash,
+      updatedAt,
+    );
   }
 }

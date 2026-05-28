@@ -25,7 +25,7 @@ export class DeleteUserUseCase implements ICommandHandler<DeleteUserCommand> {
       throw new UserAlreadyDeleted();
     }
 
-    const now = new Date().toISOString();
+    const now = new Date();
 
     const deleteUserRepositoryDto: DeleteUserRepositoryDto = {
       id: foundUser.id,

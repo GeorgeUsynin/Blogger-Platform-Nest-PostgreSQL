@@ -20,5 +20,5 @@ export class GetBlogsQueryParamsInputDto extends BaseQueryParamsInputDto {
   })
   @IsString()
   @IsOptional()
-  searchNameTerm: string | null = null;
+  searchNameTerm: string = '';
 }

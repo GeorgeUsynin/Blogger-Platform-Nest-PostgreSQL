@@ -8,8 +8,8 @@ export class DeviceViewDto {
   @ApiProperty()
   title: string;
 
-  @ApiProperty()
-  lastActiveDate: string;
+  @ApiProperty({ type: Date })
+  lastActiveDate: Date;
 
   @ApiProperty()
   deviceId: string;
@@ -19,7 +19,7 @@ export class DeviceViewDto {
 
     dto.ip = device.clientIp;
     dto.title = device.deviceName;
-    dto.lastActiveDate = device.issuedAt.toISOString();
+    dto.lastActiveDate = device.issuedAt;
     dto.deviceId = device.deviceId;
 
     return dto;

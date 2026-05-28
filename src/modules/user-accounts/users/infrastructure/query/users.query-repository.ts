@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { GetUsersQueryParamsInputDto } from '../../api/dto';
 import { DataSource } from 'typeorm';
 import { InjectDataSource } from '@nestjs/typeorm';
-import { TUserDB } from '../types';
+import { TUserDB, WithTotalCount } from '../types';
 import { UserSortByFields } from '../../api/dto/input-dto/user-sort-by-fields';
 import { SortDirection } from '../../../../../core/dto/base.query-params.input-dto';
 
@@ -31,21 +31,28 @@ export class UsersQueryRepository {
       : SortDirection.Asc.toUpperCase();
 
     const sqlQuery = `
-      SELECT * FROM public."Users" U
+      SELECT U.*, COUNT(*) OVER() as "TotalCount" 
+      FROM public."Users" U
       WHERE (U.LOGIN ILIKE $1 OR U.EMAIL ILIKE $2)
       AND U."isDeleted" = FALSE
-      ORDER BY U."${safeSortBy}" ${safeSortDirection}
+      ORDER BY "${safeSortBy}" ${safeSortDirection}
       LIMIT $3 OFFSET $4
     `;
 
-    const rows = await this.dataSource.query<TUserDB[]>(sqlQuery, [
-      `%${searchLoginTerm}%`,
-      `%${searchEmailTerm}%`,
-      pageSize,
-      query.calculateSkip(),
-    ]);
+    const rows = await this.dataSource.query<WithTotalCount<TUserDB>[]>(
+      sqlQuery,
+      [
+        `%${searchLoginTerm}%`,
+        `%${searchEmailTerm}%`,
+        pageSize,
+        query.calculateSkip(),
+      ],
+    );
 
-    return { items: rows, totalCount: rows.length };
+    return {
+      items: rows,
+      totalCount: rows.length > 0 ? Number(rows[0].TotalCount) : 0,
+    };
   }
 
   async getUserById(id: number): Promise<TUserDB | null> {

@@ -1,5 +1,5 @@
 export class UpdateDeviceAttributesRepositoryDto {
   deviceId: string;
-  issuedAt: string;
-  expiresIn: string;
+  issuedAt: Date;
+  expiresIn: Date;
 }

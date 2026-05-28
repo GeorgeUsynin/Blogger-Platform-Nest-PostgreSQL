@@ -1,5 +1,8 @@
-import { IsMongoId, MaxLength } from 'class-validator';
-import { IsStringWithTrim } from '../../../../../../core/decorators';
+import { MaxLength } from 'class-validator';
+import {
+  IsNumberStringWithTrim,
+  IsStringWithTrim,
+} from '../../../../../../core/decorators';
 import {
   contentConstraints,
   shortDescriptionConstraints,
@@ -19,7 +22,6 @@ export class CreatePostInputDto {
   @IsStringWithTrim()
   content: string;
 
-  @IsMongoId()
-  @IsStringWithTrim()
+  @IsNumberStringWithTrim()
   blogId: string;
 }

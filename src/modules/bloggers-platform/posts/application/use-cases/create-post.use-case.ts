@@ -1,12 +1,14 @@
 import { Command, CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { InjectModel } from '@nestjs/mongoose';
 import { CreatePostDto } from '../dto';
-import { BlogNotFoundError } from '../../../../../core/exceptions';
-import { Post, type PostModelType } from '../../domain';
-import { BlogsRepository } from '../../../blogs/infrastructure';
 import { PostsRepository } from '../../infrastructure';
+import { CreatePostRepositoryDto } from '../../infrastructure/dto';
+import {
+  BlogNotFoundError,
+  PostCreationFailedError,
+} from '../../../../../core/exceptions';
+import { BlogsRepository } from '../../../blogs/infrastructure';
 
-export class CreatePostCommand extends Command<string> {
+export class CreatePostCommand extends Command<number> {
   constructor(public readonly dto: CreatePostDto) {
     super();
   }
@@ -15,25 +17,38 @@ export class CreatePostCommand extends Command<string> {
 @CommandHandler(CreatePostCommand)
 export class CreatePostUseCase implements ICommandHandler<
   CreatePostCommand,
-  string
+  number
 > {
   constructor(
-    @InjectModel(Post.name)
-    private PostModel: PostModelType,
-    private blogsRepository: BlogsRepository,
     private postsRepository: PostsRepository,
+    private blogsRepository: BlogsRepository,
   ) {}
 
-  async execute({ dto }: CreatePostCommand): Promise<string> {
+  async execute({ dto }: CreatePostCommand): Promise<number> {
     const blog = await this.blogsRepository.findById(dto.blogId);
     if (!blog) {
       throw new BlogNotFoundError();
     }
 
-    const newPost = this.PostModel.createPost({ ...dto, blogName: blog.name });
+    const now = new Date();
 
-    await this.postsRepository.save(newPost);
+    const createPostRepositoryDto: CreatePostRepositoryDto = {
+      title: dto.title,
+      content: dto.content,
+      shortDescription: dto.shortDescription,
+      blogId: dto.blogId,
+      createdAt: now,
+      updatedAt: now,
+    };
 
-    return newPost._id.toString();
+    const postId = await this.postsRepository.createPost(
+      createPostRepositoryDto,
+    );
+
+    if (!postId) {
+      throw new PostCreationFailedError();
+    }
+
+    return postId;
   }
 }

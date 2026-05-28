@@ -286,7 +286,7 @@ describe('BlogsController (e2e) - PUT /api/blogs/:id', () => {
   });
 
   it('returns 404 status code if blog was not found by requested ID', async () => {
-    const fakeRequestedId = '507f1f77bcf86cd799439011';
+    const fakeRequestedId = '999';
 
     const updatedBlog: UpdateBlogInputDto = {
       description: 'New description',

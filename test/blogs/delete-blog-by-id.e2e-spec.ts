@@ -63,7 +63,7 @@ describe('BlogsController (e2e) - DELETE /api/blogs/:id', () => {
   });
 
   it('returns 404 status code if the blog was not found by requested ID', async () => {
-    const fakeRequestedId = '507f1f77bcf86cd799439011';
+    const fakeRequestedId = '999';
 
     await request(app.getHttpServer())
       .delete(`/api/blogs/${fakeRequestedId}`)

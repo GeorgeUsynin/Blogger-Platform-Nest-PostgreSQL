@@ -1,8 +1,8 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { BlogsRepository } from '../../infrastructure';
 import { UpdateBlogDto } from '../dto';
-import { UpdateBlogDomainDto } from '../../domain/dto';
 import { BlogNotFoundError } from '../../../../../core/exceptions';
+import { UpdateBlogRepositoryDto } from '../../infrastructure/dto';
 
 export class UpdateBlogCommand {
   constructor(public readonly dto: UpdateBlogDto) {}
@@ -17,14 +17,14 @@ export class UpdateBlogUseCase implements ICommandHandler<UpdateBlogCommand> {
 
     if (!foundBlog) throw new BlogNotFoundError();
 
-    const updateBlogDomainDto: UpdateBlogDomainDto = {
+    const updateBlogRepositoryDto: UpdateBlogRepositoryDto = {
+      id: dto.id,
       name: dto.name,
       description: dto.description,
       websiteUrl: dto.websiteUrl,
+      updatedAt: new Date(),
     };
 
-    foundBlog.updateBlog(updateBlogDomainDto);
-
-    await this.blogsRepository.save(foundBlog);
+    await this.blogsRepository.updateBlog(updateBlogRepositoryDto);
   }
 }

@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { BlogDocument } from '../../../domain';
+import { TBlogDB } from '../../../infrastructure/types';
 
 export class BlogViewDto {
   @ApiProperty()
@@ -23,10 +23,10 @@ export class BlogViewDto {
   @ApiProperty({ type: Date })
   createdAt: Date;
 
-  public static mapToView(blog: BlogDocument): BlogViewDto {
+  public static mapToView(blog: TBlogDB): BlogViewDto {
     const dto = new BlogViewDto();
 
-    dto.id = blog._id.toString();
+    dto.id = blog.id.toString();
     dto.name = blog.name;
     dto.description = blog.description;
     dto.websiteUrl = blog.websiteUrl;

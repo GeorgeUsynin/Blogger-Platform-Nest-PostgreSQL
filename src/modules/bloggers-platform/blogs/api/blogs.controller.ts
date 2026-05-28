@@ -6,6 +6,7 @@ import {
   HttpCode,
   HttpStatus,
   Param,
+  ParseIntPipe,
   Post,
   Put,
   Query,
@@ -21,7 +22,6 @@ import {
   BlogNotFoundError,
   PostCreationFailedError,
 } from '../../../../core/exceptions/domainExceptions';
-import { ObjectIdValidationPipe } from '../../../../core/pipes';
 import {
   BlogViewDto,
   CreateBlogInputDto,
@@ -81,7 +81,7 @@ export class BlogsController {
   @HttpCode(HttpStatus.OK)
   @GetBlogApi()
   async getBlogById(
-    @Param('id', ObjectIdValidationPipe) id: string,
+    @Param('id', ParseIntPipe) id: number,
   ): Promise<BlogViewDto> {
     const foundBlog = await this.findBlogByIdOrThrowNotFound(id);
 
@@ -94,7 +94,7 @@ export class BlogsController {
   @HttpCode(HttpStatus.OK)
   @GetAllPostsByBlogIdApi()
   async getPostsByBlogId(
-    @Param('blogId', ObjectIdValidationPipe) blogId: string,
+    @Param('blogId', ParseIntPipe) blogId: number,
     @Query() query: GetPostsQueryParamsInputDto,
     @ExtractUserIfExistsFromRequest() user: UserContextDto | null,
   ) {
@@ -140,7 +140,7 @@ export class BlogsController {
   @HttpCode(HttpStatus.CREATED)
   @CreatePostByBlogIdApi()
   async createPostForBlogByBlogId(
-    @Param('blogId', ObjectIdValidationPipe) blogId: string,
+    @Param('blogId', ParseIntPipe) blogId: number,
     @Body() body: CreatePostWithoutBlogIdInputDto,
   ) {
     const postId = await this.commandBus.execute(
@@ -162,7 +162,7 @@ export class BlogsController {
   @HttpCode(HttpStatus.NO_CONTENT)
   @UpdateBlogApi()
   async updateBlogById(
-    @Param('id', ObjectIdValidationPipe) id: string,
+    @Param('id', ParseIntPipe) id: number,
     @Body() body: UpdateBlogInputDto,
   ): Promise<void> {
     await this.commandBus.execute(new UpdateBlogCommand({ ...body, id }));
@@ -173,13 +173,11 @@ export class BlogsController {
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   @DeleteBlogApi()
-  async deleteBlog(
-    @Param('id', ObjectIdValidationPipe) id: string,
-  ): Promise<void> {
+  async deleteBlog(@Param('id', ParseIntPipe) id: number): Promise<void> {
     await this.commandBus.execute(new DeleteBlogCommand(id));
   }
 
-  private async findBlogByIdOrThrowNotFound(id: string) {
+  private async findBlogByIdOrThrowNotFound(id: number) {
     const blog = await this.blogsQueryRepository.getBlogById(id);
     if (!blog) throw new BlogNotFoundError();
     return blog;
