@@ -41,7 +41,8 @@ export class JwtCookiesStrategy extends PassportStrategy(
       throw new UnauthorizedException();
     }
 
-    const isIssuedAtMatch = device.issuedAt === new Date(iat * 1000);
+    const isIssuedAtMatch =
+      device.issuedAt.toISOString() === new Date(iat * 1000).toISOString();
 
     if (!isIssuedAtMatch) {
       throw new UnauthorizedException();
