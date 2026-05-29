@@ -1,5 +1,5 @@
 import { configModule } from './config.module';
-import { DynamicModule, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { CqrsModule } from '@nestjs/cqrs';
 import {
@@ -10,15 +10,20 @@ import {
 } from './modules';
 import { AppController } from './app.controller';
 import { CoreModule } from './core';
-import { CoreConfig } from './core/config';
+import { configValidationUtility, CoreConfig } from './core/config';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DB_TYPE, PG_PORT } from './constants';
+
+const includeTestingModule = configValidationUtility.convertToBoolean(
+  process.env.INCLUDE_TESTING_MODULE!,
+);
 
 @Module({
   imports: [
     configModule,
     CoreModule,
+    ...(includeTestingModule ? [TestingModule] : []),
     TypeOrmModule.forRootAsync({
       useFactory: (coreConfig: CoreConfig) => {
         return {
@@ -59,17 +64,4 @@ import { DB_TYPE, PG_PORT } from './constants';
   ],
   controllers: [AppController],
 })
-export class AppModule {
-  static async forRoot(coreConfig: CoreConfig): Promise<DynamicModule> {
-    /**
-     * We use this sophisticated approach to add an optional module to the main modules.
-     * We avoid accessing environment variables through process.env in the decorator because
-     * decorators are executed during the compilation of all modules before the NestJS lifecycle starts
-     */
-
-    return {
-      module: AppModule,
-      imports: [...(coreConfig.INCLUDE_TESTING_MODULE ? [TestingModule] : [])], // Add dynamic modules here
-    };
-  }
-}
+export class AppModule {}
