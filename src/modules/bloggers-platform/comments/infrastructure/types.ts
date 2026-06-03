@@ -1,15 +1,12 @@
-export type TPostDB = {
+export type TCommentDB = {
   id: number;
-  blogId: number;
-  title: string;
-  shortDescription: string;
+  authorId: number;
+  postId: number;
   content: string;
   isDeleted: boolean;
   deletedAt: Date | null;
   createdAt: Date;
   updatedAt: Date;
 };
-
-export type WithBlogName<T> = T & { blogName: string };
 
 export type WithTotalCount<T> = T & { TotalCount: number };

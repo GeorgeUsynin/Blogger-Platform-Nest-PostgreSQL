@@ -1,5 +1,4 @@
 export { CommentsController } from './api';
-export { Comment, CommentSchema } from './domain';
 import {
   CreateCommentUseCase,
   CreateUpdateCommentLikeStatusUseCase,

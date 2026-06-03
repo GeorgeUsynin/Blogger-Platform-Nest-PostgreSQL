@@ -173,7 +173,7 @@ describe('PostsController (e2e) - PUT /api/posts/:id/like-status', () => {
     });
 
     await request(app.getHttpServer())
-      .put('/api/posts/507f1f77bcf86cd799439011/like-status')
+      .put('/api/posts/999/like-status')
       .set({ Authorization: `Bearer ${liker.token}` })
       .send({ likeStatus: 'Like' })
       .expect(HttpStatus.NOT_FOUND);

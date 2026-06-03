@@ -27,15 +27,8 @@ export class CreateUpdateCommentLikeStatusUseCase implements ICommandHandler<Cre
     await this.likesService.setLikeStatus({
       authorId: userId,
       parentId: commentId,
-      parentType: ParentType.Comment,
       likeStatus,
+      parentType: ParentType.Comment,
     });
-
-    // recalculate and update comment likesCount info
-    const { likesCount, dislikesCount } =
-      await this.likesService.getLikesCounts(commentId, ParentType.Comment);
-    foundComment.updateLikesCounts(likesCount, dislikesCount);
-
-    await this.commentsRepository.save(foundComment);
   }
 }

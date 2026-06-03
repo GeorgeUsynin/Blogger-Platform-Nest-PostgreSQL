@@ -5,8 +5,8 @@ CREATE TABLE IF NOT EXISTS public."Users" (
   "email" TEXT NOT NULL,
   "isDeleted" BOOLEAN NOT NULL DEFAULT FALSE,
   "deletedAt" TIMESTAMPTZ NULL,
-  "createdAt" TIMESTAMPTZ NOT NULL,
-  "updatedAt" TIMESTAMPTZ NOT NULL
+  "createdAt" TIMESTAMPTZ NOT NULL DEFAULT now(),
+  "updatedAt" TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
 CREATE TABLE IF NOT EXISTS public."Blogs" (
@@ -17,8 +17,8 @@ CREATE TABLE IF NOT EXISTS public."Blogs" (
   "isMembership" BOOLEAN NOT NULL DEFAULT FALSE,
   "isDeleted" BOOLEAN NOT NULL DEFAULT FALSE,
   "deletedAt" TIMESTAMPTZ NULL,
-  "createdAt" TIMESTAMPTZ NOT NULL,
-  "updatedAt" TIMESTAMPTZ NOT NULL
+  "createdAt" TIMESTAMPTZ NOT NULL DEFAULT now(),
+  "updatedAt" TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
 CREATE TABLE IF NOT EXISTS public."Posts" (
@@ -29,8 +29,39 @@ CREATE TABLE IF NOT EXISTS public."Posts" (
   "content" TEXT NOT NULL,
   "isDeleted" BOOLEAN NOT NULL DEFAULT FALSE,
   "deletedAt" TIMESTAMPTZ NULL,
-  "createdAt" TIMESTAMPTZ NOT NULL,
-  "updatedAt" TIMESTAMPTZ NOT NULL
+  "createdAt" TIMESTAMPTZ NOT NULL DEFAULT now(),
+  "updatedAt" TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE TABLE IF NOT EXISTS public."Comments" (
+  "id" BIGSERIAL PRIMARY KEY,
+  "authorId" BIGINT NOT NULL REFERENCES public."Users"("id") ON DELETE CASCADE,
+  "postId" BIGINT NOT NULL REFERENCES public."Posts"("id") ON DELETE CASCADE,
+  "content" TEXT NOT NULL,
+  "isDeleted" BOOLEAN NOT NULL DEFAULT FALSE,
+  "deletedAt" TIMESTAMPTZ NULL,
+  "createdAt" TIMESTAMPTZ NOT NULL DEFAULT now(),
+  "updatedAt" TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE TABLE IF NOT EXISTS public."CommentLikes" (
+  "id" BIGSERIAL PRIMARY KEY,
+  "authorId" BIGINT NOT NULL REFERENCES public."Users"("id") ON DELETE CASCADE,
+  "parentId" BIGINT NOT NULL REFERENCES public."Comments"("id") ON DELETE CASCADE,
+  "likeStatus" TEXT NOT NULL CHECK ("likeStatus" IN ('Like', 'Dislike')),
+  "createdAt" TIMESTAMPTZ NOT NULL DEFAULT now(),
+  "updatedAt" TIMESTAMPTZ NOT NULL DEFAULT now(),
+  CONSTRAINT "CommentLikes_parentId_authorId_key" UNIQUE ("parentId", "authorId")
+);
+
+CREATE TABLE IF NOT EXISTS public."PostLikes" (
+  "id" BIGSERIAL PRIMARY KEY,
+  "authorId" BIGINT NOT NULL REFERENCES public."Users"("id") ON DELETE CASCADE,
+  "parentId" BIGINT NOT NULL REFERENCES public."Posts"("id") ON DELETE CASCADE,
+  "likeStatus" TEXT NOT NULL CHECK ("likeStatus" IN ('Like', 'Dislike')),
+  "createdAt" TIMESTAMPTZ NOT NULL DEFAULT now(),
+  "updatedAt" TIMESTAMPTZ NOT NULL DEFAULT now(),
+  CONSTRAINT "PostLikes_parentId_authorId_key" UNIQUE ("parentId", "authorId")
 );
 
 CREATE TABLE IF NOT EXISTS public."Devices" (

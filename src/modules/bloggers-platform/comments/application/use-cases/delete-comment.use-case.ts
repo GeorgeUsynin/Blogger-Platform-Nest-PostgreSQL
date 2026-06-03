@@ -1,11 +1,15 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { CommentNotFoundError } from '../../../../../core/exceptions';
+import {
+  CommentNotFoundError,
+  NotAnOwnerOfThisComment,
+} from '../../../../../core/exceptions';
 import { CommentsRepository } from '../../infrastructure';
+import { DeleteCommentRepositoryDto } from '../../infrastructure/dto';
 
 export class DeleteCommentCommand {
   constructor(
-    public readonly userId: string,
-    public readonly id: string,
+    public readonly userId: number,
+    public readonly id: number,
   ) {}
 }
 
@@ -19,9 +23,19 @@ export class DeleteCommentUseCase implements ICommandHandler<DeleteCommentComman
       throw new CommentNotFoundError();
     }
 
-    foundComment.ensureCommentOwner(userId);
-    foundComment.makeDeleted();
+    if (foundComment.authorId !== userId) {
+      throw new NotAnOwnerOfThisComment();
+    }
 
-    await this.commentsRepository.save(foundComment);
+    const now = new Date();
+
+    const deleteCommentRepositoryDto: DeleteCommentRepositoryDto = {
+      id,
+      isDeleted: true,
+      deletedAt: now,
+      updatedAt: now,
+    };
+
+    await this.commentsRepository.deleteComment(deleteCommentRepositoryDto);
   }
 }

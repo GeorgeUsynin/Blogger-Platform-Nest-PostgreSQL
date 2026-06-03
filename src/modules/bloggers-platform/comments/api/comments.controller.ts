@@ -6,6 +6,7 @@ import {
   HttpCode,
   HttpStatus,
   Param,
+  ParseIntPipe,
   Put,
   UseGuards,
 } from '@nestjs/common';
@@ -20,7 +21,6 @@ import {
   UpdateCommentLikeStatusApi,
 } from './swagger';
 import { CommentNotFoundError } from '../../../../core/exceptions';
-import { ObjectIdValidationPipe } from '../../../../core/pipes';
 import {
   JwtHeaderAuthGuard,
   JwtOptionalAuthGuard,
@@ -50,12 +50,13 @@ export class CommentsController {
   @HttpCode(HttpStatus.OK)
   @GetCommentApi()
   async getCommentById(
-    @Param('id', ObjectIdValidationPipe) id: string,
+    @Param('id', ParseIntPipe) id: number,
     @ExtractUserIfExistsFromRequest() user: UserContextDto | null,
   ): Promise<CommentViewDto> {
+    const userId = user ? user.userId : null;
     const foundComment = await this.commentsQueryRepository.getCommentById(
       id,
-      user?.userId,
+      userId,
     );
 
     if (!foundComment) {
@@ -71,12 +72,11 @@ export class CommentsController {
   @HttpCode(HttpStatus.NO_CONTENT)
   @UpdateCommentApi()
   async updateCommentById(
-    @Param('id', ObjectIdValidationPipe) id: string,
+    @Param('id', ParseIntPipe) id: number,
     @Body() body: UpdateCommentInputDto,
     @ExtractUserFromRequest() user: UserContextDto,
   ): Promise<void> {
     await this.commandBus.execute(
-      // @ts-expect-error userId type mismatch
       new UpdateCommentCommand(user.userId, { ...body, id }),
     );
   }
@@ -87,7 +87,7 @@ export class CommentsController {
   @HttpCode(HttpStatus.NO_CONTENT)
   @UpdateCommentLikeStatusApi()
   async createUpdateCommentLikeStatus(
-    @Param('commentId', ObjectIdValidationPipe) commentId: string,
+    @Param('commentId', ParseIntPipe) commentId: number,
     @Body() body: CreateUpdateLikeStatusInputDto,
     @ExtractUserFromRequest() user: UserContextDto,
   ) {
@@ -97,7 +97,6 @@ export class CommentsController {
     await this.commandBus.execute(
       new CreateUpdateCommentLikeStatusCommand({
         commentId,
-        // @ts-expect-error userId type mismatch
         userId,
         likeStatus,
       }),
@@ -110,10 +109,9 @@ export class CommentsController {
   @HttpCode(HttpStatus.NO_CONTENT)
   @DeleteCommentApi()
   async deleteComment(
-    @Param('id', ObjectIdValidationPipe) id: string,
+    @Param('id', ParseIntPipe) id: number,
     @ExtractUserFromRequest() user: UserContextDto,
   ): Promise<void> {
-    // @ts-expect-error userId type mismatch
     await this.commandBus.execute(new DeleteCommentCommand(user.userId, id));
   }
 }

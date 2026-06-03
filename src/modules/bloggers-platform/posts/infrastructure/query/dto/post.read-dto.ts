@@ -1,9 +1,9 @@
-import { LikeStatus } from '../../../../likes/domain';
+import { NonNoneLikeStatus } from '../../../../likes/domain';
 import { TPostDB } from '../../types';
 
 export type TNewestLike = {
   createdAt: Date;
-  authorId: string;
+  authorId: number;
   authorLogin: string;
 };
 
@@ -11,6 +11,8 @@ export type PostReadDto = TPostDB & {
   blogName: string;
   likesCount: number;
   dislikesCount: number;
-  myStatus: LikeStatus;
+  myStatus: NonNoneLikeStatus | null;
   newestLikes: TNewestLike[];
 };
+
+export type WithParentId<T> = T & { parentId: number };

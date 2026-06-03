@@ -1,12 +1,9 @@
 import { Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
 import { JwtService } from '@nestjs/jwt';
 import {
   AuthController,
   authProviders,
   usersUseCases,
-  User,
-  UserSchema,
   UsersController,
   usersProviders,
 } from './users';
@@ -15,27 +12,16 @@ import {
   REFRESH_TOKEN_STRATEGY_INJECT_TOKEN,
 } from './users/application/constants';
 import { NotificationsModule } from '../notification';
-import {
-  UsersExternalQueryRepository,
-  UsersExternalRepository,
-} from './users/infrastructure';
+import { UsersExternalRepository } from './users/infrastructure';
 import { UserAccountsConfig } from './users/config';
 import {
-  Device,
-  DeviceSchema,
   DevicesController,
   devicesProviders,
   devicesUseCases,
 } from './devices';
 
 @Module({
-  imports: [
-    MongooseModule.forFeature([
-      { name: User.name, schema: UserSchema },
-      { name: Device.name, schema: DeviceSchema },
-    ]),
-    NotificationsModule,
-  ],
+  imports: [NotificationsModule],
   controllers: [UsersController, AuthController, DevicesController],
   providers: [
     {
@@ -68,11 +54,6 @@ import {
     ...devicesProviders,
     ...devicesUseCases,
   ],
-  exports: [
-    MongooseModule,
-    UsersExternalRepository,
-    UsersExternalQueryRepository,
-    UserAccountsConfig,
-  ],
+  exports: [UsersExternalRepository, UserAccountsConfig],
 })
 export class UserAccountsModule {}

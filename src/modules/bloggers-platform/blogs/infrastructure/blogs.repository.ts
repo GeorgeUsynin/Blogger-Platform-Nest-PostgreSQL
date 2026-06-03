@@ -24,19 +24,17 @@ export class BlogsRepository {
   }
 
   async createBlog(dto: CreateBlogRepositoryDto): Promise<number | null> {
-    const { name, description, websiteUrl, createdAt, updatedAt } = dto;
+    const { name, description, websiteUrl } = dto;
 
     const query = `
       INSERT INTO
         PUBLIC."Blogs" (
           NAME,
           DESCRIPTION,
-          "websiteUrl",
-          "createdAt",
-          "updatedAt"
+          "websiteUrl"
         )
       VALUES
-        ($1, $2, $3, $4, $5)
+        ($1, $2, $3)
       RETURNING ID
     `;
 
@@ -44,8 +42,6 @@ export class BlogsRepository {
       name,
       description,
       websiteUrl,
-      createdAt,
-      updatedAt,
     ]);
 
     return rows[0].id ?? null;

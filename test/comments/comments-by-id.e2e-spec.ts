@@ -110,7 +110,7 @@ describe('CommentsController (e2e) - comments by id endpoints', () => {
 
   it('returns 404 when comment is not found', async () => {
     await request(app.getHttpServer())
-      .get('/api/comments/507f1f77bcf86cd799439011')
+      .get('/api/comments/999')
       .expect(HttpStatus.NOT_FOUND);
   });
 
@@ -298,7 +298,7 @@ describe('CommentsController (e2e) - comments by id endpoints', () => {
     const liker = await createAuthorizedUser();
 
     await request(app.getHttpServer())
-      .put('/api/comments/507f1f77bcf86cd799439011/like-status')
+      .put('/api/comments/999/like-status')
       .set({ Authorization: `Bearer ${liker.token}` })
       .send({ likeStatus: 'Like' })
       .expect(HttpStatus.NOT_FOUND);

@@ -88,19 +88,17 @@ export class UsersRepository {
   }
 
   async createUser(dto: CreateUserRepositoryDto): Promise<number | null> {
-    const { login, passwordHash, email, createdAt, updatedAt } = dto;
+    const { login, passwordHash, email } = dto;
 
     const query = `
       INSERT INTO
         PUBLIC."Users" (
           LOGIN,
           "passwordHash",
-          EMAIL,
-          "createdAt",
-          "updatedAt"
+          EMAIL
         )
       VALUES
-        ($1, $2, $3, $4, $5)
+        ($1, $2, $3)
       RETURNING ID
     `;
 
@@ -108,8 +106,6 @@ export class UsersRepository {
       login,
       passwordHash,
       email,
-      createdAt,
-      updatedAt,
     ]);
 
     return rows[0].id ?? null;

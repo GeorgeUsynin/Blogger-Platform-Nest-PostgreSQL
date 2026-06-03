@@ -1,5 +1,4 @@
 export { UsersController, AuthController } from './api';
-export { User, UserSchema } from './domain';
 import {
   PasswordHasherService,
   AuthService,
@@ -25,7 +24,6 @@ import { LocalStrategy } from './guards/local';
 import {
   UsersRepository,
   UsersQueryRepository,
-  UsersExternalQueryRepository,
   UsersExternalRepository,
   EmailConfirmationsRepository,
   PasswordRecoveriesRepository,
@@ -37,7 +35,6 @@ export const usersProviders = [
   UsersRepository,
   UsersExternalRepository,
   UsersQueryRepository,
-  UsersExternalQueryRepository,
   UserAccountsConfig,
   UserCreationService,
   CodeCreationService,

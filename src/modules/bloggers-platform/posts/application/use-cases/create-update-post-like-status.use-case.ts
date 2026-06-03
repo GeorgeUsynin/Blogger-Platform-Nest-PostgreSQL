@@ -25,20 +25,10 @@ export class CreateUpdatePostLikeStatusUseCase implements ICommandHandler<Create
     }
 
     await this.likesService.setLikeStatus({
-      //@ts-expect-error change type
       authorId: userId,
-      //@ts-expect-error change type
       parentId: postId,
       parentType: ParentType.Post,
       likeStatus,
     });
-
-    // recalculate and update post likesCount info
-    const { likesCount, dislikesCount } =
-      //@ts-expect-error change type
-      await this.likesService.getLikesCounts(postId, ParentType.Post);
-
-    //@ts-expect-error fix late
-    foundPost.updateLikesCounts(likesCount, dislikesCount);
   }
 }

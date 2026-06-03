@@ -43,14 +43,17 @@ export class CommentViewDto {
   public static mapToView(comment: CommentReadDto): CommentViewDto {
     const dto = new CommentViewDto();
 
-    dto.id = comment._id.toString();
+    dto.id = comment.id.toString();
     dto.content = comment.content;
-    dto.commentatorInfo = comment.commentatorInfo;
+    dto.commentatorInfo = {
+      userId: comment.authorId.toString(),
+      userLogin: comment.authorLogin,
+    };
     dto.createdAt = comment.createdAt;
     dto.likesInfo = {
-      dislikesCount: comment.likesInfo.dislikesCount,
-      likesCount: comment.likesInfo.likesCount,
-      myStatus: comment.myStatus,
+      dislikesCount: comment.dislikesCount,
+      likesCount: comment.likesCount,
+      myStatus: comment.myStatus ?? LikeStatus.None,
     };
 
     return dto;

@@ -79,9 +79,10 @@ export class PostsController {
     @Query() query: GetPostsQueryParamsInputDto,
     @ExtractUserIfExistsFromRequest() user: UserContextDto | null,
   ): Promise<PaginatedViewDto<PostViewDto>> {
+    const userId = user ? user.userId : null;
     const { items, totalCount } = await this.postsQueryRepository.getAllPosts(
       query,
-      user?.userId,
+      userId,
     );
 
     const mappedItems = items.map(PostViewDto.mapToView);
@@ -103,7 +104,8 @@ export class PostsController {
     @Param('id', ParseIntPipe) id: number,
     @ExtractUserIfExistsFromRequest() user: UserContextDto | null,
   ): Promise<PostViewDto> {
-    const foundPost = await this.findPostByIdOrThrowNotFound(id, user?.userId);
+    const userId = user ? user.userId : null;
+    const foundPost = await this.findPostByIdOrThrowNotFound(id, userId);
 
     return PostViewDto.mapToView(foundPost);
   }
@@ -120,11 +122,12 @@ export class PostsController {
   ) {
     await this.findPostByIdOrThrowNotFound(postId);
 
+    const userId = user ? user.userId : null;
     const { items, totalCount } =
       await this.commentsQueryRepository.getAllCommentsByPostId(
         postId,
         query,
-        user?.userId,
+        userId,
       );
 
     const mappedItems = items.map(CommentViewDto.mapToView);
@@ -169,7 +172,6 @@ export class PostsController {
     @ExtractUserFromRequest() user: UserContextDto,
   ) {
     const commentId = await this.commandBus.execute(
-      // @ts-expect-error userId type mismatch
       new CreateCommentCommand(postId, user.userId, body),
     );
 
@@ -189,7 +191,7 @@ export class PostsController {
   @HttpCode(HttpStatus.NO_CONTENT)
   @UpdatePostLikeStatusApi()
   async createUpdatePostLikeStatus(
-    @Param('postId', ParseIntPipe) postId: string,
+    @Param('postId', ParseIntPipe) postId: number,
     @Body() body: CreateUpdateLikeStatusInputDto,
     @ExtractUserFromRequest() user: UserContextDto,
   ) {
@@ -197,7 +199,6 @@ export class PostsController {
     const likeStatus = body.likeStatus;
 
     await this.commandBus.execute(
-      // @ts-expect-error userId type mismatch
       new CreateUpdatePostLikeStatusCommand({ postId, userId, likeStatus }),
     );
   }
@@ -226,7 +227,10 @@ export class PostsController {
     await this.commandBus.execute(new DeletePostCommand(id));
   }
 
-  private async findPostByIdOrThrowNotFound(id: number, userId?: number) {
+  private async findPostByIdOrThrowNotFound(
+    id: number,
+    userId: number | null = null,
+  ) {
     const post = await this.postsQueryRepository.getPostById(id, userId);
     if (!post) throw new PostNotFoundError();
     return post;

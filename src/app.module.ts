@@ -1,6 +1,5 @@
 import { configModule } from './config.module';
 import { Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
 import { CqrsModule } from '@nestjs/cqrs';
 import {
   BloggersPlatformModule,
@@ -35,15 +34,6 @@ const includeTestingModule = configValidationUtility.convertToBoolean(
           database: coreConfig.DB_NAME_PG,
           autoLoadEntities: false,
           synchronize: false,
-        };
-      },
-      inject: [CoreConfig],
-    }),
-    MongooseModule.forRootAsync({
-      useFactory: async (coreConfig: CoreConfig) => {
-        return {
-          uri: coreConfig.MONGO_URL,
-          dbName: coreConfig.DB_NAME,
         };
       },
       inject: [CoreConfig],

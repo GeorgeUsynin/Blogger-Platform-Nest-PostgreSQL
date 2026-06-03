@@ -71,10 +71,10 @@ export class PostViewDto {
     dto.extendedLikesInfo = {
       likesCount: post.likesCount,
       dislikesCount: post.dislikesCount,
-      myStatus: post.myStatus,
+      myStatus: post.myStatus ?? LikeStatus.None,
       newestLikes: post.newestLikes.map((like) => ({
         addedAt: like.createdAt,
-        userId: like.authorId,
+        userId: like.authorId.toString(),
         login: like.authorLogin,
       })),
     };

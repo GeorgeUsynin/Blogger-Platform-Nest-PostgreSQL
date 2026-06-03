@@ -1,23 +1,29 @@
-import { InjectModel } from '@nestjs/mongoose';
 import { Injectable } from '@nestjs/common';
-import { LikesRepository } from '../infrastructure';
-import { Like, type LikeModelType, LikeStatus, ParentType } from '../domain';
+import { PostLikesRepository, CommentLikesRepository } from '../infrastructure';
+import { LikeStatus, ParentType } from '../domain';
 import { SetLikeStatusDto } from './dto';
+import {
+  CreateLikeRepositoryDto,
+  UpdateLikeRepositoryDto,
+} from '../infrastructure/dto';
 
 @Injectable()
 export class LikesService {
   constructor(
-    @InjectModel(Like.name)
-    private LikeModel: LikeModelType,
-    private likesRepository: LikesRepository,
+    private postLikesRepository: PostLikesRepository,
+    private commentLikesRepository: CommentLikesRepository,
   ) {}
 
   async setLikeStatus(dto: SetLikeStatusDto): Promise<void> {
     const { authorId, parentId, likeStatus, parentType } = dto;
 
-    const foundLike = await this.likesRepository.findByParentAndAuthor(
+    const likesRepository: PostLikesRepository | CommentLikesRepository =
+      parentType === ParentType.Post
+        ? this.postLikesRepository
+        : this.commentLikesRepository;
+
+    const foundLike = await likesRepository.findByParentAndAuthor(
       parentId,
-      parentType,
       authorId,
     );
 
@@ -25,50 +31,31 @@ export class LikesService {
       // not allowing like creation with None status
       if (likeStatus === LikeStatus.None) return;
 
-      const newLike = this.LikeModel.createLike({
+      const createLikeRepositoryDto: CreateLikeRepositoryDto = {
         authorId,
         parentId,
         likeStatus,
-        parentType,
-      });
-      await this.likesRepository.save(newLike);
+      };
+
+      await likesRepository.createLike(createLikeRepositoryDto);
     } else {
       // if likeStatus is the same -> exit
-      if (foundLike.isSameLikeStatus(likeStatus)) return;
+      if (foundLike.likeStatus === likeStatus) return;
 
       switch (likeStatus) {
         case LikeStatus.None:
-          await this.likesRepository.removeById(foundLike._id.toString());
+          await likesRepository.removeById(foundLike.id);
           break;
         case LikeStatus.Like:
         case LikeStatus.Dislike:
-          foundLike.updateLikeStatus(likeStatus);
-          await this.likesRepository.save(foundLike);
+          const updateLikeRepositoryDto: UpdateLikeRepositoryDto = {
+            id: foundLike.id,
+            likeStatus,
+            updatedAt: new Date(),
+          };
+          await likesRepository.updateLikeStatus(updateLikeRepositoryDto);
           break;
       }
     }
-  }
-
-  async getLikesCounts(
-    parentId: string,
-    parentType: ParentType,
-  ): Promise<{
-    likesCount: number;
-    dislikesCount: number;
-  }> {
-    const [likesCount, dislikesCount] = await Promise.all([
-      this.likesRepository.countByParentAndStatus(
-        parentId,
-        parentType,
-        LikeStatus.Like,
-      ),
-      this.likesRepository.countByParentAndStatus(
-        parentId,
-        parentType,
-        LikeStatus.Dislike,
-      ),
-    ]);
-
-    return { likesCount, dislikesCount };
   }
 }

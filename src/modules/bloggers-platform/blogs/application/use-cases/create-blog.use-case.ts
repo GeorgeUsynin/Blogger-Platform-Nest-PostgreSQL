@@ -18,14 +18,10 @@ export class CreateBlogUseCase implements ICommandHandler<
   constructor(private blogsRepository: BlogsRepository) {}
 
   async execute({ dto }: CreateBlogCommand): Promise<number> {
-    const now = new Date();
-
     const createBlogRepositoryDto: CreateBlogRepositoryDto = {
       name: dto.name,
       description: dto.description,
       websiteUrl: dto.websiteUrl,
-      createdAt: now,
-      updatedAt: now,
     };
 
     const blogId = await this.blogsRepository.createBlog(

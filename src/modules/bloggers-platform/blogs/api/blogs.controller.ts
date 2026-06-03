@@ -100,11 +100,12 @@ export class BlogsController {
   ) {
     await this.findBlogByIdOrThrowNotFound(blogId);
 
+    const userId = user ? user.userId : null;
     const { items, totalCount } =
       await this.postsQueryRepository.getAllPostsByBlogId(
         blogId,
         query,
-        user?.userId,
+        userId,
       );
 
     const mappedItems = items.map(PostViewDto.mapToView);

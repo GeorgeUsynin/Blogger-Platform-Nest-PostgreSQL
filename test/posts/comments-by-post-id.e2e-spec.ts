@@ -152,7 +152,7 @@ describe('PostsController (e2e) - comments by post id endpoints', () => {
 
   it('returns 404 if post does not exist when getting comments', async () => {
     await request(app.getHttpServer())
-      .get('/api/posts/507f1f77bcf86cd799439011/comments')
+      .get('/api/posts/999/comments')
       .expect(HttpStatus.NOT_FOUND);
   });
 
@@ -243,7 +243,7 @@ describe('PostsController (e2e) - comments by post id endpoints', () => {
     });
 
     await request(app.getHttpServer())
-      .post('/api/posts/507f1f77bcf86cd799439011/comments')
+      .post('/api/posts/999/comments')
       .set({ Authorization: `Bearer ${token}` })
       .send({
         content: 'This request has valid content but the post does not exist.',

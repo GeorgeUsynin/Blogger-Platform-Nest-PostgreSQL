@@ -1,11 +1,15 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { CommentNotFoundError } from '../../../../../core/exceptions';
+import {
+  CommentNotFoundError,
+  NotAnOwnerOfThisComment,
+} from '../../../../../core/exceptions';
 import { UpdateCommentDto } from '../dto';
 import { CommentsRepository } from '../../infrastructure';
+import { UpdateCommentRepositoryDto } from '../../infrastructure/dto';
 
 export class UpdateCommentCommand {
   constructor(
-    public readonly userId: string,
+    public readonly userId: number,
     public readonly dto: UpdateCommentDto,
   ) {}
 }
@@ -22,9 +26,16 @@ export class UpdateCommentUseCase implements ICommandHandler<UpdateCommentComman
       throw new CommentNotFoundError();
     }
 
-    foundComment.ensureCommentOwner(userId);
-    foundComment.updateContent(content);
+    if (foundComment.authorId !== userId) {
+      throw new NotAnOwnerOfThisComment();
+    }
 
-    await this.commentsRepository.save(foundComment);
+    const updateCommentRepositoryDto: UpdateCommentRepositoryDto = {
+      id,
+      content,
+      updatedAt: new Date(),
+    };
+
+    await this.commentsRepository.updateContent(updateCommentRepositoryDto);
   }
 }

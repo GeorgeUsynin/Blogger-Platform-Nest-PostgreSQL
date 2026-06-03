@@ -1,5 +1,4 @@
 export { PostsController } from './api';
-export { Post, PostSchema } from './domain';
 import {
   CreatePostUseCase,
   UpdatePostUseCase,

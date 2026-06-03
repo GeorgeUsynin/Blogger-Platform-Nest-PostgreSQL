@@ -1,7 +1,7 @@
 import { LikeStatus } from '../../../likes/domain';
 
 export class CreateUpdateCommentLikeStatusDto {
-  commentId: string;
-  userId: string;
+  commentId: number;
+  userId: number;
   likeStatus: LikeStatus;
 }

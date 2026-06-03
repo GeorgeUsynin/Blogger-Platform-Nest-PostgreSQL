@@ -2,7 +2,7 @@ import { LikeStatus, ParentType } from '../../domain';
 
 export class SetLikeStatusDto {
   likeStatus: LikeStatus;
-  parentId: string;
+  parentId: number;
+  authorId: number;
   parentType: ParentType;
-  authorId: string;
 }

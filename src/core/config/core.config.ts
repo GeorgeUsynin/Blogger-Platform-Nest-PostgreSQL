@@ -35,13 +35,6 @@ export class CoreConfig {
   ) as string;
 
   @IsNotEmpty({
-    message: 'Set Env variable MONGO_URL, example: mongodb://localhost/',
-  })
-  [ENV_VARIABLE_NAMES.MONGO_URL]: string = this.configService.get(
-    ENV_VARIABLE_NAMES.MONGO_URL,
-  ) as string;
-
-  @IsNotEmpty({
     message: 'Set Env variable POSTGRESQL_URL, example: localhost',
   })
   [ENV_VARIABLE_NAMES.POSTGRESQL_URL]: string = this.configService.get(
@@ -60,13 +53,6 @@ export class CoreConfig {
   })
   [ENV_VARIABLE_NAMES.PG_PASSWORD]: string = this.configService.get(
     ENV_VARIABLE_NAMES.PG_PASSWORD,
-  ) as string;
-
-  @IsNotEmpty({
-    message: 'Set Env variable DB_NAME, example: database-name',
-  })
-  [ENV_VARIABLE_NAMES.DB_NAME]: string = this.configService.get(
-    ENV_VARIABLE_NAMES.DB_NAME,
   ) as string;
 
   @IsNotEmpty({

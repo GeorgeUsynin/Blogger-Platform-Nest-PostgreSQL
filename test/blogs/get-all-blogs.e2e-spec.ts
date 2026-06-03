@@ -1,32 +1,23 @@
 import { INestApplication } from '@nestjs/common';
 import { HttpStatus } from '@nestjs/common';
 import request from 'supertest';
-import { Connection } from 'mongoose';
 import { CreateBlogInputDto } from '../../src/modules/bloggers-platform/blogs/api/dto';
 import { runAfterAllSetup, runBeforeAllSetup } from '../helpers';
 
 describe('BlogsController (e2e) - GET /api/blogs', () => {
   let app: INestApplication;
-  let connection: Connection;
   let basicAuthorization: {
     Authorization: string;
   };
 
   beforeAll(async () => {
-    ({ app, connection, basicAuthorization } = await runBeforeAllSetup());
+    ({ app, basicAuthorization } = await runBeforeAllSetup());
   });
 
   afterEach(async () => {
     await request(app.getHttpServer())
       .delete('/api/testing/all-data')
       .expect(HttpStatus.NO_CONTENT);
-  });
-
-  beforeEach(async () => {
-    const collections = await connection.db!.listCollections().toArray();
-    for (const collection of collections) {
-      await connection.db!.collection(collection.name).deleteMany({});
-    }
   });
 
   afterAll(async () => {

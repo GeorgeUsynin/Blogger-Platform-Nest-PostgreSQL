@@ -1,5 +1,4 @@
 export { BlogsController } from './api';
-export { Blog, BlogSchema } from './domain';
 import {
   CreateBlogUseCase,
   UpdateBlogUseCase,

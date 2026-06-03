@@ -1,6 +1,9 @@
-import { LikeStatus } from '../../../../likes/domain';
-import { Comment } from '../../../domain';
+import { NonNoneLikeStatus } from '../../../../likes/domain';
+import { TCommentDB } from '../../types';
 
-export type CommentReadDto = OnlyProperties<WithId<Comment>> & {
-  myStatus: LikeStatus;
+export type CommentReadDto = TCommentDB & {
+  authorLogin: string;
+  likesCount: number;
+  dislikesCount: number;
+  myStatus: NonNoneLikeStatus | null;
 };
