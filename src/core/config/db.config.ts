@@ -1,0 +1,18 @@
+import { TypeOrmModuleOptions } from '@nestjs/typeorm';
+import { DB_TYPE, ENVIRONMENTS, PG_PORT } from '../../constants';
+import { CoreConfig } from './core.config';
+
+export const getDbConfig = (coreConfig: CoreConfig): TypeOrmModuleOptions => {
+  const isDev = coreConfig.NODE_ENV === ENVIRONMENTS.DEVELOPMENT;
+
+  return {
+    type: DB_TYPE,
+    host: coreConfig.POSTGRESQL_URL,
+    port: PG_PORT,
+    username: coreConfig.PG_USERNAME,
+    password: coreConfig.PG_PASSWORD,
+    database: coreConfig.DB_NAME_PG,
+    autoLoadEntities: isDev,
+    synchronize: isDev,
+  };
+};
