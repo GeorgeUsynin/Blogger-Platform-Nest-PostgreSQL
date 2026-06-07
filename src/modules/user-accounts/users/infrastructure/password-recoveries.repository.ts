@@ -21,4 +21,13 @@ export class PasswordRecoveriesRepository {
 
     await this.dataSource.query(query, [userId, recoveryCode, expirationDate]);
   }
+
+  async clearPasswordRecoveryCode(code: string): Promise<void> {
+    const query = `
+    DELETE FROM public."PasswordRecoveries" pr
+    WHERE pr."recoveryCode" = $1
+    `;
+
+    await this.dataSource.query(query, [code]);
+  }
 }

@@ -1,5 +1,8 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { UsersRepository } from '../../infrastructure';
+import {
+  PasswordRecoveriesRepository,
+  UsersRepository,
+} from '../../infrastructure';
 import {
   InvalidPasswordRecoveryCode,
   PasswordRecoveryCodeExpired,
@@ -18,6 +21,7 @@ export class NewPasswordUseCase implements ICommandHandler<NewPasswordCommand> {
   constructor(
     private passwordHasherService: PasswordHasherService,
     private usersRepository: UsersRepository,
+    private passwordRecoveriesRepository: PasswordRecoveriesRepository,
   ) {}
 
   async execute({
@@ -47,6 +51,10 @@ export class NewPasswordUseCase implements ICommandHandler<NewPasswordCommand> {
       user.id,
       newPasswordHash,
       updatedAt,
+    );
+
+    await this.passwordRecoveriesRepository.clearPasswordRecoveryCode(
+      recoveryCode,
     );
   }
 }

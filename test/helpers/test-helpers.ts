@@ -52,7 +52,7 @@ export const runBeforeAllSetup = async (
 
   const basicAuthorization = getBasicAuthorization(adminLogin!, adminPassword!);
 
-  // Cleaning all collections
+  // Cleaning all relations
   await request(app.getHttpServer())
     .delete('/api/testing/all-data')
     .expect(HttpStatus.NO_CONTENT);
@@ -83,8 +83,8 @@ export const createUser = async (
   const { body } = await request(app.getHttpServer())
     .post('/api/users')
     .set(basicAuthorization)
-    .send(payload);
-  // .expect(HttpStatus.CREATED);
+    .send(payload)
+    .expect(HttpStatus.CREATED);
 
   return body as CreatedUser;
 };
