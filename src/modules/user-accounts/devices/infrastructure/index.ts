@@ -1,2 +1,2 @@
-export { DevicesRepository } from './devices.repository';
-export { DevicesQueryRepository } from './query';
+export * from './repositories';
+export * from './entities';

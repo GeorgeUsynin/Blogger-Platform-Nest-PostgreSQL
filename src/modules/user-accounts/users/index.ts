@@ -4,8 +4,7 @@ import {
   AuthService,
   UserCreationService,
   CodeCreationService,
-} from './application';
-import {
+  // -- use-cases --
   ConfirmRegistrationUseCase,
   CreateConfirmedUserUseCase,
   DeleteUserUseCase,
@@ -16,12 +15,13 @@ import {
   RegisterUserUseCase,
   ResendEmailConfirmationUseCase,
   UpdateTokensUseCase,
-} from './application/use-cases';
+} from './application';
 import { UserAccountsConfig } from './config';
-import { EmailConfirmationEntity } from './infrastructure/entities';
-import { PasswordRecoveryEntity } from './infrastructure/entities';
-import { UserEntity } from './infrastructure/entities';
-import { Device } from '../devices/domain/device.entity';
+import {
+  UserEntity,
+  EmailConfirmationEntity,
+  PasswordRecoveryEntity,
+} from './infrastructure';
 import { JwtCookiesStrategy, JwtHeaderStrategy } from './guards/bearer';
 import { LocalStrategy } from './guards/local';
 import {
@@ -64,5 +64,4 @@ export const entities = [
   UserEntity,
   EmailConfirmationEntity,
   PasswordRecoveryEntity,
-  Device,
 ];

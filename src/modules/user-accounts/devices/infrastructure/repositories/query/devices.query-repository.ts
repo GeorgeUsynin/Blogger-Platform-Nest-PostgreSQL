@@ -1,13 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Device } from '../../domain/device.entity';
 import { DeviceQueryModel } from './model';
+import { DeviceEntity } from '../../entities';
 
 @Injectable()
 export class DevicesQueryRepository {
   constructor(
-    @InjectRepository(Device) private devicesRepository: Repository<Device>,
+    @InjectRepository(DeviceEntity)
+    private devicesRepository: Repository<DeviceEntity>,
   ) {}
 
   async getAllByUserId(userId: number): Promise<DeviceQueryModel[]> {

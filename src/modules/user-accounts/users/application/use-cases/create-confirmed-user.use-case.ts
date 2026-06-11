@@ -3,7 +3,7 @@ import { CreateUserDto } from '../dto';
 import { UsersRepository } from '../../infrastructure';
 import { UserCreationFailedError } from '../../../../../core/exceptions';
 import { UserCreationService } from '../user-creation.service';
-import { User } from '../../domain/user.aggregate';
+import { User } from '../../domain';
 
 export class CreateConfirmedUserCommand extends Command<number> {
   constructor(public readonly dto: CreateUserDto) {

@@ -1,15 +1,21 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Not, Repository } from 'typeorm';
-import { Device } from '../domain/device.entity';
+import { DeviceEntity } from '../entities';
+import { DeviceMapper } from '../device.mapper';
+import { Device } from '../../domain';
+
 @Injectable()
 export class DevicesRepository {
   constructor(
-    @InjectRepository(Device) private devicesRepository: Repository<Device>,
+    @InjectRepository(DeviceEntity)
+    private devicesRepository: Repository<DeviceEntity>,
   ) {}
 
   async findByDeviceId(deviceId: string): Promise<Device | null> {
-    return this.devicesRepository.findOneBy({ deviceId });
+    const entity = await this.devicesRepository.findOneBy({ deviceId });
+
+    return this.mapToDomain(entity);
   }
 
   async deleteByDeviceId(id: string): Promise<void> {
@@ -24,6 +30,14 @@ export class DevicesRepository {
   }
 
   async saveDevice(device: Device): Promise<void> {
-    await this.devicesRepository.save(device);
+    const entity = DeviceMapper.toPersistence(device);
+
+    await this.devicesRepository.save(entity);
+  }
+
+  private mapToDomain(entity: DeviceEntity | null): Device | null {
+    if (!entity) return null;
+
+    return DeviceMapper.toDomain(entity);
   }
 }

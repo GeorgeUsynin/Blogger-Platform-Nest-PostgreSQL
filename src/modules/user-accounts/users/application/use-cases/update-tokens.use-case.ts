@@ -53,7 +53,7 @@ export class UpdateTokensUseCase implements ICommandHandler<
     const issuedAt = new Date(iat! * 1000);
     const expiresIn = new Date(exp! * 1000);
 
-    device.updateAttributes({ issuedAt, expiresIn });
+    device.updateSession({ issuedAt, expiresIn });
     await this.devicesRepository.saveDevice(device);
 
     return { accessToken, refreshToken };

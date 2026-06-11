@@ -1,10 +1,10 @@
 import { CommandHandler, EventPublisher, ICommandHandler } from '@nestjs/cqrs';
+import { User } from '../../domain';
 import { CreateUserDto } from '../dto';
 import { UserAccountsConfig } from '../../config';
 import { UserCreationService } from '../user-creation.service';
 import { CodeCreationService } from '../code-creation.service';
 import { UsersRepository } from '../../infrastructure';
-import { User } from '../../domain/user.aggregate';
 import { UserCreationFailedError } from '../../../../../core/exceptions';
 
 type TResult = {

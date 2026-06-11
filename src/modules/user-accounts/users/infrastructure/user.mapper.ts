@@ -1,5 +1,4 @@
-import { User } from '../domain/user.aggregate';
-import { EmailConfirmation, PasswordRecovery } from '../domain/value-objects';
+import { User, EmailConfirmation, PasswordRecovery } from '../domain';
 import { UserEntity } from './entities';
 
 export class UserMapper {

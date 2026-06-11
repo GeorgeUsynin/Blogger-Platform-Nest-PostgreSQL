@@ -2,13 +2,13 @@ import { Command, CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { Inject } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { randomUUID } from 'node:crypto';
+import { Device } from '../../../devices/domain';
 import {
   ACCESS_TOKEN_STRATEGY_INJECT_TOKEN,
   REFRESH_TOKEN_STRATEGY_INJECT_TOKEN,
 } from '../constants';
 import { LoginUserDto } from '../dto';
 import { DevicesRepository } from '../../../devices/infrastructure';
-import { Device } from '../../../devices/domain/device.entity';
 
 type TLoginCommandOutput = { accessToken: string; refreshToken: string };
 

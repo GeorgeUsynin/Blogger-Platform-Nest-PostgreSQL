@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { UserQueryModel } from '../../../infrastructure/repositories/query/model';
+import { UserQueryModel } from '../../../infrastructure';
 
 export class UserViewDto {
   @ApiProperty()

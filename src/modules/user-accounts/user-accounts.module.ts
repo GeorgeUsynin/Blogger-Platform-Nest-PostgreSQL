@@ -7,23 +7,27 @@ import {
   usersUseCases,
   UsersController,
   usersProviders,
-  entities,
+  entities as userEntities,
 } from './users';
 import {
   ACCESS_TOKEN_STRATEGY_INJECT_TOKEN,
   REFRESH_TOKEN_STRATEGY_INJECT_TOKEN,
 } from './users/application/constants';
 import { NotificationsModule } from '../notification';
-import { UsersExternalRepository } from './users/infrastructure';
+import { UsersExternalRepository } from './users/infrastructure/repositories';
 import { UserAccountsConfig } from './users/config';
 import {
   DevicesController,
   devicesProviders,
   devicesUseCases,
+  entities as deviceEntities,
 } from './devices';
 
 @Module({
-  imports: [TypeOrmModule.forFeature(entities), NotificationsModule],
+  imports: [
+    TypeOrmModule.forFeature([...userEntities, ...deviceEntities]),
+    NotificationsModule,
+  ],
   controllers: [UsersController, AuthController, DevicesController],
   providers: [
     {
