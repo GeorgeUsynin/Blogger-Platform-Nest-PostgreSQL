@@ -33,6 +33,7 @@ import { NotificationConfig, NotificationConfigModule } from './config';
     EmailManager,
     EmailConfirmationRequestedHandler,
     PasswordRecoveryRequestedHandler,
+    NotificationConfig,
   ],
   exports: [EmailManager],
 })

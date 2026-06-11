@@ -19,11 +19,11 @@ jobs:
                 env:
                     POSTGRES_USER: example
                     POSTGRES_PASSWORD: example
-                    POSTGRES_DB: BloggerPlatformDB_Test
+                    POSTGRES_DB: TypeORMBloggerPlatform_Test
                 ports:
                     - 5432:5432
                 options: >-
-                    --health-cmd="pg_isready -U example -d BloggerPlatformDB_Test"
+                    --health-cmd="pg_isready -U example -d TypeORMBloggerPlatform_Test"
                     --health-interval=10s
                     --health-timeout=5s
                     --health-retries=10
@@ -45,11 +45,6 @@ jobs:
 
             - name: Install dependencies
               run: pnpm install --frozen-lockfile
-
-            - name: Initialize PostgreSQL schema
-              env:
-                  PGPASSWORD: example
-              run: psql -h localhost -p 5432 -U example -d BloggerPlatformDB_Test -f .github/workflows/scripts/init-test-db.sql
 
             - name: Run tests
               run: npm run test:e2e

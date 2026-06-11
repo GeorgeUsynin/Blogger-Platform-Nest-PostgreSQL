@@ -1,9 +1,6 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { DevicesRepository } from '../../infrastructure';
-import {
-  DeviceNotFoundError,
-  NotAnOwnerOfThisDevice,
-} from '../../../../../core/exceptions';
+import { DeviceNotFoundError } from '../../../../../core/exceptions';
 
 export class TerminateDeviceByDeviceIdCommand {
   constructor(
@@ -26,12 +23,8 @@ export class TerminateDeviceByDeviceIdUseCase implements ICommandHandler<Termina
       throw new DeviceNotFoundError();
     }
 
-    const isDeviceOwner = foundDevice.userId === userId;
+    foundDevice.ensureDeviceOwner(userId);
 
-    if (!isDeviceOwner) {
-      throw new NotAnOwnerOfThisDevice();
-    }
-
-    await this.devicesRepository.removeByDeviceId(deviceId);
+    await this.devicesRepository.deleteByDeviceId(deviceId);
   }
 }

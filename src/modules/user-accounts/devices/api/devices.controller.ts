@@ -24,8 +24,9 @@ import {
   TerminateDeviceByDeviceIdCommand,
 } from '../application/use-cases';
 import { UUIDValidationPipe } from '../../../../core/pipes';
+import { ROUTES } from '../../../../constants';
 
-@Controller('security/devices')
+@Controller(`${ROUTES.SECURITY}/${ROUTES.DEVICES}`)
 @ApiBearerAuth()
 @UseGuards(JwtCookiesAuthGuard)
 export class DevicesController {

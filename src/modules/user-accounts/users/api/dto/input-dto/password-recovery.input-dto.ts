@@ -1,9 +1,9 @@
 import { Matches } from 'class-validator';
-import { emailConstraints } from '../../../domain';
+import { emailConstraints } from '../../../infrastructure/entities/constraints';
 import { IsStringWithTrim } from '../../../../../../core/decorators';
 
 export class PasswordRecoveryInputDto {
-  @Matches(emailConstraints.match)
+  @Matches(emailConstraints.emailPostgresRegex)
   @IsStringWithTrim()
   email: string;
 }

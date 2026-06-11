@@ -13,7 +13,7 @@ export class JwtCookiesStrategy extends PassportStrategy(
 ) {
   constructor(
     protected userAccountsConfig: UserAccountsConfig,
-    private devicesRepository: DevicesRepository,
+    private deviceRepository: DevicesRepository,
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
@@ -29,22 +29,17 @@ export class JwtCookiesStrategy extends PassportStrategy(
   ): Promise<UserContextWithDeviceIdDto> {
     const { deviceId, userId, iat } = payload;
 
-    const device = await this.devicesRepository.findByDeviceId(deviceId);
+    const foundDevice = await this.deviceRepository.findByDeviceId(deviceId);
 
-    if (!device) {
+    if (!foundDevice) {
       throw new UnauthorizedException();
     }
 
-    const isDeviceOwner = device.userId === userId;
-
-    if (!isDeviceOwner) {
+    if (!foundDevice.isDeviceOwner(userId)) {
       throw new UnauthorizedException();
     }
 
-    const isIssuedAtMatch =
-      device.issuedAt.toISOString() === new Date(iat * 1000).toISOString();
-
-    if (!isIssuedAtMatch) {
+    if (!foundDevice.isDeviceIssuedAtMatch(new Date(iat * 1000))) {
       throw new UnauthorizedException();
     }
 

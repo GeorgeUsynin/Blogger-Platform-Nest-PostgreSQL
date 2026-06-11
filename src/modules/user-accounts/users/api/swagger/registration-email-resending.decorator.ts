@@ -9,12 +9,12 @@ import {
 } from '@nestjs/swagger';
 import { SwaggerErrorsMessagesViewDto } from '../../../../../core/dto/swagger-errors-messages.view-dto';
 import { RegistrationEmailResendingInputDto } from '../dto';
-import { emailConstraints } from '../../domain';
+import { emailConstraints } from '../../infrastructure/entities/constraints';
 
 class SwaggerRegistrationEmailResendingInputDto implements RegistrationEmailResendingInputDto {
   @ApiProperty({
     type: String,
-    pattern: emailConstraints.match.source,
+    pattern: emailConstraints.emailPostgresRegex,
     example: 'example@example.com',
     description: 'Email of already registered but not confirmed user',
   })

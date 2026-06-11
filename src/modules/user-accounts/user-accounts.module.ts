@@ -1,11 +1,13 @@
 import { Module } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import {
   AuthController,
   authProviders,
   usersUseCases,
   UsersController,
   usersProviders,
+  entities,
 } from './users';
 import {
   ACCESS_TOKEN_STRATEGY_INJECT_TOKEN,
@@ -21,7 +23,7 @@ import {
 } from './devices';
 
 @Module({
-  imports: [NotificationsModule],
+  imports: [TypeOrmModule.forFeature(entities), NotificationsModule],
   controllers: [UsersController, AuthController, DevicesController],
   providers: [
     {

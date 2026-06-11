@@ -25,7 +25,7 @@ export class JwtHeaderStrategy extends PassportStrategy(
   async validate(payload: JwtHeaderPayloadDto): Promise<UserContextDto> {
     // Checking if user exists
     const isUserExists = Boolean(
-      await this.usersRepository.findById(payload.userId),
+      await this.usersRepository.findUserById(payload.userId),
     );
 
     if (!isUserExists) {

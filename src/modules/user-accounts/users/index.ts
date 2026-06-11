@@ -7,7 +7,6 @@ import {
 } from './application';
 import {
   ConfirmRegistrationUseCase,
-  CreateUnconfirmedUserUseCase,
   CreateConfirmedUserUseCase,
   DeleteUserUseCase,
   LoginUserUseCase,
@@ -19,19 +18,19 @@ import {
   UpdateTokensUseCase,
 } from './application/use-cases';
 import { UserAccountsConfig } from './config';
+import { EmailConfirmationEntity } from './infrastructure/entities';
+import { PasswordRecoveryEntity } from './infrastructure/entities';
+import { UserEntity } from './infrastructure/entities';
+import { Device } from '../devices/domain/device.entity';
 import { JwtCookiesStrategy, JwtHeaderStrategy } from './guards/bearer';
 import { LocalStrategy } from './guards/local';
 import {
   UsersRepository,
   UsersQueryRepository,
   UsersExternalRepository,
-  EmailConfirmationsRepository,
-  PasswordRecoveriesRepository,
 } from './infrastructure';
 
 export const usersProviders = [
-  EmailConfirmationsRepository,
-  PasswordRecoveriesRepository,
   UsersRepository,
   UsersExternalRepository,
   UsersQueryRepository,
@@ -51,7 +50,6 @@ export const authProviders = [
 export const usersUseCases = [
   LoginUserUseCase,
   RegisterUserUseCase,
-  CreateUnconfirmedUserUseCase,
   CreateConfirmedUserUseCase,
   DeleteUserUseCase,
   RecoverPasswordUseCase,
@@ -60,4 +58,11 @@ export const usersUseCases = [
   ResendEmailConfirmationUseCase,
   LogoutUserUseCase,
   UpdateTokensUseCase,
+];
+
+export const entities = [
+  UserEntity,
+  EmailConfirmationEntity,
+  PasswordRecoveryEntity,
+  Device,
 ];

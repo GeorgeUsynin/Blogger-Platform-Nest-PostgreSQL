@@ -9,7 +9,7 @@ import {
 } from '@nestjs/swagger';
 import { SwaggerErrorsMessagesViewDto } from '../../../../../core/dto/swagger-errors-messages.view-dto';
 import { NewPasswordInputDto } from '../dto';
-import { passwordConstraints } from '../../domain';
+import { passwordConstraints } from '../../infrastructure/entities/constraints';
 
 class SwaggerNewPasswordInputDto implements NewPasswordInputDto {
   @ApiProperty({

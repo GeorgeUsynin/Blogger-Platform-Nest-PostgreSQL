@@ -36,8 +36,9 @@ import {
   CreateConfirmedUserCommand,
   DeleteUserCommand,
 } from '../application/use-cases';
+import { ROUTES } from '../../../../constants';
 
-@Controller('users')
+@Controller(ROUTES.USERS)
 @UseGuards(BasicAuthGuard)
 export class UsersController {
   constructor(

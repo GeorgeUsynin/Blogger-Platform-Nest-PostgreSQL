@@ -4,9 +4,8 @@ import {
   EmailAlreadyExistsError,
   LoginAlreadyExistsError,
 } from '../../../../core/exceptions';
-import { CreateUserDto } from './dto';
+import { CreateUserDto, CreateUserUseCaseDto } from './dto';
 import { PasswordHasherService } from './password-hasher.service';
-import { CreateUserRepositoryDto } from '../infrastructure/dto';
 
 @Injectable()
 export class UserCreationService {
@@ -15,26 +14,24 @@ export class UserCreationService {
     private passwordHasherService: PasswordHasherService,
   ) {}
 
-  async prepareUserCreation(
-    dto: CreateUserDto,
-  ): Promise<CreateUserRepositoryDto> {
+  async prepareUserCreation(dto: CreateUserDto): Promise<CreateUserUseCaseDto> {
     const { email, login, password } = dto;
 
-    await this.ensureUserUniqOrThrow(login, email);
+    await this.ensureUserUniqueOrThrow(login, email);
 
     const passwordHash =
       await this.passwordHasherService.hashPassword(password);
 
-    const createUserRepositoryDto: CreateUserRepositoryDto = {
+    const createUserDomainDto: CreateUserUseCaseDto = {
       email,
       login,
       passwordHash,
     };
 
-    return createUserRepositoryDto;
+    return createUserDomainDto;
   }
 
-  async ensureUserUniqOrThrow(login: string, email: string): Promise<void> {
+  async ensureUserUniqueOrThrow(login: string, email: string): Promise<void> {
     const userWithExistedLogin =
       await this.usersRepository.findUserByLogin(login);
 

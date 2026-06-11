@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { TDeviceDB } from '../../../infrastructure/types';
+import { DeviceQueryModel } from '../../../infrastructure/query/model';
 
 export class DeviceViewDto {
   @ApiProperty()
@@ -14,7 +14,7 @@ export class DeviceViewDto {
   @ApiProperty()
   deviceId: string;
 
-  public static mapToView(device: TDeviceDB): DeviceViewDto {
+  public static mapToView(device: DeviceQueryModel): DeviceViewDto {
     const dto = new DeviceViewDto();
 
     dto.ip = device.clientIp;

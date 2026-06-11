@@ -1,8 +1,8 @@
 export class CreateDeviceDomainDto {
-  userId: string;
+  userId: number;
   deviceId: string;
-  issuedAt: string;
   deviceName: string;
   clientIp: string;
-  expiresIn: string;
+  issuedAt: Date;
+  expiresIn: Date;
 }

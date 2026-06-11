@@ -6,7 +6,6 @@ import {
 } from '../constants';
 import { JwtService } from '@nestjs/jwt';
 import { DevicesRepository } from '../../../devices/infrastructure';
-import { UpdateDeviceAttributesRepositoryDto } from '../../../devices/infrastructure/dto';
 
 type TUpdateTokensCommandOutput = { accessToken: string; refreshToken: string };
 
@@ -54,16 +53,8 @@ export class UpdateTokensUseCase implements ICommandHandler<
     const issuedAt = new Date(iat! * 1000);
     const expiresIn = new Date(exp! * 1000);
 
-    const updateDeviceAttributesRepositoryDto: UpdateDeviceAttributesRepositoryDto =
-      {
-        deviceId,
-        issuedAt,
-        expiresIn,
-      };
-
-    await this.devicesRepository.updateDeviceAttributes(
-      updateDeviceAttributesRepositoryDto,
-    );
+    device.updateAttributes({ issuedAt, expiresIn });
+    await this.devicesRepository.saveDevice(device);
 
     return { accessToken, refreshToken };
   }

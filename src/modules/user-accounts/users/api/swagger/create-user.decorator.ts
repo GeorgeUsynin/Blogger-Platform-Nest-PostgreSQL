@@ -13,14 +13,14 @@ import {
   emailConstraints,
   loginConstraints,
   passwordConstraints,
-} from '../../domain';
+} from '../../infrastructure/entities/constraints';
 
 export class SwaggerCreateUserInputDto implements CreateUserInputDto {
   @ApiProperty({
     type: String,
     maxLength: loginConstraints.maxLength,
     minLength: loginConstraints.minLength,
-    pattern: loginConstraints.match.source,
+    pattern: loginConstraints.loginPostgresRegex,
     description: 'must be unique',
   })
   login: string;
@@ -34,7 +34,7 @@ export class SwaggerCreateUserInputDto implements CreateUserInputDto {
 
   @ApiProperty({
     type: String,
-    pattern: emailConstraints.match.source,
+    pattern: emailConstraints.emailPostgresRegex,
     example: 'example@example.com',
     description: 'must be unique',
   })

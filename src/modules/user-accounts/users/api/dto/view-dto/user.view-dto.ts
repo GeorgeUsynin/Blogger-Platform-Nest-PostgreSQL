@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { TUserDB } from '../../../infrastructure/types';
+import { UserQueryModel } from '../../../infrastructure/repositories/query/model';
 
 export class UserViewDto {
   @ApiProperty()
@@ -14,7 +14,7 @@ export class UserViewDto {
   @ApiProperty({ type: Date })
   createdAt: Date;
 
-  public static mapToView(user: TUserDB): UserViewDto {
+  public static mapToView(user: UserQueryModel): UserViewDto {
     const dto = new UserViewDto();
 
     dto.id = user.id.toString();

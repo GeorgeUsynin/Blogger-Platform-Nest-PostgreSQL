@@ -1,13 +1,6 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import {
-  EmailConfirmationsRepository,
-  UsersRepository,
-} from '../../infrastructure';
-import {
-  ConfirmationCodeExpired,
-  EmailAlreadyConfirmedByCode,
-  InvalidConfirmationCode,
-} from '../../../../../core/exceptions';
+import { UsersRepository } from '../../infrastructure';
+import { InvalidConfirmationCode } from '../../../../../core/exceptions';
 
 export class ConfirmRegistrationCommand {
   constructor(public readonly code: string) {}
@@ -15,33 +8,18 @@ export class ConfirmRegistrationCommand {
 
 @CommandHandler(ConfirmRegistrationCommand)
 export class ConfirmRegistrationUseCase implements ICommandHandler<ConfirmRegistrationCommand> {
-  constructor(
-    private usersRepository: UsersRepository,
-    private emailConfirmationsRepository: EmailConfirmationsRepository,
-  ) {}
+  constructor(private usersRepository: UsersRepository) {}
 
   async execute({ code }: ConfirmRegistrationCommand): Promise<void> {
-    const user = await this.usersRepository.findUserByConfirmationCode(code);
+    const user =
+      await this.usersRepository.findUserByEmailConfirmationCode(code);
 
     if (!user) {
       throw new InvalidConfirmationCode();
     }
 
-    if (user.isConfirmed) {
-      throw new EmailAlreadyConfirmedByCode();
-    }
+    user.confirmEmail(code);
 
-    if (user.confirmationCode !== code) {
-      throw new InvalidConfirmationCode();
-    }
-
-    if (Date.now() > Date.parse(user.expirationDate?.toISOString()!)) {
-      throw new ConfirmationCodeExpired();
-    }
-
-    await this.emailConfirmationsRepository.updateEmailConfirmationStatus(
-      user.id,
-      true,
-    );
+    await this.usersRepository.saveUserAggregate(user);
   }
 }

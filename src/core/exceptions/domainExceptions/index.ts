@@ -23,6 +23,7 @@ import { PostAlreadyDeleted } from './PostAlreadyDeleted';
 import { CommentAlreadyDeleted } from './CommentAlreadyDeleted';
 import { UserAlreadyDeleted } from './UserAlreadyDeleted';
 import { EmailNotConfirmedError } from './EmailNotConfirmed';
+import { PasswordRecoveryNotInitiated } from './PasswordRecoveryNotInitiated';
 
 export {
   BaseDomainException,
@@ -50,4 +51,5 @@ export {
   CommentAlreadyDeleted,
   UserAlreadyDeleted,
   EmailNotConfirmedError,
+  PasswordRecoveryNotInitiated,
 };

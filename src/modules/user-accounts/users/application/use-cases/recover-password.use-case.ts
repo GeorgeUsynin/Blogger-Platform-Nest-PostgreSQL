@@ -1,12 +1,7 @@
-import { CommandHandler, EventBus, ICommandHandler } from '@nestjs/cqrs';
-import {
-  PasswordRecoveriesRepository,
-  UsersRepository,
-} from '../../infrastructure';
-import { PasswordRecoveryRequestedEvent } from '../events';
+import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { UsersRepository } from '../../infrastructure';
 import { UserAccountsConfig } from '../../config';
 import { CodeCreationService } from '../code-creation.service';
-import { CreatePasswordRecoveryRepositoryDto } from '../../infrastructure/dto';
 
 export class RecoverPasswordCommand {
   constructor(public readonly email: string) {}
@@ -17,9 +12,7 @@ export class RecoverPasswordUseCase implements ICommandHandler<RecoverPasswordCo
   constructor(
     private codeCreationService: CodeCreationService,
     private usersRepository: UsersRepository,
-    private passwordRecoveriesRepository: PasswordRecoveriesRepository,
     private userAccountsConfig: UserAccountsConfig,
-    private eventBus: EventBus,
   ) {}
 
   async execute({ email }: RecoverPasswordCommand): Promise<void> {
@@ -31,20 +24,13 @@ export class RecoverPasswordUseCase implements ICommandHandler<RecoverPasswordCo
           this.userAccountsConfig.RECOVERY_CODE_EXPIRATION_TIME_IN_HOURS,
         );
 
-      const createPasswordRecoveryRepositoryDto: CreatePasswordRecoveryRepositoryDto =
-        {
-          userId: user.id,
-          recoveryCode,
-          expirationDate,
-        };
+      user.startPasswordRecovery({
+        recoveryCode,
+        expirationDate,
+      });
+      await this.usersRepository.saveUserAggregate(user);
 
-      await this.passwordRecoveriesRepository.createForUser(
-        createPasswordRecoveryRepositoryDto,
-      );
-
-      this.eventBus.publish(
-        new PasswordRecoveryRequestedEvent(email, recoveryCode),
-      );
+      user.commit();
     }
   }
 }

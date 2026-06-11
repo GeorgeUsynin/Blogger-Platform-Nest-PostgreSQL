@@ -193,7 +193,7 @@ describe('AuthController (e2e) - registration-related endpoints', () => {
         expect.arrayContaining([
           expect.objectContaining({
             field: 'code',
-            code: 'EMAIL_ALREADY_CONFIRMED_BY_CODE',
+            code: 'INVALID_CONFIRMATION_CODE',
           }),
         ]),
       );

@@ -24,6 +24,7 @@ export const ErrorCodes = {
   USER_CREATION_FAILED: 'USER_CREATION_FAILED',
   INVALID_CREDENTIALS: 'INVALID_CREDENTIALS',
   EMAIL_NOT_CONFIRMED: 'EMAIL_NOT_CONFIRMED',
+  PASSWORD_RECOVERY_NOT_INITIATED: 'PASSWORD_RECOVERY_NOT_INITIATED',
 } as const;
 
 export type ErrorCode = (typeof ErrorCodes)[keyof typeof ErrorCodes];
@@ -55,6 +56,8 @@ export const ErrorMessages: Record<ErrorCode, string> = {
   [ErrorCodes.USER_CREATION_FAILED]: 'User creation failed',
   [ErrorCodes.INVALID_CREDENTIALS]: 'Invalid credentials',
   [ErrorCodes.EMAIL_NOT_CONFIRMED]: 'Email address is not confirmed',
+  [ErrorCodes.PASSWORD_RECOVERY_NOT_INITIATED]:
+    'Password recovery was not initiated',
 };
 
 export const ErrorFields = {

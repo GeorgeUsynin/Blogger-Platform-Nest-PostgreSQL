@@ -3,17 +3,17 @@ import {
   emailConstraints,
   loginConstraints,
   passwordConstraints,
-} from '../../../domain';
+} from '../../../infrastructure/entities/constraints';
 import { IsStringWithTrim } from '../../../../../../core/decorators';
 
 export class CreateUserInputDto {
   // Call order: @IsStringWithTrim() -> @Matches() -> @Length()
-  @Matches(loginConstraints.match)
+  @Matches(loginConstraints.loginPostgresRegex)
   @Length(loginConstraints.minLength, loginConstraints.maxLength)
   @IsStringWithTrim()
   login: string;
 
-  @Matches(emailConstraints.match)
+  @Matches(emailConstraints.emailPostgresRegex)
   @IsStringWithTrim()
   email: string;
 

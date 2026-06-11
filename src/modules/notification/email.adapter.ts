@@ -1,11 +1,17 @@
 import { MailerService } from '@nestjs-modules/mailer';
 import { Injectable } from '@nestjs/common';
+import { NotificationConfig } from './config';
 
 @Injectable()
 export class EmailAdapter {
-  constructor(private mailerService: MailerService) {}
+  constructor(
+    private mailerService: MailerService,
+    private notificationConfig: NotificationConfig,
+  ) {}
 
   sendEmail(email: string, subject: string, message: string) {
+    if (!this.notificationConfig.SHOULD_SEND_EMAIL) return;
+
     this.mailerService
       .sendMail({
         to: email,

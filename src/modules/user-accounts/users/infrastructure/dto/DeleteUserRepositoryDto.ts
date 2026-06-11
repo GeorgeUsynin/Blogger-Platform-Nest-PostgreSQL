@@ -1,6 +1,0 @@
-export class DeleteUserRepositoryDto {
-  id: number;
-  isDeleted: boolean;
-  deletedAt: Date;
-  updatedAt: Date;
-}

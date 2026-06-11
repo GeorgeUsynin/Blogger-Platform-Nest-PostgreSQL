@@ -12,7 +12,6 @@ export const ENV_VARIABLE_NAMES = {
   EMAIL_SERVICE: 'EMAIL_SERVICE',
   INCLUDE_TESTING_MODULE: 'INCLUDE_TESTING_MODULE',
   IS_SWAGGER_ENABLED: 'IS_SWAGGER_ENABLED',
-  IS_USER_AUTOMATICALLY_CONFIRMED: 'IS_USER_AUTOMATICALLY_CONFIRMED',
   JWT_ACCESS_SECRET: 'JWT_ACCESS_SECRET',
   JWT_REFRESH_SECRET: 'JWT_REFRESH_SECRET',
   ADMIN_USERNAME: 'ADMIN_USERNAME',
@@ -25,6 +24,7 @@ export const ENV_VARIABLE_NAMES = {
   RECOVERY_CODE_EXPIRATION_TIME_IN_HOURS:
     'RECOVERY_CODE_EXPIRATION_TIME_IN_HOURS',
   REFRESH_TOKEN_EXPIRATION_TIME: 'REFRESH_TOKEN_EXPIRATION_TIME',
+  SHOULD_SEND_EMAIL: 'SHOULD_SEND_EMAIL',
 } as const;
 
 export enum ENVIRONMENTS {
@@ -36,3 +36,26 @@ export enum ENVIRONMENTS {
 
 export const DB_TYPE = 'postgres';
 export const PG_PORT = 5432;
+
+export const DB_TABLE_NAMES = {
+  DEVICES: 'devices',
+  EMAIL_CONFIRMATIONS: 'email_confirmations',
+  PASSWORD_RECOVERIES: 'password_recoveries',
+  USERS: 'users',
+};
+
+export const ROUTES = {
+  AUTH: 'auth',
+  DEVICES: 'devices',
+  LOGIN: 'login',
+  LOGOUT: 'logout',
+  ME: 'me',
+  NEW_PASSWORD: 'new-password',
+  PASSWORD_RECOVERY: 'password-recovery',
+  REFRESH_TOKEN: 'refresh-token',
+  REGISTRATION: 'registration',
+  REGISTRATION_CONFIRMATION: 'registration-confirmation',
+  REGISTRATION_EMAIL_RESENDING: 'registration-email-resending',
+  SECURITY: 'security',
+  USERS: 'users',
+};

@@ -1,20 +1,26 @@
 import { Injectable } from '@nestjs/common';
-import { InjectDataSource } from '@nestjs/typeorm';
-import { DataSource } from 'typeorm';
-import { TDeviceDB } from '../types';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Device } from '../../domain/device.entity';
+import { DeviceQueryModel } from './model';
 
 @Injectable()
 export class DevicesQueryRepository {
-  constructor(@InjectDataSource() private dataSource: DataSource) {}
+  constructor(
+    @InjectRepository(Device) private devicesRepository: Repository<Device>,
+  ) {}
 
-  async getAllByUserId(userId: number): Promise<TDeviceDB[]> {
-    const query = `
-              SELECT * FROM PUBLIC."Devices" D
-              WHERE D."userId" = $1
-              `;
+  async getAllByUserId(userId: number): Promise<DeviceQueryModel[]> {
+    const devices = this.devicesRepository.find({
+      where: { userId },
+      select: {
+        clientIp: true,
+        deviceId: true,
+        issuedAt: true,
+        deviceName: true,
+      },
+    });
 
-    const rows = await this.dataSource.query<TDeviceDB[]>(query, [userId]);
-
-    return rows;
+    return devices;
   }
 }

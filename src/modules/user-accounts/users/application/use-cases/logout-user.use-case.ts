@@ -10,6 +10,6 @@ export class LogoutUserUseCase implements ICommandHandler<LogoutUserCommand> {
   constructor(private devicesRepository: DevicesRepository) {}
 
   async execute({ deviceId }: LogoutUserCommand): Promise<void> {
-    await this.devicesRepository.removeByDeviceId(deviceId);
+    await this.devicesRepository.deleteByDeviceId(deviceId);
   }
 }

@@ -8,6 +8,7 @@ import {
 } from '../constants';
 import { LoginUserDto } from '../dto';
 import { DevicesRepository } from '../../../devices/infrastructure';
+import { Device } from '../../../devices/domain/device.entity';
 
 type TLoginCommandOutput = { accessToken: string; refreshToken: string };
 
@@ -46,7 +47,7 @@ export class LoginUserUseCase implements ICommandHandler<
     const issuedAt = new Date(iat! * 1000);
     const expiresIn = new Date(exp! * 1000);
 
-    await this.devicesRepository.createDevice({
+    const newDevice = Device.create({
       userId,
       deviceId: uniqueDeviceId,
       clientIp,
@@ -54,6 +55,8 @@ export class LoginUserUseCase implements ICommandHandler<
       issuedAt,
       expiresIn,
     });
+
+    await this.devicesRepository.saveDevice(newDevice);
 
     return { accessToken, refreshToken };
   }

@@ -3,7 +3,7 @@ import { DB_TYPE, ENVIRONMENTS, PG_PORT } from '../../constants';
 import { CoreConfig } from './core.config';
 
 export const getDbConfig = (coreConfig: CoreConfig): TypeOrmModuleOptions => {
-  const isDev = coreConfig.NODE_ENV === ENVIRONMENTS.DEVELOPMENT;
+  const isProduction = coreConfig.NODE_ENV === ENVIRONMENTS.PRODUCTION;
 
   return {
     type: DB_TYPE,
@@ -12,7 +12,7 @@ export const getDbConfig = (coreConfig: CoreConfig): TypeOrmModuleOptions => {
     username: coreConfig.PG_USERNAME,
     password: coreConfig.PG_PASSWORD,
     database: coreConfig.DB_NAME_PG,
-    autoLoadEntities: isDev,
-    synchronize: isDev,
+    autoLoadEntities: !isProduction,
+    synchronize: !isProduction,
   };
 };

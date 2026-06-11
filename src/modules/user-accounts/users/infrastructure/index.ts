@@ -1,5 +1,3 @@
-export { UsersRepository } from './users.repository';
-export { UsersQueryRepository } from './query';
-export { UsersExternalRepository } from './users.external-repository';
-export { EmailConfirmationsRepository } from './email-confirmations.repository';
-export { PasswordRecoveriesRepository } from './password-recoveries.repository';
+export { UsersQueryRepository } from './repositories/query';
+export { UsersRepository } from './repositories/users.repository';
+export { UsersExternalRepository } from './repositories/users.external-repository';

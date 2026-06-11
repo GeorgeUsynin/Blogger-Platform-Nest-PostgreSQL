@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { IsNotEmpty } from 'class-validator';
+import { IsBoolean, IsNotEmpty } from 'class-validator';
 import { ENV_VARIABLE_NAMES } from '../../../constants';
 import { configValidationUtility } from '../../../core/config';
 
@@ -27,6 +27,15 @@ export class NotificationConfig {
   [ENV_VARIABLE_NAMES.EMAIL_SERVICE]: string = this.configService.get(
     ENV_VARIABLE_NAMES.EMAIL_SERVICE,
   ) as string;
+
+  @IsBoolean({
+    message:
+      'Set Env variable SHOULD_SEND_EMAIL to send confirmation/recovery emails, example: true, available values: true, false',
+  })
+  [ENV_VARIABLE_NAMES.SHOULD_SEND_EMAIL]: boolean =
+    configValidationUtility.convertToBoolean(
+      this.configService.get(ENV_VARIABLE_NAMES.SHOULD_SEND_EMAIL) as string,
+    ) as boolean;
 
   constructor(private configService: ConfigService) {
     configValidationUtility.validateConfig(this);

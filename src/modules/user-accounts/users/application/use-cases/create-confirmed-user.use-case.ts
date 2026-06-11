@@ -1,12 +1,9 @@
 import { Command, CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { CreateUserDto } from '../dto';
-import { CreateEmailConfirmationRepositoryDto } from '../../infrastructure/dto';
-import {
-  EmailConfirmationsRepository,
-  UsersRepository,
-} from '../../infrastructure';
+import { UsersRepository } from '../../infrastructure';
 import { UserCreationFailedError } from '../../../../../core/exceptions';
 import { UserCreationService } from '../user-creation.service';
+import { User } from '../../domain/user.aggregate';
 
 export class CreateConfirmedUserCommand extends Command<number> {
   constructor(public readonly dto: CreateUserDto) {
@@ -22,34 +19,18 @@ export class CreateConfirmedUserUseCase implements ICommandHandler<
   constructor(
     private userCreationService: UserCreationService,
     private usersRepository: UsersRepository,
-    private emailConfirmationsRepository: EmailConfirmationsRepository,
   ) {}
 
   async execute({ dto }: CreateConfirmedUserCommand): Promise<number> {
-    const createUserRepositoryDto =
+    const createUserDomainDto =
       await this.userCreationService.prepareUserCreation(dto);
 
-    // TODO: create transaction (user creation + email confirmation creation)
-    const userId = await this.usersRepository.createUser(
-      createUserRepositoryDto,
-    );
+    const user = User.createConfirmed(createUserDomainDto);
+    const userId = await this.usersRepository.saveUserAggregate(user);
 
     if (!userId) {
       throw new UserCreationFailedError();
     }
-
-    const createEmailConfirmationRepositoryDto: CreateEmailConfirmationRepositoryDto =
-      {
-        userId,
-        isConfirmed: true,
-        confirmationCode: null,
-        expirationDate: null,
-      };
-
-    await this.emailConfirmationsRepository.createForUser(
-      createEmailConfirmationRepositoryDto,
-    );
-    // TODO END
 
     return userId;
   }

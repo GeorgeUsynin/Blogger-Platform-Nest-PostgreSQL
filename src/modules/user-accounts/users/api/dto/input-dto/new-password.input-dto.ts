@@ -1,5 +1,5 @@
 import { Length } from 'class-validator';
-import { passwordConstraints } from '../../../domain';
+import { passwordConstraints } from '../../../infrastructure/entities/constraints';
 import { IsStringWithTrim } from '../../../../../../core/decorators';
 
 export class NewPasswordInputDto {

@@ -1,4 +1,3 @@
-export * from './create-unconfirmed-user.use-case';
 export * from './create-confirmed-user.use-case';
 export * from './delete-user.use-case';
 export * from './login-user.use-case';

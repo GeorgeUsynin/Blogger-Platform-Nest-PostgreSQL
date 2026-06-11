@@ -52,9 +52,10 @@ import {
   UpdateTokensCommand,
 } from '../application/use-cases';
 import { parseUserAgent } from './helpers';
+import { ROUTES } from '../../../../constants';
 
 @UseGuards(ThrottlerGuard)
-@Controller('auth')
+@Controller(ROUTES.AUTH)
 export class AuthController {
   constructor(
     private usersQueryRepository: UsersQueryRepository,
@@ -63,7 +64,7 @@ export class AuthController {
 
   @ApiBearerAuth()
   @UseGuards(JwtHeaderAuthGuard)
-  @Get('me')
+  @Get(ROUTES.ME)
   @HttpCode(HttpStatus.OK)
   @MeApi()
   @SkipThrottle()
@@ -78,7 +79,7 @@ export class AuthController {
   }
 
   @UseGuards(LocalAuthGuard)
-  @Post('login')
+  @Post(ROUTES.LOGIN)
   @HttpCode(HttpStatus.OK)
   @LoginApi()
   async login(
@@ -103,7 +104,7 @@ export class AuthController {
 
   @ApiBearerAuth()
   @UseGuards(JwtCookiesAuthGuard)
-  @Post('logout')
+  @Post(ROUTES.LOGOUT)
   @HttpCode(HttpStatus.NO_CONTENT)
   @LogoutApi()
   @SkipThrottle()
@@ -113,7 +114,7 @@ export class AuthController {
 
   @ApiBearerAuth()
   @UseGuards(JwtCookiesAuthGuard)
-  @Post('refresh-token')
+  @Post(ROUTES.REFRESH_TOKEN)
   @HttpCode(HttpStatus.OK)
   @RefreshTokenApi()
   @SkipThrottle()
@@ -133,7 +134,7 @@ export class AuthController {
     return { accessToken };
   }
 
-  @Post('password-recovery')
+  @Post(ROUTES.PASSWORD_RECOVERY)
   @HttpCode(HttpStatus.NO_CONTENT)
   @PasswordRecoveryApi()
   async passwordRecovery(
@@ -144,7 +145,7 @@ export class AuthController {
     await this.commandBus.execute(new RecoverPasswordCommand(email));
   }
 
-  @Post('new-password')
+  @Post(ROUTES.NEW_PASSWORD)
   @HttpCode(HttpStatus.NO_CONTENT)
   @NewPasswordApi()
   async newPassword(@Body() body: NewPasswordInputDto): Promise<void> {
@@ -155,7 +156,7 @@ export class AuthController {
     );
   }
 
-  @Post('registration-confirmation')
+  @Post(ROUTES.REGISTRATION_CONFIRMATION)
   @HttpCode(HttpStatus.NO_CONTENT)
   @RegistrationConfirmationApi()
   async registrationConfirmation(
@@ -166,14 +167,14 @@ export class AuthController {
     await this.commandBus.execute(new ConfirmRegistrationCommand(code));
   }
 
-  @Post('registration')
+  @Post(ROUTES.REGISTRATION)
   @HttpCode(HttpStatus.NO_CONTENT)
   @RegistrationApi()
   async registration(@Body() body: CreateUserInputDto): Promise<void> {
     await this.commandBus.execute(new RegisterUserCommand(body));
   }
 
-  @Post('registration-email-resending')
+  @Post(ROUTES.REGISTRATION_EMAIL_RESENDING)
   @HttpCode(HttpStatus.NO_CONTENT)
   @RegistrationEmailResendingApi()
   async registrationEmailResending(
