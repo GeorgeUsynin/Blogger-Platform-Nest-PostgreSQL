@@ -14,7 +14,7 @@ import {
   descriptionConstraints,
   nameConstraints,
   websiteUrlConstraints,
-} from '../../domain';
+} from '../../infrastructure/entities/constraints';
 import { UpdateBlogInputDto } from '../dto';
 
 export class SwaggerUpdateBlogInputDto implements UpdateBlogInputDto {
@@ -33,7 +33,7 @@ export class SwaggerUpdateBlogInputDto implements UpdateBlogInputDto {
   @ApiProperty({
     type: String,
     maxLength: websiteUrlConstraints.maxLength,
-    pattern: websiteUrlConstraints.match.source,
+    pattern: websiteUrlConstraints.websiteUrlPostgresRegex,
     example: 'https://example.com',
   })
   websiteUrl: string;

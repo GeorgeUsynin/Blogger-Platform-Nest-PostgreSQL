@@ -29,7 +29,7 @@ export class DevicesRepository {
     await this.devicesRepository.delete({ userId, deviceId: Not(deviceId) });
   }
 
-  async saveDevice(device: Device): Promise<void> {
+  async saveDeviceAggregate(device: Device): Promise<void> {
     const entity = DeviceMapper.toPersistence(device);
 
     await this.devicesRepository.save(entity);

@@ -38,6 +38,7 @@ export const DB_TYPE = 'postgres';
 export const PG_PORT = 5432;
 
 export const DB_TABLE_NAMES = {
+  BLOGS: 'blogs',
   DEVICES: 'devices',
   EMAIL_CONFIRMATIONS: 'email_confirmations',
   PASSWORD_RECOVERIES: 'password_recoveries',
@@ -46,12 +47,14 @@ export const DB_TABLE_NAMES = {
 
 export const ROUTES = {
   AUTH: 'auth',
+  BLOGS: 'blogs',
   DEVICES: 'devices',
   LOGIN: 'login',
   LOGOUT: 'logout',
   ME: 'me',
   NEW_PASSWORD: 'new-password',
   PASSWORD_RECOVERY: 'password-recovery',
+  POSTS: 'posts',
   REFRESH_TOKEN: 'refresh-token',
   REGISTRATION: 'registration',
   REGISTRATION_CONFIRMATION: 'registration-confirmation',

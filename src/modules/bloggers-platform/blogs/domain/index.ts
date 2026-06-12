@@ -1,1 +1,1 @@
-export * from './blog.entity-constraints';
+export { Blog } from './blog.aggregate';

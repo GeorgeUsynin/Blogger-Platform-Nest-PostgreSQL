@@ -56,7 +56,7 @@ export class LoginUserUseCase implements ICommandHandler<
       expiresIn,
     });
 
-    await this.devicesRepository.saveDevice(newDevice);
+    await this.devicesRepository.saveDeviceAggregate(newDevice);
 
     return { accessToken, refreshToken };
   }

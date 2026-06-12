@@ -131,7 +131,7 @@ export const createUserAndGetToken = async (
 };
 
 const websiteUrlPattern =
-  /^https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$/;
+  '^https://([a-zA-Z0-9_-]+.)+[a-zA-Z0-9_-]+(/[a-zA-Z0-9_-]+)*/?$';
 
 export const createErrorMessages = (values: TValues) => {
   const {

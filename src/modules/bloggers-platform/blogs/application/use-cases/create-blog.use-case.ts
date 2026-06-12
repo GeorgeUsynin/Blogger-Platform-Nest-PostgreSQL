@@ -1,8 +1,8 @@
 import { Command, CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { BlogsRepository } from '../../infrastructure';
 import { CreateBlogDto } from '../dto';
-import { CreateBlogRepositoryDto } from '../../infrastructure/dto';
 import { BlogCreationFailedError } from '../../../../../core/exceptions';
+import { Blog } from '../../domain';
 
 export class CreateBlogCommand extends Command<number> {
   constructor(public readonly dto: CreateBlogDto) {
@@ -18,15 +18,8 @@ export class CreateBlogUseCase implements ICommandHandler<
   constructor(private blogsRepository: BlogsRepository) {}
 
   async execute({ dto }: CreateBlogCommand): Promise<number> {
-    const createBlogRepositoryDto: CreateBlogRepositoryDto = {
-      name: dto.name,
-      description: dto.description,
-      websiteUrl: dto.websiteUrl,
-    };
-
-    const blogId = await this.blogsRepository.createBlog(
-      createBlogRepositoryDto,
-    );
+    const blog = Blog.create(dto);
+    const blogId = await this.blogsRepository.saveBlogAggregate(blog);
 
     if (!blogId) {
       throw new BlogCreationFailedError();

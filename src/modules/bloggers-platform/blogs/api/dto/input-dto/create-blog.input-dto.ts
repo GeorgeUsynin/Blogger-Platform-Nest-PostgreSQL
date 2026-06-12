@@ -3,7 +3,7 @@ import {
   descriptionConstraints,
   nameConstraints,
   websiteUrlConstraints,
-} from '../../../domain';
+} from '../../../infrastructure/entities/constraints';
 import { IsStringWithTrim } from '../../../../../../core/decorators';
 
 export class CreateBlogInputDto {
@@ -15,7 +15,7 @@ export class CreateBlogInputDto {
   @IsStringWithTrim()
   description: string;
 
-  @Matches(websiteUrlConstraints.match)
+  @Matches(websiteUrlConstraints.websiteUrlPostgresRegex)
   @MaxLength(websiteUrlConstraints.maxLength)
   @IsStringWithTrim()
   websiteUrl: string;

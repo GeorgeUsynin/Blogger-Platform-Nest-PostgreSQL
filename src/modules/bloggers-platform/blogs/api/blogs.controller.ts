@@ -49,8 +49,9 @@ import {
   UpdateBlogCommand,
 } from '../application/use-cases';
 import { CreatePostCommand } from '../../posts/application/use-cases';
+import { ROUTES } from '../../../../constants';
 
-@Controller('blogs')
+@Controller(ROUTES.BLOGS)
 export class BlogsController {
   constructor(
     private blogsQueryRepository: BlogsQueryRepository,
@@ -90,7 +91,7 @@ export class BlogsController {
 
   @ApiBearerAuth()
   @UseGuards(JwtOptionalAuthGuard)
-  @Get(':blogId/posts')
+  @Get(`:blogId/${ROUTES.POSTS}`)
   @HttpCode(HttpStatus.OK)
   @GetAllPostsByBlogIdApi()
   async getPostsByBlogId(
@@ -137,7 +138,7 @@ export class BlogsController {
 
   @ApiBasicAuth()
   @UseGuards(BasicAuthGuard)
-  @Post(':blogId/posts')
+  @Post(`:blogId/${ROUTES.POSTS}`)
   @HttpCode(HttpStatus.CREATED)
   @CreatePostByBlogIdApi()
   async createPostForBlogByBlogId(
