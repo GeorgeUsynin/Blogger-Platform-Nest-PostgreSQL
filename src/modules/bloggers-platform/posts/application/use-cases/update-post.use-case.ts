@@ -6,7 +6,6 @@ import {
 } from '../../../../../core/exceptions';
 import { BlogsRepository } from '../../../blogs/infrastructure';
 import { PostsRepository } from '../../infrastructure';
-import { UpdatePostRepositoryDto } from '../../infrastructure/dto';
 
 export class UpdatePostCommand {
   constructor(public readonly dto: UpdatePostDto) {}
@@ -21,24 +20,24 @@ export class UpdatePostUseCase implements ICommandHandler<UpdatePostCommand> {
 
   async execute({ dto }: UpdatePostCommand): Promise<void> {
     const blog = await this.blogsRepository.findById(dto.blogId);
+
     if (!blog) {
       throw new BlogNotFoundError();
     }
 
     const foundPost = await this.postsRepository.findById(dto.id);
+
     if (!foundPost) {
       throw new PostNotFoundError();
     }
 
-    const updatePostRepositoryDto: UpdatePostRepositoryDto = {
-      id: dto.id,
+    foundPost.update({
+      blogId: dto.blogId,
       title: dto.title,
       shortDescription: dto.shortDescription,
       content: dto.content,
-      blogId: dto.blogId,
-      updatedAt: new Date(),
-    };
+    });
 
-    await this.postsRepository.updatePost(updatePostRepositoryDto);
+    await this.postsRepository.savePostAggregate(foundPost);
   }
 }

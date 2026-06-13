@@ -61,8 +61,9 @@ import {
 import { UserContextDto } from '../../../user-accounts/users/guards/dto';
 import { CreateUpdateLikeStatusInputDto } from '../../likes/api/dto';
 import { CreateCommentCommand } from '../../comments/application/use-cases';
+import { ROUTES } from '../../../../constants';
 
-@Controller('posts')
+@Controller(ROUTES.POSTS)
 export class PostsController {
   constructor(
     private postsQueryRepository: PostsQueryRepository,
@@ -112,7 +113,7 @@ export class PostsController {
 
   @ApiBearerAuth()
   @UseGuards(JwtOptionalAuthGuard)
-  @Get(':postId/comments')
+  @Get(`:postId/${ROUTES.COMMENTS}`)
   @HttpCode(HttpStatus.OK)
   @GetAllCommentsByPostIdApi()
   async getAllCommentsByPostId(
@@ -163,7 +164,7 @@ export class PostsController {
 
   @ApiBearerAuth()
   @UseGuards(JwtHeaderAuthGuard)
-  @Post('/:postId/comments')
+  @Post(`:postId/${ROUTES.COMMENTS}`)
   @HttpCode(HttpStatus.CREATED)
   @CreateCommentByPostIdApi()
   async createCommentByPostId(
@@ -187,7 +188,7 @@ export class PostsController {
 
   @ApiBearerAuth()
   @UseGuards(JwtHeaderAuthGuard)
-  @Put(':postId/like-status')
+  @Put(`:postId/${ROUTES.LIKE_STATUS}`)
   @HttpCode(HttpStatus.NO_CONTENT)
   @UpdatePostLikeStatusApi()
   async createUpdatePostLikeStatus(

@@ -1,1 +1,1 @@
-export * from './post.entity-constraints';
+export { Post } from './post.aggreagte';

@@ -1,12 +1,12 @@
 import { Command, CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { CreatePostDto } from '../dto';
 import { PostsRepository } from '../../infrastructure';
-import { CreatePostRepositoryDto } from '../../infrastructure/dto';
 import {
   BlogNotFoundError,
   PostCreationFailedError,
 } from '../../../../../core/exceptions';
 import { BlogsRepository } from '../../../blogs/infrastructure';
+import { Post } from '../../domain';
 
 export class CreatePostCommand extends Command<number> {
   constructor(public readonly dto: CreatePostDto) {
@@ -30,20 +30,13 @@ export class CreatePostUseCase implements ICommandHandler<
       throw new BlogNotFoundError();
     }
 
-    const now = new Date();
-
-    const createPostRepositoryDto: CreatePostRepositoryDto = {
+    const post = Post.create({
       title: dto.title,
       content: dto.content,
       shortDescription: dto.shortDescription,
       blogId: dto.blogId,
-      createdAt: now,
-      updatedAt: now,
-    };
-
-    const postId = await this.postsRepository.createPost(
-      createPostRepositoryDto,
-    );
+    });
+    const postId = this.postsRepository.savePostAggregate(post);
 
     if (!postId) {
       throw new PostCreationFailedError();

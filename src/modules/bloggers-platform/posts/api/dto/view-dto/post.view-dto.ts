@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { LikeStatus } from '../../../../likes/domain';
-import { PostReadDto } from '../../../infrastructure/query';
+import { PostQueryModel } from '../../../infrastructure';
 
 class NewestLike {
   @ApiProperty({ type: Date })
@@ -58,7 +58,7 @@ export class PostViewDto {
   @ApiProperty({ type: ExtendedLikesInfo })
   extendedLikesInfo: ExtendedLikesInfo;
 
-  public static mapToView(post: PostReadDto): PostViewDto {
+  public static mapToView(post: PostQueryModel): PostViewDto {
     const dto = new PostViewDto();
 
     dto.id = post.id.toString();

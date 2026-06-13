@@ -14,4 +14,4 @@ export type CreateBlogInput = {
 
 export type ReconstructBlogInput = Omit<BlogState, 'id'> & { id: number };
 
-export type UpdateInput = CreateBlogInput;
+export type UpdateBlogInput = CreateBlogInput;

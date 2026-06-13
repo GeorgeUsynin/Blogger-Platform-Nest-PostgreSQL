@@ -1,2 +1,2 @@
-export { PostsRepository } from './posts.repository';
-export { PostsQueryRepository } from './query';
+export * from './entities';
+export * from './repositories';

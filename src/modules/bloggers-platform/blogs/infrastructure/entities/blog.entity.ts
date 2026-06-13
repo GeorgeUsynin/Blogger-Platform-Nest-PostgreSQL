@@ -1,4 +1,4 @@
-import { Check, Column, Entity } from 'typeorm';
+import { Check, Column, Entity, OneToMany } from 'typeorm';
 import { DB_TABLE_NAMES } from '../../../../../constants';
 import { BaseDBEntity } from '../../../../shared/entities';
 import {
@@ -7,6 +7,7 @@ import {
   websiteUrlCheckConstraints,
   websiteUrlConstraints,
 } from './constraints';
+import { PostEntity } from '../../../posts/infrastructure';
 
 @Check(websiteUrlCheckConstraints)
 @Entity({ name: DB_TABLE_NAMES.BLOGS })
@@ -22,4 +23,7 @@ export class BlogEntity extends BaseDBEntity {
 
   @Column({ type: 'boolean', default: false })
   isMembership: boolean;
+
+  @OneToMany(() => PostEntity, (post) => post.blog)
+  posts: PostEntity[];
 }

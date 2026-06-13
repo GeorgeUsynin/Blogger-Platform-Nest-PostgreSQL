@@ -14,7 +14,7 @@ import {
   contentConstraints,
   shortDescriptionConstraints,
   titleConstraints,
-} from '../../domain';
+} from '../../infrastructure/entities/constraints';
 import { UpdatePostInputDto } from '../dto';
 
 export class SwaggerUpdatePostInputDto implements UpdatePostInputDto {

@@ -39,16 +39,22 @@ export const PG_PORT = 5432;
 
 export const DB_TABLE_NAMES = {
   BLOGS: 'blogs',
+  COMMENT_LIKES: 'comment_likes',
+  COMMENTS: 'comments',
   DEVICES: 'devices',
   EMAIL_CONFIRMATIONS: 'email_confirmations',
   PASSWORD_RECOVERIES: 'password_recoveries',
+  POST_LIKES: 'post_likes',
+  POSTS: 'posts',
   USERS: 'users',
 };
 
 export const ROUTES = {
   AUTH: 'auth',
   BLOGS: 'blogs',
+  COMMENTS: 'comments',
   DEVICES: 'devices',
+  LIKE_STATUS: 'like-status',
   LOGIN: 'login',
   LOGOUT: 'logout',
   ME: 'me',

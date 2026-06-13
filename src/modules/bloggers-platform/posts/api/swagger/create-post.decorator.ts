@@ -14,7 +14,7 @@ import {
   contentConstraints,
   shortDescriptionConstraints,
   titleConstraints,
-} from '../../domain';
+} from '../../infrastructure/entities/constraints';
 
 export class SwaggerCreatePostInputDto implements CreatePostInputDto {
   @ApiProperty({

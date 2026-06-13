@@ -3,7 +3,7 @@ import {
   BlogState,
   CreateBlogInput,
   ReconstructBlogInput,
-  UpdateInput,
+  UpdateBlogInput,
 } from './types';
 
 export class Blog extends AggregateRoot {
@@ -13,7 +13,7 @@ export class Blog extends AggregateRoot {
 
   // ---------- factory ----------
 
-  static create(input: CreateBlogInput) {
+  static create(input: CreateBlogInput): Blog {
     return new Blog({
       id: undefined,
       name: input.name,
@@ -29,7 +29,7 @@ export class Blog extends AggregateRoot {
 
   // ---------- domain logic ----------
 
-  public update(input: UpdateInput): void {
+  public update(input: UpdateBlogInput): void {
     this.props.name = input.name;
     this.props.description = input.description;
     this.props.websiteUrl = input.websiteUrl;
