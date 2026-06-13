@@ -10,4 +10,4 @@ export type CreatePostInput = Omit<PostState, 'id'>;
 
 export type ReconstructPostInput = Omit<PostState, 'id'> & { id: number };
 
-export type UpdatePostInput = CreatePostInput;
+export type UpdatePostInput = Omit<CreatePostInput, 'blogId'>;

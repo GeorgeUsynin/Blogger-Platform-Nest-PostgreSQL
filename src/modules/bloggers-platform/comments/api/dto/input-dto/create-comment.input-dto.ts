@@ -1,6 +1,6 @@
 import { Length } from 'class-validator';
 import { IsStringWithTrim } from '../../../../../../core/decorators';
-import { contentConstraints } from '../../../domain';
+import { contentConstraints } from '../../../infrastructure/entities/constraints';
 
 export class CreateCommentInputDto {
   @Length(contentConstraints.minLength, contentConstraints.maxLength)

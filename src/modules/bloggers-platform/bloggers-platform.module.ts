@@ -1,7 +1,11 @@
 import { Module } from '@nestjs/common';
 import { BlogEntity, BlogsController, blogsProviders } from './blogs';
 import { PostEntity, PostsController, postsProviders } from './posts';
-import { CommentsController, commentsProviders } from './comments';
+import {
+  CommentEntity,
+  CommentsController,
+  commentsProviders,
+} from './comments';
 import { likesProviders } from './likes';
 import { UserAccountsModule } from '../user-accounts';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -17,7 +21,7 @@ const providers = [
 @Module({
   imports: [
     UserAccountsModule,
-    TypeOrmModule.forFeature([BlogEntity, PostEntity]),
+    TypeOrmModule.forFeature([BlogEntity, PostEntity, CommentEntity]),
   ],
   controllers: [...controllers],
   providers: [...providers],

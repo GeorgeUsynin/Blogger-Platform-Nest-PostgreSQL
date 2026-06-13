@@ -4,7 +4,7 @@ import {
   UpdatePostUseCase,
   DeletePostUseCase,
   CreateUpdatePostLikeStatusUseCase,
-} from './application/use-cases';
+} from './application';
 import {
   PostsRepository,
   PostsQueryRepository,

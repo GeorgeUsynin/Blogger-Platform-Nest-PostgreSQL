@@ -14,7 +14,7 @@ import {
   CreateCommentInputDto,
   CommentViewDto,
 } from '../../../comments/api/dto';
-import { contentConstraints } from '../../../comments/domain';
+import { contentConstraints } from '../../../comments/infrastructure/entities/constraints';
 
 export class SwaggerCreateCommentInputDto implements CreateCommentInputDto {
   @ApiProperty({

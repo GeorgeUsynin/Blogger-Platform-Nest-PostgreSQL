@@ -1,10 +1,6 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import {
-  CommentNotFoundError,
-  NotAnOwnerOfThisComment,
-} from '../../../../../core/exceptions';
+import { CommentNotFoundError } from '../../../../../core/exceptions';
 import { CommentsRepository } from '../../infrastructure';
-import { DeleteCommentRepositoryDto } from '../../infrastructure/dto';
 
 export class DeleteCommentCommand {
   constructor(
@@ -23,19 +19,8 @@ export class DeleteCommentUseCase implements ICommandHandler<DeleteCommentComman
       throw new CommentNotFoundError();
     }
 
-    if (foundComment.authorId !== userId) {
-      throw new NotAnOwnerOfThisComment();
-    }
+    foundComment.ensureCommentOwner(userId);
 
-    const now = new Date();
-
-    const deleteCommentRepositoryDto: DeleteCommentRepositoryDto = {
-      id,
-      isDeleted: true,
-      deletedAt: now,
-      updatedAt: now,
-    };
-
-    await this.commentsRepository.deleteComment(deleteCommentRepositoryDto);
+    await this.commentsRepository.softDeleteCommentById(id);
   }
 }

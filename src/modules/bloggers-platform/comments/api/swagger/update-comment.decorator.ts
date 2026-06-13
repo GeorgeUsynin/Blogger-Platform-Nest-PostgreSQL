@@ -10,7 +10,7 @@ import {
   ApiProperty,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
-import { contentConstraints } from '../../domain';
+import { contentConstraints } from '../../infrastructure/entities/constraints';
 import { SwaggerErrorsMessagesViewDto } from '../../../../../core/dto';
 import { UpdateCommentInputDto } from '../dto';
 

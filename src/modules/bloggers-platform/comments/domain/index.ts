@@ -1,1 +1,1 @@
-export * from './comment.entity-constraints';
+export { Comment } from './comment.aggregate';

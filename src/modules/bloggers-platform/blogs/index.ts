@@ -3,7 +3,7 @@ import {
   CreateBlogUseCase,
   UpdateBlogUseCase,
   DeleteBlogUseCase,
-} from './application/use-cases';
+} from './application';
 import {
   BlogsRepository,
   BlogsQueryRepository,

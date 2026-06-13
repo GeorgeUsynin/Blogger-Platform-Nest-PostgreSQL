@@ -32,7 +32,6 @@ export class UpdatePostUseCase implements ICommandHandler<UpdatePostCommand> {
     }
 
     foundPost.update({
-      blogId: dto.blogId,
       title: dto.title,
       shortDescription: dto.shortDescription,
       content: dto.content,

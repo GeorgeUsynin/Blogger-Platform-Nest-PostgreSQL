@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { LikeStatus } from '../../../../likes/domain';
-import { CommentReadDto } from '../../../infrastructure/query';
+import { CommentQueryModel } from '../../../infrastructure/repositories';
 
 class CommentatorInfo {
   @ApiProperty({ type: String })
@@ -40,7 +40,7 @@ export class CommentViewDto {
   @ApiProperty({ type: Date })
   createdAt: Date;
 
-  public static mapToView(comment: CommentReadDto): CommentViewDto {
+  public static mapToView(comment: CommentQueryModel): CommentViewDto {
     const dto = new CommentViewDto();
 
     dto.id = comment.id.toString();

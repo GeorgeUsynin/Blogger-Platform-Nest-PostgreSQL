@@ -8,7 +8,7 @@ import {
   PostNotFoundError,
   UserNotFoundError,
 } from '../../../../../core/exceptions';
-import { CreateCommentRepositoryDto } from '../../infrastructure/dto';
+import { Comment } from '../../domain';
 
 export class CreateCommentCommand extends Command<number> {
   constructor(
@@ -37,6 +37,7 @@ export class CreateCommentUseCase implements ICommandHandler<
     dto,
   }: CreateCommentCommand): Promise<number> {
     const foundPost = await this.postsRepository.findById(postId);
+
     if (!foundPost) {
       throw new PostNotFoundError();
     }
@@ -47,15 +48,12 @@ export class CreateCommentUseCase implements ICommandHandler<
       throw new UserNotFoundError();
     }
 
-    const createCommentRepositoryDto: CreateCommentRepositoryDto = {
+    const comment = Comment.create({
       authorId: userId,
       postId,
       content: dto.content,
-    };
-
-    const commentId = await this.commentsRepository.createComment(
-      createCommentRepositoryDto,
-    );
+    });
+    const commentId = this.commentsRepository.saveCommentAggregate(comment);
 
     if (!commentId) {
       throw new CommentCreationFailedError();

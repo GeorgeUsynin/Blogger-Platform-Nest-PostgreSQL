@@ -30,7 +30,6 @@ export class Post extends AggregateRoot {
   // ---------- domain logic ----------
 
   public update(input: UpdatePostInput): void {
-    this.props.blogId = input.blogId;
     this.props.title = input.title;
     this.props.shortDescription = input.shortDescription;
     this.props.content = input.content;

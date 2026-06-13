@@ -36,8 +36,9 @@ import {
   UpdateCommentCommand,
 } from '../application/use-cases';
 import { CreateUpdateLikeStatusInputDto } from '../../likes/api/dto';
+import { ROUTES } from '../../../../constants';
 
-@Controller('comments')
+@Controller(ROUTES.COMMENTS)
 export class CommentsController {
   constructor(
     private commentsQueryRepository: CommentsQueryRepository,
@@ -83,7 +84,7 @@ export class CommentsController {
 
   @ApiBearerAuth()
   @UseGuards(JwtHeaderAuthGuard)
-  @Put(':commentId/like-status')
+  @Put(`:commentId/${ROUTES.LIKE_STATUS}`)
   @HttpCode(HttpStatus.NO_CONTENT)
   @UpdateCommentLikeStatusApi()
   async createUpdateCommentLikeStatus(
