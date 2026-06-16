@@ -22,7 +22,7 @@ import {
 import {
   TerminateAllDevicesExceptCurrentCommand,
   TerminateDeviceByDeviceIdCommand,
-} from '../application/use-cases';
+} from '../application';
 import { UUIDValidationPipe } from '../../../../core/pipes';
 import { ROUTES } from '../../../../constants';
 

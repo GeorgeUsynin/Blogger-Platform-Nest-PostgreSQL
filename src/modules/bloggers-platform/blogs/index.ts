@@ -4,11 +4,7 @@ import {
   UpdateBlogUseCase,
   DeleteBlogUseCase,
 } from './application';
-import {
-  BlogsRepository,
-  BlogsQueryRepository,
-  BlogEntity,
-} from './infrastructure';
+import { BlogsRepository, BlogsQueryRepository } from './infrastructure';
 
 const blogsUseCases = [CreateBlogUseCase, UpdateBlogUseCase, DeleteBlogUseCase];
 
@@ -17,4 +13,3 @@ export const blogsProviders = [
   BlogsQueryRepository,
   ...blogsUseCases,
 ];
-export { BlogEntity };

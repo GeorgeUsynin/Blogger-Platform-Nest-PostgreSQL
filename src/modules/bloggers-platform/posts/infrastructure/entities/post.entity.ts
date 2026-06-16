@@ -6,7 +6,7 @@ import {
   shortDescriptionConstraints,
   contentConstraints,
 } from './constraints';
-import { BlogEntity } from '../../../blogs';
+import { BlogEntity } from '../../../blogs/infrastructure/entities/blog.entity';
 
 @Entity({ name: DB_TABLE_NAMES.POSTS })
 export class PostEntity extends BaseDBEntity {

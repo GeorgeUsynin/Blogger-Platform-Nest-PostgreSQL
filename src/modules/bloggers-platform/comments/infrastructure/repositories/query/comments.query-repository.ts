@@ -3,11 +3,11 @@ import { GetCommentsQueryParamsInputDto } from '../../../api/dto';
 import { CommentQueryModel } from './model';
 import { LikeStatus } from '../../../../likes/domain';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, SelectQueryBuilder } from 'typeorm';
 import { CommentSortByFields } from '../../../api/dto/input-dto/comment-sort-by-fields';
 import { SortDirection } from '../../../../../../core/dto/base.query-params.input-dto';
 import { CommentEntity } from '../../entities';
-import { RawComment } from './model/CommentQueryModel';
+import { CommentLikeEntity } from '../../../../likes/infrastructure/entities/comment-like.entity';
 
 type FindCommentsFilter = Partial<Pick<CommentEntity, 'postId'>>;
 
@@ -42,38 +42,23 @@ export class CommentsQueryRepository {
       ? sortDirection.toUpperCase()
       : SortDirection.Asc.toUpperCase();
 
-    const qb = this.commentsRepo
-      .createQueryBuilder('c')
-      .leftJoin('c.user', 'u');
+    const qb = this.getCommentWithLikesBuilder(userId);
 
     if (filter.postId) {
       qb.where('c."postId" = :postId', { postId: filter.postId });
     }
 
-    qb.select([
-      'c.id AS id',
-      'c."authorId" AS "authorId"',
-      'c."postId" AS "postId"',
-      'c.content AS content',
-      'c."createdAt" AS "createdAt"',
-      'u.login AS "authorLogin"',
-    ])
-      .orderBy(`"${safeSortBy}"`, safeSortDirection as 'ASC' | 'DESC')
+    qb.orderBy(`"${safeSortBy}"`, safeSortDirection as 'ASC' | 'DESC')
       .offset(query.calculateSkip())
       .limit(pageSize);
 
     const [rawCommentItems, totalCount] = await Promise.all([
-      qb.getRawMany<RawComment>(),
+      qb.getRawMany<CommentQueryModel>(),
       qb.getCount(),
     ]);
 
     return {
-      items: rawCommentItems.map((rawComment) => ({
-        ...rawComment,
-        likesCount: 0,
-        dislikesCount: 0,
-        myStatus: null,
-      })),
+      items: rawCommentItems,
       totalCount,
     };
   }
@@ -82,10 +67,18 @@ export class CommentsQueryRepository {
     id: number,
     userId: number | null = null,
   ): Promise<CommentQueryModel | null> {
-    const rawComment = await this.commentsRepo
-      .createQueryBuilder('c')
-      .leftJoin('c.user', 'u')
+    const rawComment = await this.getCommentWithLikesBuilder(userId)
       .where('c.id = :commentId', { commentId: id })
+      .getRawOne<CommentQueryModel>();
+
+    if (!rawComment) return null;
+
+    return rawComment;
+  }
+
+  private getCommentWithLikesBuilder(userId: number | null = null) {
+    return this.commentsRepo
+      .createQueryBuilder('c')
       .select([
         'c.id AS id',
         'c."authorId" AS "authorId"',
@@ -93,16 +86,37 @@ export class CommentsQueryRepository {
         'c.content AS content',
         'c."createdAt" AS "createdAt"',
         'u.login AS "authorLogin"',
+        'COALESCE(l."likesCount", 0)::int as "likesCount"',
+        'COALESCE(l."dislikesCount", 0)::int as "dislikesCount"',
+        'ml."likeStatus" as "myStatus"',
       ])
-      .getRawOne<RawComment>();
-
-    if (!rawComment) return null;
-
-    return {
-      ...rawComment,
-      likesCount: 0,
-      dislikesCount: 0,
-      myStatus: null,
-    };
+      .leftJoin('c.user', 'u')
+      .leftJoin(
+        (subQuery: SelectQueryBuilder<CommentLikeEntity>) =>
+          subQuery
+            .select('cl."parentId"', 'parentId')
+            .addSelect(
+              `COUNT(*) FILTER (WHERE cl."likeStatus" = :like)`,
+              'likesCount',
+            )
+            .addSelect(
+              `COUNT(*) FILTER (WHERE cl."likeStatus" = :dislike)`,
+              'dislikesCount',
+            )
+            .from(CommentLikeEntity, 'cl')
+            .groupBy('cl."parentId"'),
+        'l',
+        'l."parentId" = c.id',
+      )
+      .leftJoin(
+        CommentLikeEntity,
+        'ml',
+        'ml."parentId" = c.id AND ml."authorId" = :authorId',
+      )
+      .setParameters({
+        authorId: userId,
+        like: LikeStatus.Like,
+        dislike: LikeStatus.Dislike,
+      });
   }
 }

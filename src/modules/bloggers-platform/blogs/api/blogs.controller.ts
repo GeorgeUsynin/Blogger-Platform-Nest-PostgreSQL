@@ -47,8 +47,9 @@ import {
   CreateBlogCommand,
   DeleteBlogCommand,
   UpdateBlogCommand,
-} from '../application/use-cases';
-import { CreatePostCommand } from '../../posts/application/use-cases';
+} from '../application';
+// be care with circular dependency
+import { CreatePostCommand } from '../../posts/application/use-cases/create-post.use-case';
 import { ROUTES } from '../../../../constants';
 
 @Controller(ROUTES.BLOGS)

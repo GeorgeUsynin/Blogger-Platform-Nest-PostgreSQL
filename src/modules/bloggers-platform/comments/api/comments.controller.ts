@@ -34,7 +34,7 @@ import {
   CreateUpdateCommentLikeStatusCommand,
   DeleteCommentCommand,
   UpdateCommentCommand,
-} from '../application/use-cases';
+} from '../application';
 import { CreateUpdateLikeStatusInputDto } from '../../likes/api/dto';
 import { ROUTES } from '../../../../constants';
 

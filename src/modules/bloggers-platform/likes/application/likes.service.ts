@@ -1,11 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PostLikesRepository, CommentLikesRepository } from '../infrastructure';
-import { LikeStatus, ParentType } from '../domain';
-import { SetLikeStatusDto } from './dto';
-import {
-  CreateLikeRepositoryDto,
-  UpdateLikeRepositoryDto,
-} from '../infrastructure/dto';
+import { Like, LikeStatus, ParentType } from '../domain';
+import { SetLikeStatusDto } from './dto/set-like-status.dto';
 
 @Injectable()
 export class LikesService {
@@ -31,29 +27,19 @@ export class LikesService {
       // not allowing like creation with None status
       if (likeStatus === LikeStatus.None) return;
 
-      const createLikeRepositoryDto: CreateLikeRepositoryDto = {
-        authorId,
-        parentId,
-        likeStatus,
-      };
-
-      await likesRepository.createLike(createLikeRepositoryDto);
+      const like = Like.create({ authorId, parentId, parentType, likeStatus });
+      await likesRepository.saveLikeAggregate(like);
     } else {
-      // if likeStatus is the same -> exit
-      if (foundLike.likeStatus === likeStatus) return;
-
       switch (likeStatus) {
         case LikeStatus.None:
-          await likesRepository.removeById(foundLike.id);
+          await likesRepository.deleteById(foundLike.id);
           break;
         case LikeStatus.Like:
         case LikeStatus.Dislike:
-          const updateLikeRepositoryDto: UpdateLikeRepositoryDto = {
-            id: foundLike.id,
-            likeStatus,
-            updatedAt: new Date(),
-          };
-          await likesRepository.updateLikeStatus(updateLikeRepositoryDto);
+          if (foundLike.isSameLikeStatus(likeStatus)) return;
+
+          foundLike.updateLikeStatus(likeStatus);
+          await likesRepository.saveLikeAggregate(foundLike);
           break;
       }
     }

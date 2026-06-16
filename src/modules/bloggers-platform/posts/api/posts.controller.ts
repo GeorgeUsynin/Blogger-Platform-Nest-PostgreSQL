@@ -44,11 +44,11 @@ import {
   UpdatePostLikeStatusApi,
 } from './swagger';
 import {
-  CreatePostCommand,
   CreateUpdatePostLikeStatusCommand,
-  DeletePostCommand,
   UpdatePostCommand,
-} from '../application/use-cases';
+  DeletePostCommand,
+  CreatePostCommand,
+} from '../application';
 import { BasicAuthGuard } from '../../../user-accounts/users/guards/basic';
 import {
   JwtHeaderAuthGuard,
@@ -60,7 +60,7 @@ import {
 } from '../../../user-accounts/users/guards/decorators';
 import { UserContextDto } from '../../../user-accounts/users/guards/dto';
 import { CreateUpdateLikeStatusInputDto } from '../../likes/api/dto';
-import { CreateCommentCommand } from '../../comments/application/use-cases';
+import { CreateCommentCommand } from '../../comments/application';
 import { ROUTES } from '../../../../constants';
 
 @Controller(ROUTES.POSTS)

@@ -1,7 +1,7 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { PostNotFoundError } from '../../../../../core/exceptions';
 import { PostsRepository } from '../../infrastructure';
-import { CreateUpdatePostLikeStatusDto } from '../dto';
+import { CreateUpdatePostLikeStatusDto } from '../dto/create-update-post-like-status.dto';
 import { LikesService } from '../../../likes/application';
 import { ParentType } from '../../../likes/domain';
 

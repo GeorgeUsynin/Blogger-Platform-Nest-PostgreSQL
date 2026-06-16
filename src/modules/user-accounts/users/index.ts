@@ -17,11 +17,6 @@ import {
   UpdateTokensUseCase,
 } from './application';
 import { UserAccountsConfig } from './config';
-import {
-  UserEntity,
-  EmailConfirmationEntity,
-  PasswordRecoveryEntity,
-} from './infrastructure';
 import { JwtCookiesStrategy, JwtHeaderStrategy } from './guards/bearer';
 import { LocalStrategy } from './guards/local';
 import {
@@ -58,10 +53,4 @@ export const usersUseCases = [
   ResendEmailConfirmationUseCase,
   LogoutUserUseCase,
   UpdateTokensUseCase,
-];
-
-export const entities = [
-  UserEntity,
-  EmailConfirmationEntity,
-  PasswordRecoveryEntity,
 ];

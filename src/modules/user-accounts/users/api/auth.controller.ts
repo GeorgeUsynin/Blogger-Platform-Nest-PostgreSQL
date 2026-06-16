@@ -50,7 +50,7 @@ import {
   RegisterUserCommand,
   ResendEmailConfirmationCommand,
   UpdateTokensCommand,
-} from '../application/use-cases';
+} from '../application';
 import { parseUserAgent } from './helpers';
 import { ROUTES } from '../../../../constants';
 

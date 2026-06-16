@@ -2,11 +2,7 @@ import {
   TerminateAllDevicesExceptCurrentUseCase,
   TerminateDeviceByDeviceIdUseCase,
 } from './application';
-import {
-  DeviceEntity,
-  DevicesQueryRepository,
-  DevicesRepository,
-} from './infrastructure';
+import { DevicesQueryRepository, DevicesRepository } from './infrastructure';
 
 export { DevicesController } from './api';
 
@@ -16,5 +12,3 @@ export const devicesUseCases = [
   TerminateAllDevicesExceptCurrentUseCase,
   TerminateDeviceByDeviceIdUseCase,
 ];
-
-export const entities = [DeviceEntity];

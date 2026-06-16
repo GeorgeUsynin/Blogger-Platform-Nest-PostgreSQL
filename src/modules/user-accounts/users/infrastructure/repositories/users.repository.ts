@@ -4,7 +4,7 @@ import { EventPublisher } from '@nestjs/cqrs';
 import { DataSource, Repository } from 'typeorm';
 import { UserEntity } from '../entities';
 import { UserMapper } from '../user.mapper';
-import { User } from '../../domain/user.aggregate';
+import { User } from '../../domain';
 
 @Injectable()
 export class UsersRepository {

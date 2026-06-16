@@ -5,11 +5,7 @@ import {
   DeletePostUseCase,
   CreateUpdatePostLikeStatusUseCase,
 } from './application';
-import {
-  PostsRepository,
-  PostsQueryRepository,
-  PostEntity,
-} from './infrastructure';
+import { PostsRepository, PostsQueryRepository } from './infrastructure';
 
 const postsUseCases = [
   CreatePostUseCase,
@@ -23,4 +19,3 @@ export const postsProviders = [
   PostsQueryRepository,
   ...postsUseCases,
 ];
-export { PostEntity };

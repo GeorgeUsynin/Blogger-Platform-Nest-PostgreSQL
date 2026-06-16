@@ -10,3 +10,15 @@ export enum ParentType {
 }
 
 export type NonNoneLikeStatus = Exclude<LikeStatus, LikeStatus.None>;
+
+export type LikeState = {
+  id?: number;
+  authorId: number;
+  parentId: number;
+  parentType: ParentType;
+  likeStatus: NonNoneLikeStatus;
+};
+
+export type CreateLikeInput = Omit<LikeState, 'id'>;
+
+export type ReconstructLikeInput = Omit<LikeState, 'id'> & { id: number };

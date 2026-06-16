@@ -6,7 +6,6 @@ import {
   UpdateCommentUseCase,
 } from './application';
 import { CommentsRepository, CommentsQueryRepository } from './infrastructure';
-import { CommentEntity } from './infrastructure';
 
 const commentsUseCases = [
   CreateCommentUseCase,
@@ -20,5 +19,3 @@ export const commentsProviders = [
   CommentsQueryRepository,
   ...commentsUseCases,
 ];
-
-export { CommentEntity };

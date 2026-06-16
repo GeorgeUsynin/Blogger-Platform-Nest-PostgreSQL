@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { LikeStatus } from '../../../../likes/domain';
-import { CommentQueryModel } from '../../../infrastructure/repositories';
+import { CommentQueryModel } from '../../../infrastructure';
 
 class CommentatorInfo {
   @ApiProperty({ type: String })

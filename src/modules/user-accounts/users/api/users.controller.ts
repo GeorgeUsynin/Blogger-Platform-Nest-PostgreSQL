@@ -32,10 +32,7 @@ import {
 } from '../../../../core/exceptions';
 import { BasicAuthGuard } from '../guards/basic';
 import { Public } from '../guards/decorators';
-import {
-  CreateConfirmedUserCommand,
-  DeleteUserCommand,
-} from '../application/use-cases';
+import { CreateConfirmedUserCommand, DeleteUserCommand } from '../application';
 import { ROUTES } from '../../../../constants';
 
 @Controller(ROUTES.USERS)
