@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { PostEntity } from '../entities';
+import { PostEntity } from '../entities/post.entity';
 import { Post } from '../../domain';
 import { PostMapper } from '../post.mapper';
+import { WithId } from '../../../../../types/common';
 
 @Injectable()
 export class PostsRepository {

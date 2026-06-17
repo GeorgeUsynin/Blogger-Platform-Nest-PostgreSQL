@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { CommentEntity } from '../entities';
 import { CommentMapper } from '../comment.mapper';
 import { Comment } from '../../domain';
+import { WithId } from '../../../../../types/common';
 
 @Injectable()
 export class CommentsRepository {

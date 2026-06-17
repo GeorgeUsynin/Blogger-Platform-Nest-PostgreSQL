@@ -17,13 +17,13 @@ jobs:
             postgres:
                 image: postgres:16
                 env:
-                    POSTGRES_USER: example
-                    POSTGRES_PASSWORD: example
+                    POSTGRES_USER: george
+                    POSTGRES_PASSWORD: password
                     POSTGRES_DB: TypeORMBloggerPlatform_Test
                 ports:
                     - 5432:5432
                 options: >-
-                    --health-cmd="pg_isready -U example -d TypeORMBloggerPlatform_Test"
+                    --health-cmd="pg_isready -U george -d TypeORMBloggerPlatform_Test"
                     --health-interval=10s
                     --health-timeout=5s
                     --health-retries=10
@@ -45,6 +45,9 @@ jobs:
 
             - name: Install dependencies
               run: pnpm install --frozen-lockfile
+
+            - name: Run migrations
+              run: pnpm run migration:run 
 
             - name: Run tests
               run: npm run test:e2e

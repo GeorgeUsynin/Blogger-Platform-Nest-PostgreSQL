@@ -1,5 +1,6 @@
 import { Comment } from '../domain';
 import { CommentEntity } from './entities';
+import { WithId } from '../../../../types/common';
 
 export class CommentMapper {
   static toDomain(entity: CommentEntity): WithId<Comment> {

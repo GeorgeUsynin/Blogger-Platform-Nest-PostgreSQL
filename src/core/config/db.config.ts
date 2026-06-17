@@ -7,12 +7,13 @@ export const getDbConfig = (coreConfig: CoreConfig): TypeOrmModuleOptions => {
 
   return {
     type: DB_TYPE,
-    host: coreConfig.POSTGRESQL_URL,
     port: PG_PORT,
-    username: coreConfig.PG_USERNAME,
-    password: coreConfig.PG_PASSWORD,
-    database: coreConfig.DB_NAME_PG,
+    url: coreConfig.POSTGRESQL_URL,
+    // host: coreConfig.POSTGRESQL_URL,
+    // username: coreConfig.PG_USERNAME,
+    // password: coreConfig.PG_PASSWORD,
+    // database: coreConfig.DB_NAME_PG,
     autoLoadEntities: !isProduction,
-    synchronize: !isProduction,
+    synchronize: false,
   };
 };

@@ -1,5 +1,6 @@
 import { Post } from '../domain';
 import { PostEntity } from './entities';
+import { WithId } from '../../../../types/common';
 
 export class PostMapper {
   static toDomain(entity: PostEntity): WithId<Post> {

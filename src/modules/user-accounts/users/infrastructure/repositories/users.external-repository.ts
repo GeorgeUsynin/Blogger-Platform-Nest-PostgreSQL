@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { UserEntity } from '../entities';
 import { UserMapper } from '../user.mapper';
 import { User } from '../../domain';
+import { WithId } from '../../../../../types/common';
 
 @Injectable()
 export class UsersExternalRepository {

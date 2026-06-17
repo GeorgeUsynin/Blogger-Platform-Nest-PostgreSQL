@@ -1,5 +1,6 @@
 import { User, EmailConfirmation, PasswordRecovery } from '../domain';
 import { UserEntity } from './entities';
+import { WithId } from '../../../../types/common';
 
 export class UserMapper {
   static toDomain(entity: UserEntity): WithId<User> {

@@ -5,5 +5,4 @@ declare global {
     [K in keyof T as T[K] extends Function ? never : K]: T[K];
   };
   type StrictOmit<T, K extends keyof T> = Omit<T, K>;
-  type WithId<T> = T & { id: number };
 }
