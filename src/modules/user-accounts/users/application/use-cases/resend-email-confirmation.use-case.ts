@@ -1,6 +1,6 @@
-import { CommandHandler, EventBus, ICommandHandler } from '@nestjs/cqrs';
+import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { UsersRepository } from '../../infrastructure';
-import { EmailConfirmationRequestedEvent } from '../events';
 import { UserAccountsConfig } from '../../config';
 import { CodeCreationService } from '../code-creation.service';
 
@@ -14,7 +14,7 @@ export class ResendEmailConfirmationUseCase implements ICommandHandler<ResendEma
     private usersRepository: UsersRepository,
     private codeCreationService: CodeCreationService,
     private userAccountsConfig: UserAccountsConfig,
-    private eventBus: EventBus,
+    private eventEmitter: EventEmitter2,
   ) {}
 
   async execute({ email }: ResendEmailConfirmationCommand): Promise<void> {
@@ -33,7 +33,14 @@ export class ResendEmailConfirmationUseCase implements ICommandHandler<ResendEma
       });
       await this.usersRepository.saveUserAggregate(user);
 
-      user.commit();
+      const emailConfirmationRequestedEvent = user.getUncommittedEvents()[0];
+
+      await this.eventEmitter.emitAsync(
+        'email.confirmation.requested',
+        emailConfirmationRequestedEvent,
+      );
+
+      user.uncommit();
     }
   }
 }

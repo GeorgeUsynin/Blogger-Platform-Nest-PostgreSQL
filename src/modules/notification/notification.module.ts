@@ -15,7 +15,10 @@ import { NotificationConfig, NotificationConfigModule } from './config';
       imports: [NotificationConfigModule],
       useFactory: async (notificationConfig: NotificationConfig) => ({
         transport: {
+          host: '://gmail.com',
           service: notificationConfig.EMAIL_SERVICE,
+          port: 465,
+          secure: true,
           auth: {
             user: notificationConfig.EMAIL_BLOG_PLATFORM,
             pass: notificationConfig.EMAIL_BLOG_PLATFORM_PASSWORD,

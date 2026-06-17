@@ -1,4 +1,5 @@
 import { Like } from '../../../domain';
+import { WithId } from '../../../../../../types/common';
 
 export interface ILikesRepository {
   findById(id: number): Promise<WithId<Like> | null>;

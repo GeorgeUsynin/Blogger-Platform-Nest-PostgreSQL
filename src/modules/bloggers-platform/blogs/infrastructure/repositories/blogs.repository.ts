@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { BlogEntity } from '../entities';
 import { Blog } from '../../domain';
 import { BlogMapper } from '../blog.mapper';
+import { WithId } from '../../../../../types/common';
 
 @Injectable()
 export class BlogsRepository {

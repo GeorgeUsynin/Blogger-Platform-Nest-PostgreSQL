@@ -1,4 +1,5 @@
 import { CommandHandler, EventPublisher, ICommandHandler } from '@nestjs/cqrs';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { User } from '../../domain';
 import { CreateUserDto } from '../dto';
 import { UserAccountsConfig } from '../../config';
@@ -26,7 +27,7 @@ export class RegisterUserUseCase implements ICommandHandler<
     private userCreationService: UserCreationService,
     private codeCreationService: CodeCreationService,
     private usersRepository: UsersRepository,
-    private publisher: EventPublisher,
+    private eventEmitter: EventEmitter2,
   ) {}
 
   async execute({ dto }: RegisterUserCommand): Promise<TResult> {
@@ -39,22 +40,27 @@ export class RegisterUserUseCase implements ICommandHandler<
           .EMAIL_CONFIRMATION_CODE_EXPIRATION_TIME_IN_HOURS,
       );
 
-    const user = this.publisher.mergeObjectContext(
-      User.createUnconfirmed({
-        ...createUserDomainDto,
-        confirmation: {
-          code: confirmationCode,
-          expirationDate,
-        },
-      }),
-    );
+    const user = User.createUnconfirmed({
+      ...createUserDomainDto,
+      confirmation: {
+        code: confirmationCode,
+        expirationDate,
+      },
+    });
     const userId = await this.usersRepository.saveUserAggregate(user);
 
     if (!userId) {
       throw new UserCreationFailedError();
     }
 
-    user.commit();
+    const emailConfirmationRequestedEvent = user.getUncommittedEvents()[0];
+
+    await this.eventEmitter.emitAsync(
+      'email.confirmation.requested',
+      emailConfirmationRequestedEvent,
+    );
+
+    user.uncommit();
 
     return {
       userId,

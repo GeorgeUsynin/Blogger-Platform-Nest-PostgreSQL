@@ -1,4 +1,5 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { UsersRepository } from '../../infrastructure';
 import { UserAccountsConfig } from '../../config';
 import { CodeCreationService } from '../code-creation.service';
@@ -13,6 +14,7 @@ export class RecoverPasswordUseCase implements ICommandHandler<RecoverPasswordCo
     private codeCreationService: CodeCreationService,
     private usersRepository: UsersRepository,
     private userAccountsConfig: UserAccountsConfig,
+    private eventEmitter: EventEmitter2,
   ) {}
 
   async execute({ email }: RecoverPasswordCommand): Promise<void> {
@@ -30,7 +32,14 @@ export class RecoverPasswordUseCase implements ICommandHandler<RecoverPasswordCo
       });
       await this.usersRepository.saveUserAggregate(user);
 
-      user.commit();
+      const passwordRecoveryRequestedEvent = user.getUncommittedEvents()[0];
+
+      await this.eventEmitter.emitAsync(
+        'password.recovery.requested',
+        passwordRecoveryRequestedEvent,
+      );
+
+      user.uncommit();
     }
   }
 }

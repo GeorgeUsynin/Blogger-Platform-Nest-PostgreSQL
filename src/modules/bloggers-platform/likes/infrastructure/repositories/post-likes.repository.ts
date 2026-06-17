@@ -5,6 +5,7 @@ import { ILikesRepository } from './interfaces';
 import { Like } from '../../domain';
 import { PostLikeEntity } from '../entities';
 import { LikeMapper } from '../like.mapper';
+import { WithId } from '../../../../../types/common';
 
 @Injectable()
 export class PostLikesRepository implements ILikesRepository {

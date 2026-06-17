@@ -1,5 +1,6 @@
 import { Blog } from '../domain';
 import { BlogEntity } from './entities';
+import { WithId } from '../../../../types/common';
 
 export class BlogMapper {
   static toDomain(entity: BlogEntity): WithId<Blog> {

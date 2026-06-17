@@ -9,10 +9,10 @@ export class EmailAdapter {
     private notificationConfig: NotificationConfig,
   ) {}
 
-  sendEmail(email: string, subject: string, message: string) {
+  async sendEmail(email: string, subject: string, message: string) {
     if (!this.notificationConfig.SHOULD_SEND_EMAIL) return;
 
-    this.mailerService
+    return this.mailerService
       .sendMail({
         to: email,
         subject: subject,

@@ -16,7 +16,7 @@ describe('AuthController (e2e) - password recovery endpoints', () => {
     ({ app, basicAuthorization } = await runBeforeAllSetup());
     sendEmailSpy = jest
       .spyOn(EmailAdapter.prototype, 'sendEmail')
-      .mockImplementation(() => {});
+      .mockImplementation(() => Promise.resolve());
   });
 
   afterEach(async () => {

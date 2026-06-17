@@ -1,6 +1,8 @@
 import { configModule } from './config.module';
 import { Module } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
+import { join } from 'path';
+import { ServeStaticModule } from '@nestjs/serve-static';
 import {
   BloggersPlatformModule,
   UserAccountsModule,
@@ -16,6 +18,7 @@ import {
 } from './core/config';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 
 const includeTestingModule = configValidationUtility.convertToBoolean(
   process.env.INCLUDE_TESTING_MODULE!,
@@ -23,6 +26,11 @@ const includeTestingModule = configValidationUtility.convertToBoolean(
 
 @Module({
   imports: [
+    // Serve static files from swagger-static folder
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'swagger-static'),
+      serveRoot: '/api',
+    }),
     configModule,
     CoreModule,
     ...(includeTestingModule ? [TestingModule] : []),
@@ -39,6 +47,7 @@ const includeTestingModule = configValidationUtility.convertToBoolean(
       ],
       inject: [CoreConfig],
     }),
+    EventEmitterModule.forRoot(),
     CqrsModule.forRoot(),
     BloggersPlatformModule,
     UserAccountsModule,

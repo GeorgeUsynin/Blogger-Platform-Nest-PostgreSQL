@@ -8,7 +8,6 @@ const envFile = `.env.${env}`;
 
 config({
   path: path.resolve(__dirname, 'src/env', envFile),
-  override: true,
 });
 
 console.log(`Loading migrations with: ${envFile}`);
@@ -17,8 +16,8 @@ console.log(
 );
 
 export default new DataSource({
-  url: process.env.POSTGRESQL_URL,
   type: 'postgres',
+  url: process.env.POSTGRESQL_URL,
   migrations: ['migrations/*.ts'],
   entities: ['src/**/*.entity.ts'],
   logging: true,

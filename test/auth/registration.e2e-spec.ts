@@ -16,7 +16,7 @@ describe('AuthController (e2e) - registration-related endpoints', () => {
     ({ app, basicAuthorization } = await runBeforeAllSetup());
     sendConfirmationEmailSpy = jest
       .spyOn(EmailAdapter.prototype, 'sendEmail')
-      .mockImplementation(() => {});
+      .mockImplementation(() => Promise.resolve());
   });
 
   afterEach(async () => {

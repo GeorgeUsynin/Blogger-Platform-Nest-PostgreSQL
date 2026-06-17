@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
-import { EventPublisher } from '@nestjs/cqrs';
 import { DataSource, Repository } from 'typeorm';
 import { UserEntity } from '../entities';
 import { UserMapper } from '../user.mapper';
@@ -12,25 +11,24 @@ export class UsersRepository {
   constructor(
     @InjectDataSource() private dataSource: DataSource,
     @InjectRepository(UserEntity) private usersRepo: Repository<UserEntity>,
-    private publisher: EventPublisher,
   ) {}
 
   async findUserById(id: number): Promise<WithId<User> | null> {
     const entity = await this.usersRepo.findOneBy({ id });
 
-    return this.hydrate(entity);
+    return this.mapToDomain(entity);
   }
 
   async findUserByLogin(login: string): Promise<WithId<User> | null> {
     const entity = await this.usersRepo.findOneBy({ login });
 
-    return this.hydrate(entity);
+    return this.mapToDomain(entity);
   }
 
   async findUserByEmail(email: string): Promise<WithId<User> | null> {
     const entity = await this.usersRepo.findOneBy({ email });
 
-    return this.hydrate(entity);
+    return this.mapToDomain(entity);
   }
 
   async findUserByLoginOrEmail(
@@ -40,7 +38,7 @@ export class UsersRepository {
       where: [{ login: loginOrEmail }, { email: loginOrEmail }],
     });
 
-    return this.hydrate(entity);
+    return this.mapToDomain(entity);
   }
 
   async findUserByPasswordRecoveryCode(
@@ -50,7 +48,7 @@ export class UsersRepository {
       where: { passwordRecovery: { recoveryCode: code } },
     });
 
-    return this.hydrate(entity);
+    return this.mapToDomain(entity);
   }
 
   async findUserByEmailConfirmationCode(
@@ -60,7 +58,7 @@ export class UsersRepository {
       where: { emailConfirmation: { confirmationCode: code } },
     });
 
-    return this.hydrate(entity);
+    return this.mapToDomain(entity);
   }
 
   async softDeleteUserById(id: number): Promise<void> {
@@ -76,11 +74,9 @@ export class UsersRepository {
     });
   }
 
-  private hydrate(entity: UserEntity | null): WithId<User> | null {
+  private mapToDomain(entity: UserEntity | null): WithId<User> | null {
     if (!entity) return null;
 
-    const mappedToDomainEntity = UserMapper.toDomain(entity);
-
-    return this.publisher.mergeObjectContext(mappedToDomainEntity);
+    return UserMapper.toDomain(entity);
   }
 }

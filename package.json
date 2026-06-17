@@ -20,7 +20,8 @@
     "test:e2e": "cross-env NODE_ENV=testing jest --config ./test/jest-e2e.json --runInBand",
     "migration:generate": "typeorm-ts-node-commonjs migration:generate -d typeorm.config.ts",
     "migration:run": "typeorm-ts-node-commonjs migration:run -d typeorm.config.ts",
-    "migration:revert": "typeorm-ts-node-commonjs migration:revert -d typeorm.config.ts"
+    "migration:revert": "typeorm-ts-node-commonjs migration:revert -d typeorm.config.ts",
+    "migration:run:test": "cross-env NODE_ENV=testing npm run migration:run"
   },
   "dependencies": {
     "@nestjs-modules/mailer": "^2.0.2",
@@ -28,10 +29,12 @@
     "@nestjs/config": "^4.0.3",
     "@nestjs/core": "^11.0.1",
     "@nestjs/cqrs": "^11.0.3",
+    "@nestjs/event-emitter": "^3.1.0",
     "@nestjs/jwt": "^11.0.2",
     "@nestjs/mapped-types": "^2.1.0",
     "@nestjs/passport": "^11.0.5",
     "@nestjs/platform-express": "^11.0.1",
+    "@nestjs/serve-static": "^5.0.5",
     "@nestjs/swagger": "^11.2.6",
     "@nestjs/throttler": "^6.5.0",
     "@nestjs/typeorm": "^11.0.1",
@@ -58,6 +61,7 @@
     "@types/bcrypt": "^6.0.0",
     "@types/cookie-parser": "^1.4.10",
     "@types/date-fns": "^2.6.3",
+    "@types/dotenv": "^8.2.3",
     "@types/express": "^5.0.0",
     "@types/jest": "^30.0.0",
     "@types/ms": "^2.1.0",
@@ -66,6 +70,7 @@
     "@types/passport-local": "^1.0.38",
     "@types/supertest": "^6.0.2",
     "cross-env": "^10.1.0",
+    "dotenv": "^17.4.2",
     "eslint": "^9.18.0",
     "eslint-config-prettier": "^10.0.1",
     "eslint-plugin-prettier": "^5.2.2",

@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 
-export class Init1781690984146 implements MigrationInterface {
-    name = 'Init1781690984146'
+export class Init1781693315385 implements MigrationInterface {
+    name = 'Init1781693315385'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`CREATE TABLE "password_recoveries" ("userId" integer NOT NULL, "recoveryCode" uuid, "expirationDate" TIMESTAMP WITH TIME ZONE, CONSTRAINT "PK_db7fec32d882a9412d8081037ae" PRIMARY KEY ("userId"))`);
@@ -14,13 +14,17 @@ export class Init1781690984146 implements MigrationInterface {
 ), CONSTRAINT "PK_a3ffb1c0c8416b9fc6f907b7433" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE TABLE "email_confirmations" ("userId" integer NOT NULL, "isConfirmed" boolean NOT NULL, "confirmationCode" uuid, "expirationDate" TIMESTAMP WITH TIME ZONE, CONSTRAINT "PK_930e1d7c0171d23e5535b1e3873" PRIMARY KEY ("userId"))`);
         await queryRunner.query(`CREATE TABLE "devices" ("deviceId" uuid NOT NULL, "userId" integer NOT NULL, "issuedAt" TIMESTAMP WITH TIME ZONE NOT NULL, "deviceName" character varying NOT NULL, "clientIp" character varying NOT NULL, "expiresIn" TIMESTAMP WITH TIME ZONE NOT NULL, CONSTRAINT "PK_666c9b59efda8ca85b29157152c" PRIMARY KEY ("deviceId"))`);
-        await queryRunner.query(`CREATE TABLE "posts" ("id" SERIAL NOT NULL, "createdAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "deletedAt" TIMESTAMP WITH TIME ZONE, "blogId" integer NOT NULL, "title" character varying(30) NOT NULL, "shortDescription" character varying(100) NOT NULL, "content" character varying(1000) NOT NULL, CONSTRAINT "PK_2829ac61eff60fcec60d7274b9e" PRIMARY KEY ("id"))`);
-        await queryRunner.query(`CREATE TABLE "post_likes" ("id" SERIAL NOT NULL, "authorId" integer NOT NULL, "parentId" integer NOT NULL, "parentType" "public"."post_likes_parenttype_enum" NOT NULL, "likeStatus" "public"."post_likes_likestatus_enum" NOT NULL, "createdAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), CONSTRAINT "UQ_1ff5fe759cd16ff04d41ca6bb54" UNIQUE ("authorId", "parentId"), CONSTRAINT "PK_e4ac7cb9daf243939c6eabb2e0d" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE TABLE "blogs" ("id" SERIAL NOT NULL, "createdAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "deletedAt" TIMESTAMP WITH TIME ZONE, "name" character varying(15) NOT NULL, "description" character varying(500) NOT NULL, "websiteUrl" character varying(100) NOT NULL, "isMembership" boolean NOT NULL DEFAULT false, CONSTRAINT "CHK_2e47209383a7c56b6f9f0e5f04" CHECK (
     length("websiteUrl") <= 100
     AND "websiteUrl" ~ '^https://([a-zA-Z0-9_-]+.)+[a-zA-Z0-9_-]+(/[a-zA-Z0-9_-]+)*/?$'
 ), CONSTRAINT "PK_e113335f11c926da929a625f118" PRIMARY KEY ("id"))`);
+        await queryRunner.query(`CREATE TABLE "posts" ("id" SERIAL NOT NULL, "createdAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "deletedAt" TIMESTAMP WITH TIME ZONE, "blogId" integer NOT NULL, "title" character varying(30) NOT NULL, "shortDescription" character varying(100) NOT NULL, "content" character varying(1000) NOT NULL, CONSTRAINT "PK_2829ac61eff60fcec60d7274b9e" PRIMARY KEY ("id"))`);
+        await queryRunner.query(`CREATE TYPE "public"."post_likes_parenttype_enum" AS ENUM('comment', 'post')`);
+        await queryRunner.query(`CREATE TYPE "public"."post_likes_likestatus_enum" AS ENUM('Like', 'Dislike')`);
+        await queryRunner.query(`CREATE TABLE "post_likes" ("id" SERIAL NOT NULL, "authorId" integer NOT NULL, "parentId" integer NOT NULL, "parentType" "public"."post_likes_parenttype_enum" NOT NULL, "likeStatus" "public"."post_likes_likestatus_enum" NOT NULL, "createdAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), CONSTRAINT "UQ_1ff5fe759cd16ff04d41ca6bb54" UNIQUE ("authorId", "parentId"), CONSTRAINT "PK_e4ac7cb9daf243939c6eabb2e0d" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE TABLE "comments" ("id" SERIAL NOT NULL, "createdAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "deletedAt" TIMESTAMP WITH TIME ZONE, "authorId" integer NOT NULL, "postId" integer NOT NULL, "content" character varying(300) NOT NULL, CONSTRAINT "PK_8bf68bc960f2b69e818bdb90dcb" PRIMARY KEY ("id"))`);
+        await queryRunner.query(`CREATE TYPE "public"."comment_likes_parenttype_enum" AS ENUM('comment', 'post')`);
+        await queryRunner.query(`CREATE TYPE "public"."comment_likes_likestatus_enum" AS ENUM('Like', 'Dislike')`);
         await queryRunner.query(`CREATE TABLE "comment_likes" ("id" SERIAL NOT NULL, "authorId" integer NOT NULL, "parentId" integer NOT NULL, "parentType" "public"."comment_likes_parenttype_enum" NOT NULL, "likeStatus" "public"."comment_likes_likestatus_enum" NOT NULL, "createdAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), CONSTRAINT "UQ_307d6cf83d1a52c7ea5e0a160fa" UNIQUE ("authorId", "parentId"), CONSTRAINT "PK_2c299aaf1f903c45ee7e6c7b419" PRIMARY KEY ("id"))`);
         await queryRunner.query(`ALTER TABLE "password_recoveries" ADD CONSTRAINT "FK_db7fec32d882a9412d8081037ae" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE "email_confirmations" ADD CONSTRAINT "FK_930e1d7c0171d23e5535b1e3873" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
@@ -46,10 +50,14 @@ export class Init1781690984146 implements MigrationInterface {
         await queryRunner.query(`ALTER TABLE "email_confirmations" DROP CONSTRAINT "FK_930e1d7c0171d23e5535b1e3873"`);
         await queryRunner.query(`ALTER TABLE "password_recoveries" DROP CONSTRAINT "FK_db7fec32d882a9412d8081037ae"`);
         await queryRunner.query(`DROP TABLE "comment_likes"`);
+        await queryRunner.query(`DROP TYPE "public"."comment_likes_likestatus_enum"`);
+        await queryRunner.query(`DROP TYPE "public"."comment_likes_parenttype_enum"`);
         await queryRunner.query(`DROP TABLE "comments"`);
-        await queryRunner.query(`DROP TABLE "blogs"`);
         await queryRunner.query(`DROP TABLE "post_likes"`);
+        await queryRunner.query(`DROP TYPE "public"."post_likes_likestatus_enum"`);
+        await queryRunner.query(`DROP TYPE "public"."post_likes_parenttype_enum"`);
         await queryRunner.query(`DROP TABLE "posts"`);
+        await queryRunner.query(`DROP TABLE "blogs"`);
         await queryRunner.query(`DROP TABLE "devices"`);
         await queryRunner.query(`DROP TABLE "email_confirmations"`);
         await queryRunner.query(`DROP TABLE "users"`);
