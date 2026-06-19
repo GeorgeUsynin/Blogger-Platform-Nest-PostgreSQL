@@ -1,5 +1,12 @@
 import { DB_TABLE_NAMES } from '../../../../../constants';
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  Index,
+  JoinColumn,
+  ManyToOne,
+  PrimaryColumn,
+} from 'typeorm';
 import { UserEntity } from '../../../users/infrastructure/entities';
 
 @Entity({ name: DB_TABLE_NAMES.DEVICES })
@@ -7,6 +14,7 @@ export class DeviceEntity {
   @PrimaryColumn({ type: 'uuid' })
   deviceId: string;
 
+  @Index('userId_idx')
   @Column({ name: 'userId', type: 'integer' })
   userId: number;
 
