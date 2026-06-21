@@ -76,15 +76,9 @@ src/modules/feature/
 
 ---
 
-## 🌐 API Routes
+## 🌐 API Docs
 
-/auth
-/users
-/blogs
-/posts
-/comments
-/devices
-/testing
+https://blogger-platform-nest-postgre-sql.vercel.app/api
 
 ---
 
