@@ -51,7 +51,7 @@ export class PostsQueryRepository {
       sortDirection,
     )
       ? sortDirection.toUpperCase()
-      : SortDirection.Asc.toUpperCase();
+      : SortDirection.Desc.toUpperCase();
 
     const qb = this.getPostWithLikesBuilder(userId);
 

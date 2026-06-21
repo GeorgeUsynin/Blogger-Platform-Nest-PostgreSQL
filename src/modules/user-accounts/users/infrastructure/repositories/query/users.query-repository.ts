@@ -31,7 +31,7 @@ export class UsersQueryRepository {
       sortDirection,
     )
       ? sortDirection.toUpperCase()
-      : SortDirection.Asc.toUpperCase();
+      : SortDirection.Desc.toUpperCase();
 
     const where: FindOptionsWhere<UserEntity>[] = [];
 

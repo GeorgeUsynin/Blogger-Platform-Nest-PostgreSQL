@@ -40,7 +40,7 @@ export class CommentsQueryRepository {
       sortDirection,
     )
       ? sortDirection.toUpperCase()
-      : SortDirection.Asc.toUpperCase();
+      : SortDirection.Desc.toUpperCase();
 
     const qb = this.getCommentWithLikesBuilder(userId);
 

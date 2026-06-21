@@ -5,6 +5,7 @@ import { BlogNotFoundError } from './BlogNotFoundError';
 import { PostNotFoundError } from './PostNotFoundError';
 import { DeviceNotFoundError } from './DeviceNotFoundError';
 import { CommentNotFoundError } from './CommentNotFoundError';
+import { QuestionNotFoundError } from './QuestionNotFoundError';
 import { LikeNotFoundError } from './LikeNotFoundError';
 import { EmailAlreadyConfirmedByCode } from './EmailAlreadyConfirmedByCode';
 import { InvalidConfirmationCode } from './InvalidConfirmationCode';
@@ -17,6 +18,7 @@ import { NotAnOwnerOfThisComment } from './NotAnOwnerOfThisComment';
 import { UserCreationFailedError } from './UserCreationFailedError';
 import { PostCreationFailedError } from './PostCreationFailedError';
 import { BlogCreationFailedError } from './BlogCreationFailedError';
+import { QuestionCreationFailedError } from './QuestionCreationFailedError';
 import { CommentCreationFailedError } from './CommentCreationFailedError';
 import { BlogAlreadyDeleted } from './BlogAlreadyDeleted';
 import { PostAlreadyDeleted } from './PostAlreadyDeleted';
@@ -31,6 +33,7 @@ export {
   UserNotFoundError,
   BlogNotFoundError,
   PostNotFoundError,
+  QuestionNotFoundError,
   EmailAlreadyConfirmedByCode,
   InvalidConfirmationCode,
   ConfirmationCodeExpired,
@@ -45,6 +48,7 @@ export {
   UserCreationFailedError,
   PostCreationFailedError,
   BlogCreationFailedError,
+  QuestionCreationFailedError,
   CommentCreationFailedError,
   BlogAlreadyDeleted,
   PostAlreadyDeleted,

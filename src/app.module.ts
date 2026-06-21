@@ -8,6 +8,7 @@ import {
   UserAccountsModule,
   NotificationsModule,
   TestingModule,
+  QuizGameModule,
 } from './modules';
 import { AppController } from './app.controller';
 import { CoreModule } from './core';
@@ -52,6 +53,7 @@ const includeTestingModule = configValidationUtility.convertToBoolean(
     BloggersPlatformModule,
     UserAccountsModule,
     NotificationsModule,
+    QuizGameModule,
   ],
   controllers: [AppController],
 })

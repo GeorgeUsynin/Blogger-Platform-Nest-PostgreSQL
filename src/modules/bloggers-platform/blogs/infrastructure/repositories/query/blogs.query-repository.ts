@@ -25,7 +25,7 @@ export class BlogsQueryRepository {
       sortDirection,
     )
       ? sortDirection.toUpperCase()
-      : SortDirection.Asc.toUpperCase();
+      : SortDirection.Desc.toUpperCase();
 
     const where: FindOptionsWhere<BlogEntity>[] = [];
 
