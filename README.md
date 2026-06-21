@@ -54,11 +54,9 @@ Built using:
 - Domain-Driven Design (DDD)
 - CQRS
 
-Each feature is isolated.
-
 ### Feature structure
 
-src/modules/<feature>/
+src/modules/feature/
   api/
   application/
   domain/
@@ -72,8 +70,8 @@ src/modules/<feature>/
 
 ## 🔐 Authentication Model
 
-- Access token: 1h, Bearer header
-- Refresh token: httpOnly cookie, 2h
+- Access token
+- Refresh token
 - Device sessions stored in DB
 
 ---
