@@ -13,8 +13,8 @@ export class PasswordRecovery {
 
   // ---------- factory ----------
 
-  static create(props: CreatePasswordRecoveryInput): PasswordRecovery {
-    return new PasswordRecovery(props);
+  static create(input: CreatePasswordRecoveryInput): PasswordRecovery {
+    return new PasswordRecovery(input);
   }
 
   static reconstruct(input: ReconstructPasswordRecoveryInput) {

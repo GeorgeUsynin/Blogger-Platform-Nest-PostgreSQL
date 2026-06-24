@@ -20,6 +20,7 @@ export const ErrorCodes = {
   USER_NOT_FOUND: 'USER_NOT_FOUND',
   LIKE_NOT_FOUND: 'LIKE_NOT_FOUND',
   BLOG_CREATION_FAILED: 'BLOG_CREATION_FAILED',
+  GAME_CONNECTION_CREATION_FAILED: 'GAME_CONNECTION_CREATION_FAILED',
   POST_CREATION_FAILED: 'POST_CREATION_FAILED',
   QUESTION_CREATION_FAILED: 'QUESTION_CREATION_FAILED',
   COMMENT_CREATION_FAILED: 'COMMENT_CREATION_FAILED',
@@ -27,6 +28,8 @@ export const ErrorCodes = {
   INVALID_CREDENTIALS: 'INVALID_CREDENTIALS',
   EMAIL_NOT_CONFIRMED: 'EMAIL_NOT_CONFIRMED',
   PASSWORD_RECOVERY_NOT_INITIATED: 'PASSWORD_RECOVERY_NOT_INITIATED',
+  USER_ALREADY_HAS_ACTIVE_GAME: 'USER_ALREADY_HAS_ACTIVE_GAME',
+  NOT_ENOUGH_PUBLISHED_QUESTIONS: 'NOT_ENOUGH_PUBLISHED_QUESTIONS',
 } as const;
 
 export type ErrorCode = (typeof ErrorCodes)[keyof typeof ErrorCodes];
@@ -54,6 +57,8 @@ export const ErrorMessages: Record<ErrorCode, string> = {
   [ErrorCodes.USER_NOT_FOUND]: "User doesn't exist",
   [ErrorCodes.LIKE_NOT_FOUND]: "Like doesn't exist",
   [ErrorCodes.BLOG_CREATION_FAILED]: 'Blog creation failed',
+  [ErrorCodes.GAME_CONNECTION_CREATION_FAILED]:
+    'Game connection creation failed',
   [ErrorCodes.POST_CREATION_FAILED]: 'Post creation failed',
   [ErrorCodes.COMMENT_CREATION_FAILED]: 'Comment creation failed',
   [ErrorCodes.QUESTION_CREATION_FAILED]: 'Question creation failed',
@@ -62,6 +67,10 @@ export const ErrorMessages: Record<ErrorCode, string> = {
   [ErrorCodes.EMAIL_NOT_CONFIRMED]: 'Email address is not confirmed',
   [ErrorCodes.PASSWORD_RECOVERY_NOT_INITIATED]:
     'Password recovery was not initiated',
+  [ErrorCodes.USER_ALREADY_HAS_ACTIVE_GAME]:
+    'You are already participating in an active game',
+  [ErrorCodes.NOT_ENOUGH_PUBLISHED_QUESTIONS]:
+    'Not enough published questions. Please add more or publish existed ones',
 };
 
 export const ErrorFields = {

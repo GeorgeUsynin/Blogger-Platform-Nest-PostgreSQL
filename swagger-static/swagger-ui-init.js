@@ -2088,6 +2088,25 @@ window.onload = function() {
             "QuizQuestions"
           ]
         }
+      },
+      "/api/pair-game-quiz/pairs/connection": {
+        "post": {
+          "operationId": "GamesController_createGameConnection",
+          "parameters": [],
+          "responses": {
+            "200": {
+              "description": ""
+            }
+          },
+          "security": [
+            {
+              "bearer": []
+            }
+          ],
+          "tags": [
+            "Games"
+          ]
+        }
       }
     },
     "info": {

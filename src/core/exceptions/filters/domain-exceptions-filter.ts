@@ -32,12 +32,16 @@ export class DomainExceptionsFilter extends BaseExceptionFilter {
       case ErrorCodes.USER_NOT_FOUND:
       case ErrorCodes.BLOG_NOT_FOUND:
       case ErrorCodes.POST_NOT_FOUND:
+      case ErrorCodes.QUESTION_NOT_FOUND:
       case ErrorCodes.COMMENT_NOT_FOUND:
       case ErrorCodes.DEVICE_NOT_FOUND:
         return HttpStatus.NOT_FOUND;
       case ErrorCodes.NOT_AN_OWNER_OF_THIS_DEVICE:
       case ErrorCodes.NOT_AN_OWNER_OF_THIS_COMMENT:
+      case ErrorCodes.USER_ALREADY_HAS_ACTIVE_GAME:
         return HttpStatus.FORBIDDEN;
+      case ErrorCodes.NOT_ENOUGH_PUBLISHED_QUESTIONS:
+        return HttpStatus.CONFLICT;
       case ErrorCodes.USER_CREATION_FAILED:
         return HttpStatus.INTERNAL_SERVER_ERROR;
       default:

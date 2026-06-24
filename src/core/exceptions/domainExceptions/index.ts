@@ -18,6 +18,7 @@ import { NotAnOwnerOfThisComment } from './NotAnOwnerOfThisComment';
 import { UserCreationFailedError } from './UserCreationFailedError';
 import { PostCreationFailedError } from './PostCreationFailedError';
 import { BlogCreationFailedError } from './BlogCreationFailedError';
+import { GameConnectionCreationFailedError } from './GameConnectionCreationFailedError';
 import { QuestionCreationFailedError } from './QuestionCreationFailedError';
 import { CommentCreationFailedError } from './CommentCreationFailedError';
 import { BlogAlreadyDeleted } from './BlogAlreadyDeleted';
@@ -26,6 +27,8 @@ import { CommentAlreadyDeleted } from './CommentAlreadyDeleted';
 import { UserAlreadyDeleted } from './UserAlreadyDeleted';
 import { EmailNotConfirmedError } from './EmailNotConfirmed';
 import { PasswordRecoveryNotInitiated } from './PasswordRecoveryNotInitiated';
+import { AlreadyParticipatingInActiveGame } from './AlreadyParticipatingInActiveGame';
+import { NotEnoughPublishedQuestions } from './NotEnoughPublishedQuestions';
 
 export {
   BaseDomainException,
@@ -50,10 +53,13 @@ export {
   BlogCreationFailedError,
   QuestionCreationFailedError,
   CommentCreationFailedError,
+  GameConnectionCreationFailedError,
   BlogAlreadyDeleted,
   PostAlreadyDeleted,
   CommentAlreadyDeleted,
   UserAlreadyDeleted,
   EmailNotConfirmedError,
   PasswordRecoveryNotInitiated,
+  AlreadyParticipatingInActiveGame,
+  NotEnoughPublishedQuestions,
 };

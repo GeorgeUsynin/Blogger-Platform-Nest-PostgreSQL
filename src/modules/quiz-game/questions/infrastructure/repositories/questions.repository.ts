@@ -13,6 +13,20 @@ export class QuestionsRepository {
     private questionsRepo: Repository<QuestionEntity>,
   ) {}
 
+  async getRandomQuestionIds(quantity: number): Promise<number[]> {
+    const rows = await this.questionsRepo
+      .createQueryBuilder('q')
+      .select('q.id', 'id')
+      .where('q.isPublished = :isPublished', {
+        isPublished: true,
+      })
+      .orderBy('RANDOM()')
+      .limit(quantity)
+      .getRawMany();
+
+    return rows.map((r) => r.id);
+  }
+
   async findById(id: number): Promise<WithId<Question> | null> {
     const entity = await this.questionsRepo.findOneBy({ id });
 
