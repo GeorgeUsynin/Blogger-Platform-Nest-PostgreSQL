@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { AnswerStatus, GameStatus } from '../../../domain/types/game.types';
+import { GameQueryModel } from '../../../infrastructure/repositories/query/model';
 
 class Answer {
   @ApiProperty()
@@ -77,15 +78,47 @@ export class GameViewDto {
   })
   finishGameDate: Date | null;
 
-  public static mapToView(game: any): GameViewDto {
+  public static mapToView(game: GameQueryModel): GameViewDto {
     const dto = new GameViewDto();
 
-    // dto.id = question.id.toString();
-    // dto.body = question.body;
-    // dto.correctAnswers = question.correctAnswers;
-    // dto.published = question.isPublished;
-    // dto.createdAt = question.createdAt;
-    // dto.updatedAt = question.updatedAt;
+    dto.id = game.id.toString();
+    dto.status = game.status;
+    dto.pairCreatedDate = game.createdAt;
+    dto.startGameDate = game.startGameDate;
+    dto.finishGameDate = game.finishGameDate;
+    dto.firstPlayerProgress = {
+      answers: game.playerProgresses[0].answers.map((a) => ({
+        questionId: a.questionId.toString(),
+        answerStatus: a.answerStatus,
+        addedAt: a.createdAt,
+      })),
+      player: {
+        id: game.playerProgresses[0].player.id.toString(),
+        login: game.playerProgresses[0].player.login,
+      },
+      score: game.playerProgresses[0].score,
+    };
+    dto.secondPlayerProgress = game.playerProgresses[1]
+      ? {
+          answers: game.playerProgresses[1].answers.map((a) => ({
+            questionId: a.questionId.toString(),
+            answerStatus: a.answerStatus,
+            addedAt: a.createdAt,
+          })),
+          player: {
+            id: game.playerProgresses[1].player.id.toString(),
+            login: game.playerProgresses[1].player.login,
+          },
+          score: game.playerProgresses[1].score,
+        }
+      : null;
+    dto.questions =
+      game.status === GameStatus.PendingSecondPlayer
+        ? null
+        : game.questions.map((q) => ({
+            id: q.id.toString(),
+            body: q.body,
+          }));
 
     return dto;
   }

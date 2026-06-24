@@ -16,6 +16,25 @@ export class GamesRepository {
   async findPendingGame(): Promise<WithId<Game> | null> {
     const entity = await this.gamesRepo.findOne({
       where: { status: GameStatus.PendingSecondPlayer },
+      relations: {
+        playersProgresses: true,
+        gameToQuestions: true,
+      },
+      select: {
+        id: true,
+        status: true,
+        startGameDate: true,
+        finishGameDate: true,
+        playersProgresses: {
+          id: true,
+          userId: true,
+        },
+        gameToQuestions: {
+          id: true,
+          questionId: true,
+          order: true,
+        },
+      },
     });
 
     return this.mapToDomain(entity);

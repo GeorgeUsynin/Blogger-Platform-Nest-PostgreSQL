@@ -1,7 +1,7 @@
 import { Command, CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { AlreadyParticipatingInActiveGame } from '../../../../../core/exceptions';
 import { PlayerProgressesRepository } from '../../infrastructure/repositories/player-progresses.repository';
-import { GamesRepository } from '../../infrastructure/repositories/game.repository';
+import { GamesRepository } from '../../infrastructure/repositories/games.repository';
 import { Game } from '../../domain/game.aggregate';
 import { QuestionsService } from '../../../questions/application/questions.service';
 import { GameRules } from '../../domain/constants';

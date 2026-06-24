@@ -26,14 +26,14 @@ export class GameEntity extends BaseDBEntity {
   @OneToMany(
     () => GameToQuestionEntity,
     (gameToQuestion) => gameToQuestion.game,
-    { cascade: true, eager: true },
+    { cascade: true },
   )
   gameToQuestions: GameToQuestionEntity[];
 
   @OneToMany(
     () => PlayerProgressEntity,
     (playerProgress) => playerProgress.game,
-    { cascade: true, eager: true },
+    { cascade: true },
   )
   playersProgresses: PlayerProgressEntity[];
 }

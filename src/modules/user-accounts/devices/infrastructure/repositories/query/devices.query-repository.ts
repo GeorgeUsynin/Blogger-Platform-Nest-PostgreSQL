@@ -12,7 +12,7 @@ export class DevicesQueryRepository {
   ) {}
 
   async getAllByUserId(userId: number): Promise<DeviceQueryModel[]> {
-    const devices = this.devicesRepository.find({
+    const devices = await this.devicesRepository.find({
       where: { userId },
       select: {
         clientIp: true,
@@ -22,6 +22,11 @@ export class DevicesQueryRepository {
       },
     });
 
-    return devices;
+    return devices.map((device) => ({
+      clientIp: device.clientIp,
+      deviceId: device.deviceId,
+      issuedAt: device.issuedAt,
+      deviceName: device.deviceName,
+    }));
   }
 }

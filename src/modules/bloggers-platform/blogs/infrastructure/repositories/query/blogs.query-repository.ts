@@ -50,7 +50,17 @@ export class BlogsQueryRepository {
       take: pageSize,
     });
 
-    return { items, totalCount };
+    return {
+      items: items.map((blog) => ({
+        id: blog.id,
+        name: blog.name,
+        description: blog.description,
+        websiteUrl: blog.websiteUrl,
+        isMembership: blog.isMembership,
+        createdAt: blog.createdAt,
+      })),
+      totalCount,
+    };
   }
 
   async getBlogById(id: number): Promise<BlogQueryModel | null> {

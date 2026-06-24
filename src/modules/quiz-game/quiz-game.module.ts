@@ -14,8 +14,9 @@ import { PlayerProgressEntity } from './gameplay/infrastructure/entities/player-
 import { GameToQuestionEntity } from './gameplay/infrastructure/entities/game-to-question.entity';
 import { AnswerEntity } from './gameplay/infrastructure/entities/answer.entity';
 import { gameUseCases } from './gameplay';
-import { GamesRepository } from './gameplay/infrastructure/repositories/game.repository';
+import { GamesRepository } from './gameplay/infrastructure/repositories/games.repository';
 import { PlayerProgressesRepository } from './gameplay/infrastructure/repositories/player-progresses.repository';
+import { GamesQueryRepository } from './gameplay/infrastructure/repositories/query/games.query-repository';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { PlayerProgressesRepository } from './gameplay/infrastructure/repositori
     ...questionUseCases,
     ...gameUseCases,
     GamesRepository,
+    GamesQueryRepository,
     PlayerProgressesRepository,
     QuestionsService,
     QuestionsRepository,

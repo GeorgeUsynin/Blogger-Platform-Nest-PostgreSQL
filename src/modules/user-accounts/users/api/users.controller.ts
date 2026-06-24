@@ -35,7 +35,7 @@ import { Public } from '../guards/decorators';
 import { CreateConfirmedUserCommand, DeleteUserCommand } from '../application';
 import { ROUTES } from '../../../../constants';
 
-@Controller(ROUTES.USERS)
+@Controller(`${ROUTES.SA}/${ROUTES.USERS}`)
 @UseGuards(BasicAuthGuard)
 export class UsersController {
   constructor(

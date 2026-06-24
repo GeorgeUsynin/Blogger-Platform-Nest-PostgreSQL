@@ -65,7 +65,17 @@ export class QuestionsQueryRepository {
       take: pageSize,
     });
 
-    return { items, totalCount };
+    return {
+      items: items.map((question) => ({
+        id: question.id,
+        body: question.body,
+        correctAnswers: question.correctAnswers,
+        isPublished: question.isPublished,
+        createdAt: question.createdAt,
+        updatedAt: question.updatedAt,
+      })),
+      totalCount,
+    };
   }
 
   async getQuestionById(id: number): Promise<QuestionQueryModel | null> {

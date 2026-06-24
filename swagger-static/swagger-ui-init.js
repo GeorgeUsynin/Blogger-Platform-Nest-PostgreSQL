@@ -1145,7 +1145,7 @@ window.onload = function() {
           ]
         }
       },
-      "/api/users": {
+      "/api/sa/users": {
         "get": {
           "operationId": "UsersController_getAllUsers",
           "parameters": [
@@ -1304,7 +1304,7 @@ window.onload = function() {
           ]
         }
       },
-      "/api/users/{id}": {
+      "/api/sa/users/{id}": {
         "get": {
           "operationId": "UsersController_getUserById",
           "parameters": [

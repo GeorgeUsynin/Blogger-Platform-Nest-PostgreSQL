@@ -14,11 +14,15 @@ import { UserContextDto } from '../../../user-accounts/users/guards/dto';
 import { GameViewDto } from './dto';
 import { GameConnectionCreationFailedError } from '../../../../core/exceptions';
 import { CreateGameConnectionCommand } from '../application/use-cases';
+import { GamesQueryRepository } from '../infrastructure/repositories/query/games.query-repository';
 
 @Controller(`${ROUTES.PAIR_GAME_QUIZ}/${ROUTES.PAIRS}`)
 @UseGuards(JwtHeaderAuthGuard)
 export class GamesController {
-  constructor(private commandBus: CommandBus) {}
+  constructor(
+    private gamesQueryRepository: GamesQueryRepository,
+    private commandBus: CommandBus,
+  ) {}
 
   @ApiBearerAuth()
   @Post(`${ROUTES.CONNECTION}`)
@@ -26,19 +30,18 @@ export class GamesController {
   // @CreateQuestionApi()
   async createGameConnection(
     @ExtractUserFromRequest() user: UserContextDto,
-  ): Promise<void> {
-    // ): Promise<GameViewDto> {
+  ): Promise<GameViewDto> {
     const gameConnectionId = await this.commandBus.execute(
       new CreateGameConnectionCommand(user.userId),
     );
 
-    // const createdGameConnection =
-    //   await this.questionsQueryRepository.getQuestionById(questionId);
+    const createdGameConnection =
+      await this.gamesQueryRepository.getGameById(gameConnectionId);
 
-    // if (!createdGameConnection) {
-    //   throw new GameConnectionCreationFailedError();
-    // }
+    if (!createdGameConnection) {
+      throw new GameConnectionCreationFailedError();
+    }
 
-    // return GameViewDto.mapToView(createdGameConnection);
+    return GameViewDto.mapToView(createdGameConnection);
   }
 }

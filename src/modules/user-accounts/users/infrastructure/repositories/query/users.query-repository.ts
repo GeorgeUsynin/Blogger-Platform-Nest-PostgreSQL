@@ -58,7 +58,15 @@ export class UsersQueryRepository {
       take: pageSize,
     });
 
-    return { items, totalCount };
+    return {
+      items: items.map((user) => ({
+        id: user.id,
+        login: user.login,
+        email: user.email,
+        createdAt: user.createdAt,
+      })),
+      totalCount,
+    };
   }
 
   async getUserById(id: number): Promise<UserQueryModel | null> {

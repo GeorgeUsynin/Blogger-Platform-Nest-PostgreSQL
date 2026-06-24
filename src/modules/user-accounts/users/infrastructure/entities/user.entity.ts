@@ -9,6 +9,7 @@ import { DB_TABLE_NAMES } from '../../../../../constants';
 import { BaseDBEntity } from '../../../../shared/entities';
 import { EmailConfirmationEntity } from './email-confirmation.entity';
 import { PasswordRecoveryEntity } from './password-recovery.entity';
+import { PlayerProgressEntity } from '../../../../quiz-game/gameplay/infrastructure/entities/player-progress.entity';
 
 @Check(loginCheckConstraints)
 @Check(emailCheckConstraints)
@@ -34,4 +35,7 @@ export class UserEntity extends BaseDBEntity {
     eager: true,
   })
   passwordRecovery: PasswordRecoveryEntity | null;
+
+  @OneToMany(() => PlayerProgressEntity, (pp) => pp.playerAccount)
+  playerProgresses: PlayerProgressEntity[];
 }

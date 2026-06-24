@@ -1,6 +1,7 @@
 import { DB_TABLE_NAMES } from '../../../../../constants';
 import {
   Column,
+  CreateDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
@@ -22,7 +23,12 @@ export class PlayerProgressEntity {
   @Column({ type: 'integer' })
   gameId: number;
 
-  @ManyToOne(() => UserEntity, { nullable: false })
+  @CreateDateColumn({ type: 'timestamp with time zone' })
+  createdAt: Date;
+
+  @ManyToOne(() => UserEntity, (user) => user.playerProgresses, {
+    nullable: false,
+  })
   @JoinColumn({ name: 'userId', referencedColumnName: 'id' })
   playerAccount: UserEntity;
 
@@ -34,7 +40,6 @@ export class PlayerProgressEntity {
 
   @OneToMany(() => AnswerEntity, (answer) => answer.playerProgress, {
     cascade: true,
-    eager: true,
   })
   answers: AnswerEntity[];
 }
