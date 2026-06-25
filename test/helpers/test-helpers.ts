@@ -53,7 +53,7 @@ export const runBeforeAllSetup = async (
   const basicAuthorization = getBasicAuthorization(adminLogin!, adminPassword!);
 
   // Cleaning all relations
-  const a = await request(app.getHttpServer())
+  await request(app.getHttpServer())
     .delete('/api/testing/all-data')
     .expect(HttpStatus.NO_CONTENT);
 

@@ -12,7 +12,7 @@ export class TestingController {
   @TestingAllDataApi()
   async deleteAll() {
     const query = `
-    TRUNCATE TABLE "users", "blogs", "questions"
+    TRUNCATE TABLE "users", "blogs", "questions", "games"
     RESTART IDENTITY CASCADE;
     `;
     await this.dataSource.query(query);

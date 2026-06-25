@@ -34,7 +34,9 @@ export class GamesQueryRepository {
         .innerJoin('g.playersProgresses', 'userProgress')
         .innerJoin('userProgress.playerAccount', 'userPlayer'),
     )
-      .where('g.status = :status', { status: GameStatus.Active })
+      .where('g.status IN (:...statuses)', {
+        statuses: [GameStatus.PendingSecondPlayer, GameStatus.Active],
+      })
       .andWhere('userPlayer.id = :userId', { userId })
       .orderBy('gtq.order', 'ASC')
       .getOne();
@@ -111,11 +113,13 @@ export class GamesQueryRepository {
         )
         .map((pp) => {
           return {
-            answers: pp.answers.map((answer) => ({
-              questionId: answer.id,
-              answerStatus: answer.answerStatus,
-              createdAt: answer.createdAt,
-            })),
+            answers: pp.answers
+              .sort((a1, a2) => a1.createdAt.getTime() - a2.createdAt.getTime())
+              .map((answer) => ({
+                questionId: answer.questionId,
+                answerStatus: answer.answerStatus,
+                createdAt: answer.createdAt,
+              })),
             player: pp.playerAccount,
             score:
               GameScoreCalculator.calculate(
