@@ -40,6 +40,46 @@ export class GamesRepository {
     return this.mapToDomain(entity);
   }
 
+  async findUserActiveGame(userId: number): Promise<WithId<Game> | null> {
+    const game = await this.gamesRepo
+      .createQueryBuilder('g')
+      .innerJoin('g.playersProgresses', 'userProgress')
+      .innerJoin('userProgress.playerAccount', 'userPlayer')
+      .leftJoin('g.playersProgresses', 'pp')
+      .leftJoin('pp.playerAccount', 'p')
+      .leftJoin('pp.answers', 'a')
+      .leftJoin('g.gameToQuestions', 'gtq')
+      .leftJoin('gtq.question', 'q')
+      .select([
+        'g.id',
+        'g.status',
+        'g.createdAt',
+        'g.startGameDate',
+        'g.finishGameDate',
+
+        'pp.id',
+        'pp.createdAt',
+
+        'p.id',
+        'p.login',
+
+        'a.id',
+        'a.questionId',
+        'a.answerStatus',
+        'a.createdAt',
+
+        'gtq.id',
+
+        'q.id',
+        'q.body',
+      ])
+      .where('g.status = :status', { status: GameStatus.Active })
+      .andWhere('userPlayer.id = :userId', { userId })
+      .getOne();
+
+    return game ? this.mapToDomain(game) : null;
+  }
+
   async saveGameAggregate(game: Game): Promise<number> {
     const entity = GameMapper.toPersistence(game);
 

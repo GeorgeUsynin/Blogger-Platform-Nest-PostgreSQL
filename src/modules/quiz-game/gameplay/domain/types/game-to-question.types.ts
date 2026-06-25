@@ -1,6 +1,7 @@
 export type GameToQuestionState = {
   id?: number;
   questionId: number;
+  correctAnswers?: string[];
   order: number;
 };
 
@@ -9,4 +10,10 @@ export type CreateGameToQuestionInput = {
   order: number;
 };
 
-export type ReconstructGameToQuestionInput = GameToQuestionState;
+export type ReconstructGameToQuestionInput = Omit<
+  GameToQuestionState,
+  'id' | 'body'
+> & {
+  id: number;
+  correctAnswers: string[];
+};

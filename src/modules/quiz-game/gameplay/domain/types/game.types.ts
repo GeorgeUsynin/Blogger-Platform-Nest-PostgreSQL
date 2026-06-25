@@ -21,4 +21,4 @@ export type GameState = {
   questionsOfTheGame: GameToQuestion[];
 };
 
-export type ReconstructGameInput = GameState;
+export type ReconstructGameInput = Omit<GameState, 'id'> & { id: number };

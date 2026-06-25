@@ -41,6 +41,10 @@ export class DomainExceptionsFilter extends BaseExceptionFilter {
       case ErrorCodes.NOT_AN_OWNER_OF_THIS_COMMENT:
       case ErrorCodes.USER_ALREADY_HAS_ACTIVE_GAME:
       case ErrorCodes.NOT_PARTICIPATING_IN_GAME:
+      case ErrorCodes.PLAYER_NOT_IN_GAME:
+      case ErrorCodes.GAME_IS_NOT_ACTIVE:
+      case ErrorCodes.GAME_NOT_ACCEPTING_PLAYERS:
+      case ErrorCodes.ALL_QUESTIONS_ALREADY_ANSWERED:
         return HttpStatus.FORBIDDEN;
       case ErrorCodes.NOT_ENOUGH_PUBLISHED_QUESTIONS:
         return HttpStatus.CONFLICT;

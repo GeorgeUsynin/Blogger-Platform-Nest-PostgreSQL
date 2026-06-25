@@ -1,4 +1,4 @@
-import { AnswerStatus, GameStatus } from '../../../../domain/types';
+import { AnswerStatus, GameStatus } from '../../../../domain/types/game.types';
 
 type Answer = {
   questionId: number;

@@ -22,6 +22,7 @@ import { BlogCreationFailedError } from './BlogCreationFailedError';
 import { GameConnectionCreationFailedError } from './GameConnectionCreationFailedError';
 import { QuestionCreationFailedError } from './QuestionCreationFailedError';
 import { CommentCreationFailedError } from './CommentCreationFailedError';
+import { AnswerCreationFailedError } from './AnswerCreationFailedError';
 import { BlogAlreadyDeleted } from './BlogAlreadyDeleted';
 import { PostAlreadyDeleted } from './PostAlreadyDeleted';
 import { CommentAlreadyDeleted } from './CommentAlreadyDeleted';
@@ -30,6 +31,13 @@ import { EmailNotConfirmedError } from './EmailNotConfirmed';
 import { PasswordRecoveryNotInitiated } from './PasswordRecoveryNotInitiated';
 import { AlreadyParticipatingInActiveGame } from './AlreadyParticipatingInActiveGame';
 import { NotParticipatingInGameError } from './NotParticipatingInGameError';
+import { PlayerNotInGameError } from './PlayerNotInGameError';
+import { GameIsNotActiveError } from './GameIsNotActiveError';
+import { GameNotAcceptingPlayersError } from './GameNotAcceptingPlayersError';
+import { AllQuestionsAlreadyAnsweredError } from './AllQuestionsAlreadyAnsweredError';
+import { QuestionNotFoundDomainError } from './QuestionNotFoundDomainError';
+import { CorrectAnswersNotDefinedDomainError } from './CorrectAnswersNotDefinedDomainError';
+import { QuestionIdNotDefinedDomainError } from './QuestionIdNotDefinedDomainError';
 import { NotEnoughPublishedQuestions } from './NotEnoughPublishedQuestions';
 
 export {
@@ -56,6 +64,7 @@ export {
   BlogCreationFailedError,
   QuestionCreationFailedError,
   CommentCreationFailedError,
+  AnswerCreationFailedError,
   GameConnectionCreationFailedError,
   BlogAlreadyDeleted,
   PostAlreadyDeleted,
@@ -65,5 +74,12 @@ export {
   PasswordRecoveryNotInitiated,
   AlreadyParticipatingInActiveGame,
   NotParticipatingInGameError,
+  PlayerNotInGameError,
+  GameIsNotActiveError,
+  GameNotAcceptingPlayersError,
+  AllQuestionsAlreadyAnsweredError,
+  QuestionNotFoundDomainError,
+  CorrectAnswersNotDefinedDomainError,
+  QuestionIdNotDefinedDomainError,
   NotEnoughPublishedQuestions,
 };

@@ -1,8 +1,17 @@
 import { AggregateRoot } from '@nestjs/cqrs';
-import { GameState, GameStatus, ReconstructGameInput } from './types';
+import {
+  GameState,
+  GameStatus,
+  ReconstructGameInput,
+} from './types/game.types';
 import { GameToQuestion, PlayerProgress } from './value-objects';
 import { GameRules } from './constants';
-import { NotEnoughPublishedQuestions } from '../../../../core/exceptions';
+import {
+  GameIsNotActiveError,
+  GameNotAcceptingPlayersError,
+  PlayerNotInGameError,
+  NotEnoughPublishedQuestions,
+} from '../../../../core/exceptions';
 
 export class Game extends AggregateRoot {
   private constructor(private props: GameState) {
@@ -31,7 +40,26 @@ export class Game extends AggregateRoot {
   // ---------- player progress use-cases ----------
 
   public addPlayer(userId: number): void {
+    this.ensureCanAcceptPlayers();
     this.props.playersProgresses.push(PlayerProgress.create(userId));
+  }
+
+  public addAnswer(body: string, userId: number) {
+    this.ensureActiveGame();
+
+    const playerProgress = this.playersProgresses.find(
+      (pp) => pp.userId === userId,
+    );
+
+    if (!playerProgress) {
+      throw new PlayerNotInGameError();
+    }
+
+    playerProgress.addAnswer(body, this.questionsOfTheGame);
+
+    if (this.playersProgresses.every((pp) => pp.isLastAnswer())) {
+      this.finish();
+    }
   }
 
   // ---------- game questions use-cases ----------
@@ -68,6 +96,18 @@ export class Game extends AggregateRoot {
     );
   }
 
+  public ensureActiveGame(): void {
+    if (this.status !== GameStatus.Active) {
+      throw new GameIsNotActiveError();
+    }
+  }
+
+  public ensureCanAcceptPlayers(): void {
+    if (this.status !== GameStatus.PendingSecondPlayer) {
+      throw new GameNotAcceptingPlayersError();
+    }
+  }
+
   // ---------- state mutation ----------
 
   private setStatus(status: GameStatus): void {
@@ -80,6 +120,11 @@ export class Game extends AggregateRoot {
 
   private setFinishGameDate(date: Date): void {
     this.props.finishGameDate = date;
+  }
+
+  private finish(): void {
+    this.setStatus(GameStatus.Finished);
+    this.setFinishGameDate(new Date());
   }
 
   // ---------- getters ---------

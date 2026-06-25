@@ -2089,45 +2089,9 @@ window.onload = function() {
           ]
         }
       },
-      "/api/pair-game-quiz/pairs/connection": {
-        "post": {
-          "operationId": "GamesController_createGameConnection",
-          "parameters": [],
-          "responses": {
-            "200": {
-              "description": "Returns current pair game",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/GameViewDto"
-                  }
-                }
-              }
-            },
-            "401": {
-              "description": "Unauthorized"
-            },
-            "403": {
-              "description": "If current user is already participating in active pair"
-            },
-            "409": {
-              "description": "If there are not enough published questions to start game"
-            }
-          },
-          "security": [
-            {
-              "bearer": []
-            }
-          ],
-          "summary": "Connect current user to a quiz game pair",
-          "tags": [
-            "Games"
-          ]
-        }
-      },
       "/api/pair-game-quiz/pairs/my-current": {
         "get": {
-          "operationId": "GamesController_getUserCurrentGame",
+          "operationId": "GamesController_getUserActiveGame",
           "parameters": [],
           "responses": {
             "200": {
@@ -2209,6 +2173,96 @@ window.onload = function() {
             }
           ],
           "summary": "Returns pair game by id",
+          "tags": [
+            "Games"
+          ]
+        }
+      },
+      "/api/pair-game-quiz/pairs/answers": {
+        "post": {
+          "operationId": "GamesController_createAnswer",
+          "parameters": [],
+          "requestBody": {
+            "required": true,
+            "description": "Answer body",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SwaggerCreateAnswerInputDto"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Returns created answer",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/AnswerViewDto"
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "If the inputModel has incorrect values",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/SwaggerErrorsMessagesViewDto"
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Unauthorized"
+            },
+            "403": {
+              "description": "If current user is not participating in active game or all questions are already answered"
+            }
+          },
+          "security": [
+            {
+              "bearer": []
+            }
+          ],
+          "summary": "Send answer for next not answered question in active pair",
+          "tags": [
+            "Games"
+          ]
+        }
+      },
+      "/api/pair-game-quiz/pairs/connection": {
+        "post": {
+          "operationId": "GamesController_createGameConnection",
+          "parameters": [],
+          "responses": {
+            "200": {
+              "description": "Returns current pair game",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/GameViewDto"
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Unauthorized"
+            },
+            "403": {
+              "description": "If current user is already participating in active pair"
+            },
+            "409": {
+              "description": "If there are not enough published questions to start game"
+            }
+          },
+          "security": [
+            {
+              "bearer": []
+            }
+          ],
+          "summary": "Connect current user to a quiz game pair",
           "tags": [
             "Games"
           ]
@@ -3108,6 +3162,41 @@ window.onload = function() {
             "pairCreatedDate",
             "startGameDate",
             "finishGameDate"
+          ]
+        },
+        "SwaggerCreateAnswerInputDto": {
+          "type": "object",
+          "properties": {
+            "answer": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "answer"
+          ]
+        },
+        "AnswerViewDto": {
+          "type": "object",
+          "properties": {
+            "questionId": {
+              "type": "string"
+            },
+            "answerStatus": {
+              "type": "string",
+              "enum": [
+                "Correct",
+                "Incorrect"
+              ]
+            },
+            "addedAt": {
+              "format": "date-time",
+              "type": "string"
+            }
+          },
+          "required": [
+            "questionId",
+            "answerStatus",
+            "addedAt"
           ]
         }
       }

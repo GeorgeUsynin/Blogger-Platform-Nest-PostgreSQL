@@ -1,9 +1,14 @@
 import { GameEntity } from './entities/game.entity';
 import { Game } from '../domain/game.aggregate';
 import { WithId } from '../../../../types/common';
-import { GameToQuestion, PlayerProgress } from '../domain/value-objects';
+import {
+  Answer,
+  GameToQuestion,
+  PlayerProgress,
+} from '../domain/value-objects';
 import { PlayerProgressEntity } from './entities/player-progress.entity';
 import { GameToQuestionEntity } from './entities/game-to-question.entity';
+import { AnswerEntity } from './entities/answer.entity';
 
 export class GameMapper {
   static toDomain(entity: GameEntity): WithId<Game> {
@@ -16,12 +21,21 @@ export class GameMapper {
         PlayerProgress.reconstruct({
           id: pp.id,
           userId: pp.userId,
+          answers: pp.answers.map((a) =>
+            Answer.reconstruct({
+              id: a.id,
+              questionId: a.questionId,
+              body: a.body,
+              answerStatus: a.answerStatus,
+            }),
+          ),
         }),
       ),
       questionsOfTheGame: entity.gameToQuestions.map((gtq) =>
         GameToQuestion.reconstruct({
           id: gtq.id,
           questionId: gtq.questionId,
+          correctAnswers: gtq.question.correctAnswers,
           order: gtq.order,
         }),
       ),
@@ -47,6 +61,18 @@ export class GameMapper {
 
       playerProgressEntity.gameId = entity.id;
       playerProgressEntity.userId = pp.userId;
+      playerProgressEntity.answers = pp.answers.map((a) => {
+        const answerEntity = new AnswerEntity();
+        if (a.id) {
+          answerEntity.id = a.id;
+        }
+
+        answerEntity.questionId = a.questionId;
+        answerEntity.body = a.body;
+        answerEntity.answerStatus = a.answerStatus;
+
+        return answerEntity;
+      });
 
       return playerProgressEntity;
     });

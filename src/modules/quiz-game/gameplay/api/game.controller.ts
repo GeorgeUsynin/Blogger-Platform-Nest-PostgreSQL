@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   Get,
   HttpCode,
@@ -14,17 +15,20 @@ import { ROUTES } from '../../../../constants';
 import { JwtHeaderAuthGuard } from '../../../user-accounts/users/guards/bearer';
 import { ExtractUserFromRequest } from '../../../user-accounts/users/guards/decorators';
 import { UserContextDto } from '../../../user-accounts/users/guards/dto';
-import { GameViewDto } from './dto';
+import { AnswerViewDto, CreateAnswerInputDto, GameViewDto } from './dto';
 import {
+  AnswerCreationFailedError,
   GameConnectionCreationFailedError,
   GameNotFoundError,
 } from '../../../../core/exceptions';
 import {
+  CreateAnswerCommand,
   CreateGameConnectionCommand,
   GetGameByIdQuery,
 } from '../application/use-cases';
 import { GamesQueryRepository } from '../infrastructure/repositories/query/games.query-repository';
 import {
+  CreateAnswerApi,
   CreateGameConnectionApi,
   GetCurrentGameApi,
   GetGameApi,
@@ -40,36 +44,13 @@ export class GamesController {
   ) {}
 
   @ApiBearerAuth()
-  @Post(`${ROUTES.CONNECTION}`)
-  @HttpCode(HttpStatus.OK)
-  @CreateGameConnectionApi()
-  async createGameConnection(
-    @ExtractUserFromRequest() user: UserContextDto,
-  ): Promise<GameViewDto> {
-    const gameConnectionId = await this.commandBus.execute(
-      new CreateGameConnectionCommand(user.userId),
-    );
-
-    const createdGameConnection =
-      await this.gamesQueryRepository.getGameById(gameConnectionId);
-
-    if (!createdGameConnection) {
-      throw new GameConnectionCreationFailedError();
-    }
-
-    return GameViewDto.mapToView(createdGameConnection);
-  }
-
-  @ApiBearerAuth()
   @Get(`${ROUTES.MY_CURRENT}`)
   @HttpCode(HttpStatus.OK)
   @GetCurrentGameApi()
-  async getUserCurrentGame(
+  async getUserActiveGame(
     @ExtractUserFromRequest() user: UserContextDto,
   ): Promise<GameViewDto> {
-    const game = await this.gamesQueryRepository.getUserCurrentGame(
-      user.userId,
-    );
+    const game = await this.gamesQueryRepository.getUserActiveGame(user.userId);
 
     if (!game) {
       throw new GameNotFoundError();
@@ -91,5 +72,48 @@ export class GamesController {
     );
 
     return GameViewDto.mapToView(game);
+  }
+
+  @Post(`${ROUTES.ANSWERS}`)
+  @ApiBearerAuth()
+  @HttpCode(HttpStatus.OK)
+  @CreateAnswerApi()
+  async createAnswer(
+    @Body() body: CreateAnswerInputDto,
+    @ExtractUserFromRequest() user: UserContextDto,
+  ): Promise<AnswerViewDto> {
+    await this.commandBus.execute(new CreateAnswerCommand(body, user.userId));
+
+    const createdAnswer =
+      await this.gamesQueryRepository.getLastAnswerForUserInActiveGame(
+        user.userId,
+      );
+
+    if (!createdAnswer) {
+      throw new AnswerCreationFailedError();
+    }
+
+    return AnswerViewDto.mapToView(createdAnswer);
+  }
+
+  @ApiBearerAuth()
+  @Post(`${ROUTES.CONNECTION}`)
+  @HttpCode(HttpStatus.OK)
+  @CreateGameConnectionApi()
+  async createGameConnection(
+    @ExtractUserFromRequest() user: UserContextDto,
+  ): Promise<GameViewDto> {
+    const gameConnectionId = await this.commandBus.execute(
+      new CreateGameConnectionCommand(user.userId),
+    );
+
+    const createdGameConnection =
+      await this.gamesQueryRepository.getGameById(gameConnectionId);
+
+    if (!createdGameConnection) {
+      throw new GameConnectionCreationFailedError();
+    }
+
+    return GameViewDto.mapToView(createdGameConnection);
   }
 }

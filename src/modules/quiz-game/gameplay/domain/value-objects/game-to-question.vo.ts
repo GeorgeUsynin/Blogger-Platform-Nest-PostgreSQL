@@ -12,6 +12,7 @@ export class GameToQuestion {
   static create(input: CreateGameToQuestionInput): GameToQuestion {
     return new GameToQuestion({
       id: undefined,
+      correctAnswers: undefined,
       questionId: input.questionId,
       order: input.order,
     });
@@ -41,5 +42,9 @@ export class GameToQuestion {
 
   public get order(): GameToQuestionState['order'] {
     return this.props.order;
+  }
+
+  public get correctAnswers(): GameToQuestionState['correctAnswers'] {
+    return this.props.correctAnswers;
   }
 }

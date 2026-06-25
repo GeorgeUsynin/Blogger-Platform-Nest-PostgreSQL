@@ -25,12 +25,22 @@ export const ErrorCodes = {
   POST_CREATION_FAILED: 'POST_CREATION_FAILED',
   QUESTION_CREATION_FAILED: 'QUESTION_CREATION_FAILED',
   COMMENT_CREATION_FAILED: 'COMMENT_CREATION_FAILED',
+  ANSWER_CREATION_FAILED: 'ANSWER_CREATION_FAILED',
   USER_CREATION_FAILED: 'USER_CREATION_FAILED',
   INVALID_CREDENTIALS: 'INVALID_CREDENTIALS',
   EMAIL_NOT_CONFIRMED: 'EMAIL_NOT_CONFIRMED',
   PASSWORD_RECOVERY_NOT_INITIATED: 'PASSWORD_RECOVERY_NOT_INITIATED',
   USER_ALREADY_HAS_ACTIVE_GAME: 'USER_ALREADY_HAS_ACTIVE_GAME',
   NOT_PARTICIPATING_IN_GAME: 'NOT_PARTICIPATING_IN_GAME',
+  PLAYER_NOT_IN_GAME: 'PLAYER_NOT_IN_GAME',
+  GAME_IS_NOT_ACTIVE: 'GAME_IS_NOT_ACTIVE',
+  GAME_NOT_ACCEPTING_PLAYERS: 'GAME_NOT_ACCEPTING_PLAYERS',
+  ALL_QUESTIONS_ALREADY_ANSWERED: 'ALL_QUESTIONS_ALREADY_ANSWERED',
+  QUESTION_NOT_FOUND_DOMAIN_ERROR: 'QUESTION_NOT_FOUND_DOMAIN_ERROR',
+  CORRECT_ANSWERS_NOT_DEFINED_DOMAIN_ERROR:
+    'CORRECT_ANSWERS_NOT_DEFINED_DOMAIN_ERROR',
+  QUESTION_ID_NOT_DEFINED_DOMAIN_ERROR:
+    'QUESTION_ID_NOT_DEFINED_DOMAIN_ERROR',
   NOT_ENOUGH_PUBLISHED_QUESTIONS: 'NOT_ENOUGH_PUBLISHED_QUESTIONS',
 } as const;
 
@@ -64,6 +74,7 @@ export const ErrorMessages: Record<ErrorCode, string> = {
     'Game connection creation failed',
   [ErrorCodes.POST_CREATION_FAILED]: 'Post creation failed',
   [ErrorCodes.COMMENT_CREATION_FAILED]: 'Comment creation failed',
+  [ErrorCodes.ANSWER_CREATION_FAILED]: 'Answer creation failed',
   [ErrorCodes.QUESTION_CREATION_FAILED]: 'Question creation failed',
   [ErrorCodes.USER_CREATION_FAILED]: 'User creation failed',
   [ErrorCodes.INVALID_CREDENTIALS]: 'Invalid credentials',
@@ -74,6 +85,17 @@ export const ErrorMessages: Record<ErrorCode, string> = {
     'You are already participating in an active game',
   [ErrorCodes.NOT_PARTICIPATING_IN_GAME]:
     'You are not participating in this game',
+  [ErrorCodes.PLAYER_NOT_IN_GAME]: 'Player is not in this game',
+  [ErrorCodes.GAME_IS_NOT_ACTIVE]: 'Game is not active',
+  [ErrorCodes.GAME_NOT_ACCEPTING_PLAYERS]: 'Game is not accepting players',
+  [ErrorCodes.ALL_QUESTIONS_ALREADY_ANSWERED]:
+    'All questions have already been answered',
+  [ErrorCodes.QUESTION_NOT_FOUND_DOMAIN_ERROR]:
+    'Question was not found in the game',
+  [ErrorCodes.CORRECT_ANSWERS_NOT_DEFINED_DOMAIN_ERROR]:
+    'Correct answers are not defined',
+  [ErrorCodes.QUESTION_ID_NOT_DEFINED_DOMAIN_ERROR]:
+    'Question id is not defined',
   [ErrorCodes.NOT_ENOUGH_PUBLISHED_QUESTIONS]:
     'Not enough published questions. Please add more or publish existed ones',
 };

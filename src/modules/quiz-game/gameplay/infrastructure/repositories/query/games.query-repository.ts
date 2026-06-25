@@ -6,7 +6,8 @@ import { GameEntity } from '../../entities/game.entity';
 import { PlayerProgressEntity } from '../../entities/player-progress.entity';
 import { GameScoreCalculator } from '../../../domain/helpers';
 import { GameRules } from '../../../domain/constants';
-import { GameStatus } from '../../../domain/types';
+import { GameStatus } from '../../../domain/types/game.types';
+import { AnswerQueryModel } from './model/AnswerQueryModel';
 
 @Injectable()
 export class GamesQueryRepository {
@@ -25,7 +26,7 @@ export class GamesQueryRepository {
     return game ? this.gameQueryModelMapper(game) : null;
   }
 
-  async getUserCurrentGame(userId: number): Promise<GameQueryModel | null> {
+  async getUserActiveGame(userId: number): Promise<GameQueryModel | null> {
     const game = await this.applyGameViewSelect(
       this.gamesRepo
         .createQueryBuilder('g')
@@ -37,6 +38,26 @@ export class GamesQueryRepository {
       .getOne();
 
     return game ? this.gameQueryModelMapper(game) : null;
+  }
+
+  async getLastAnswerForUserInActiveGame(
+    userId: number,
+  ): Promise<AnswerQueryModel | null> {
+    const answer = await this.gamesRepo
+      .createQueryBuilder('g')
+      .leftJoin('g.playersProgresses', 'pp')
+      .leftJoin('pp.answers', 'a')
+      .select([
+        'a.questionId AS "questionId"',
+        'a.answerStatus AS "answerStatus"',
+        'a.createdAt AS "createdAt"',
+      ])
+      .where('g.status = :status', { status: GameStatus.Active })
+      .andWhere('pp.userId = :userId', { userId })
+      .orderBy('a.createdAt', 'DESC')
+      .getRawOne<AnswerQueryModel>();
+
+    return answer ?? null;
   }
 
   private applyGameViewSelect(
