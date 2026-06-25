@@ -1832,7 +1832,8 @@ window.onload = function() {
                 "default": "createdAt",
                 "type": "string",
                 "enum": [
-                  "createdAt"
+                  "createdAt",
+                  "body"
                 ]
               }
             },

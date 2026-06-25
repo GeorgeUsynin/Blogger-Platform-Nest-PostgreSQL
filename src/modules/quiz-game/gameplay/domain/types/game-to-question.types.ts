@@ -12,7 +12,7 @@ export type CreateGameToQuestionInput = {
 
 export type ReconstructGameToQuestionInput = Omit<
   GameToQuestionState,
-  'id' | 'body'
+  'id' | 'correctAnswers'
 > & {
   id: number;
   correctAnswers: string[];
