@@ -2,6 +2,7 @@ import { BaseDomainException } from './BaseDomainException';
 import { LoginAlreadyExistsError } from './LoginAlreadyExistsError';
 import { UserNotFoundError } from './UserNotFoundError';
 import { BlogNotFoundError } from './BlogNotFoundError';
+import { GameNotFoundError } from './GameNotFoundError';
 import { PostNotFoundError } from './PostNotFoundError';
 import { DeviceNotFoundError } from './DeviceNotFoundError';
 import { CommentNotFoundError } from './CommentNotFoundError';
@@ -28,6 +29,7 @@ import { UserAlreadyDeleted } from './UserAlreadyDeleted';
 import { EmailNotConfirmedError } from './EmailNotConfirmed';
 import { PasswordRecoveryNotInitiated } from './PasswordRecoveryNotInitiated';
 import { AlreadyParticipatingInActiveGame } from './AlreadyParticipatingInActiveGame';
+import { NotParticipatingInGameError } from './NotParticipatingInGameError';
 import { NotEnoughPublishedQuestions } from './NotEnoughPublishedQuestions';
 
 export {
@@ -35,6 +37,7 @@ export {
   LoginAlreadyExistsError,
   UserNotFoundError,
   BlogNotFoundError,
+  GameNotFoundError,
   PostNotFoundError,
   QuestionNotFoundError,
   EmailAlreadyConfirmedByCode,
@@ -61,5 +64,6 @@ export {
   EmailNotConfirmedError,
   PasswordRecoveryNotInitiated,
   AlreadyParticipatingInActiveGame,
+  NotParticipatingInGameError,
   NotEnoughPublishedQuestions,
 };

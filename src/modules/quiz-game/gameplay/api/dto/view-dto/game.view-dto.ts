@@ -50,7 +50,12 @@ export class GameViewDto {
   @ApiProperty({ type: PlayerProgress, nullable: true })
   secondPlayerProgress: PlayerProgress | null;
 
-  @ApiProperty({ type: [Question], nullable: true })
+  @ApiProperty({
+    type: [Question],
+    nullable: true,
+    description:
+      "Questions for both players (can be null if second player haven't connected yet)",
+  })
   questions: Question[] | null;
 
   @ApiProperty({ enum: GameStatus })

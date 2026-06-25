@@ -1,11 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, SelectQueryBuilder } from 'typeorm';
 import { GameQueryModel } from './model';
 import { GameEntity } from '../../entities/game.entity';
 import { PlayerProgressEntity } from '../../entities/player-progress.entity';
 import { GameScoreCalculator } from '../../../domain/helpers';
 import { GameRules } from '../../../domain/constants';
+import { GameStatus } from '../../../domain/types';
 
 @Injectable()
 export class GamesQueryRepository {
@@ -15,50 +16,61 @@ export class GamesQueryRepository {
   ) {}
 
   async getGameById(id: number): Promise<GameQueryModel | null> {
-    const game = await this.gamesRepo.findOne({
-      relations: {
-        gameToQuestions: {
-          question: true,
-        },
-        playersProgresses: {
-          answers: true,
-          playerAccount: true,
-        },
-      },
-      select: {
-        id: true,
-        status: true,
-        startGameDate: true,
-        finishGameDate: true,
-        createdAt: true,
-        gameToQuestions: {
-          id: true,
-          question: {
-            id: true,
-            body: true,
-          },
-        },
-        playersProgresses: {
-          id: true,
-          createdAt: true,
-          answers: {
-            id: true,
-            questionId: true,
-            answerStatus: true,
-            createdAt: true,
-          },
-          playerAccount: {
-            id: true,
-            login: true,
-          },
-        },
-      },
-      where: { id },
-    });
+    const game = await this.applyGameViewSelect(
+      this.gamesRepo.createQueryBuilder('g'),
+    )
+      .where('g.id = :id', { id })
+      .getOne();
 
-    if (!game) return null;
+    return game ? this.gameQueryModelMapper(game) : null;
+  }
 
-    return this.gameQueryModelMapper(game);
+  async getUserCurrentGame(userId: number): Promise<GameQueryModel | null> {
+    const game = await this.applyGameViewSelect(
+      this.gamesRepo
+        .createQueryBuilder('g')
+        .innerJoin('g.playersProgresses', 'userProgress')
+        .innerJoin('userProgress.playerAccount', 'userPlayer'),
+    )
+      .where('g.status = :status', { status: GameStatus.Active })
+      .andWhere('userPlayer.id = :userId', { userId })
+      .getOne();
+
+    return game ? this.gameQueryModelMapper(game) : null;
+  }
+
+  private applyGameViewSelect(
+    qb: SelectQueryBuilder<GameEntity>,
+  ): SelectQueryBuilder<GameEntity> {
+    return qb
+      .leftJoin('g.playersProgresses', 'pp')
+      .leftJoin('pp.playerAccount', 'p')
+      .leftJoin('pp.answers', 'a')
+      .leftJoin('g.gameToQuestions', 'gtq')
+      .leftJoin('gtq.question', 'q')
+      .select([
+        'g.id',
+        'g.status',
+        'g.createdAt',
+        'g.startGameDate',
+        'g.finishGameDate',
+
+        'pp.id',
+        'pp.createdAt',
+
+        'p.id',
+        'p.login',
+
+        'a.id',
+        'a.questionId',
+        'a.answerStatus',
+        'a.createdAt',
+
+        'gtq.id',
+
+        'q.id',
+        'q.body',
+      ]);
   }
 
   private gameQueryModelMapper(game: GameEntity): GameQueryModel {

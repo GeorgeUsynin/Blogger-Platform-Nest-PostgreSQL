@@ -31,6 +31,7 @@ export class DomainExceptionsFilter extends BaseExceptionFilter {
         return HttpStatus.BAD_REQUEST;
       case ErrorCodes.USER_NOT_FOUND:
       case ErrorCodes.BLOG_NOT_FOUND:
+      case ErrorCodes.GAME_NOT_FOUND:
       case ErrorCodes.POST_NOT_FOUND:
       case ErrorCodes.QUESTION_NOT_FOUND:
       case ErrorCodes.COMMENT_NOT_FOUND:
@@ -39,6 +40,7 @@ export class DomainExceptionsFilter extends BaseExceptionFilter {
       case ErrorCodes.NOT_AN_OWNER_OF_THIS_DEVICE:
       case ErrorCodes.NOT_AN_OWNER_OF_THIS_COMMENT:
       case ErrorCodes.USER_ALREADY_HAS_ACTIVE_GAME:
+      case ErrorCodes.NOT_PARTICIPATING_IN_GAME:
         return HttpStatus.FORBIDDEN;
       case ErrorCodes.NOT_ENOUGH_PUBLISHED_QUESTIONS:
         return HttpStatus.CONFLICT;

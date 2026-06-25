@@ -1,3 +1,6 @@
-import { CreateGameConnectionUseCase } from './application/use-cases';
+import {
+  CreateGameConnectionUseCase,
+  GetGameByIdUseCase,
+} from './application/use-cases';
 
-export const gameUseCases = [CreateGameConnectionUseCase];
+export const gameUseCases = [CreateGameConnectionUseCase, GetGameByIdUseCase];

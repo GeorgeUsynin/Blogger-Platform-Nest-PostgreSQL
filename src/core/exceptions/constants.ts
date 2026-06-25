@@ -13,6 +13,7 @@ export const ErrorCodes = {
   COMMENT_ALREADY_DELETED: 'COMMENT_ALREADY_DELETED',
   USER_ALREADY_DELETED: 'USER_ALREADY_DELETED',
   BLOG_NOT_FOUND: 'BLOG_NOT_FOUND',
+  GAME_NOT_FOUND: 'GAME_NOT_FOUND',
   POST_NOT_FOUND: 'POST_NOT_FOUND',
   QUESTION_NOT_FOUND: 'QUESTION_NOT_FOUND',
   COMMENT_NOT_FOUND: 'COMMENT_NOT_FOUND',
@@ -29,6 +30,7 @@ export const ErrorCodes = {
   EMAIL_NOT_CONFIRMED: 'EMAIL_NOT_CONFIRMED',
   PASSWORD_RECOVERY_NOT_INITIATED: 'PASSWORD_RECOVERY_NOT_INITIATED',
   USER_ALREADY_HAS_ACTIVE_GAME: 'USER_ALREADY_HAS_ACTIVE_GAME',
+  NOT_PARTICIPATING_IN_GAME: 'NOT_PARTICIPATING_IN_GAME',
   NOT_ENOUGH_PUBLISHED_QUESTIONS: 'NOT_ENOUGH_PUBLISHED_QUESTIONS',
 } as const;
 
@@ -50,6 +52,7 @@ export const ErrorMessages: Record<ErrorCode, string> = {
   [ErrorCodes.COMMENT_ALREADY_DELETED]: 'Comment already deleted',
   [ErrorCodes.USER_ALREADY_DELETED]: 'User already deleted',
   [ErrorCodes.BLOG_NOT_FOUND]: "Blog doesn't exist",
+  [ErrorCodes.GAME_NOT_FOUND]: "Game doesn't exist",
   [ErrorCodes.POST_NOT_FOUND]: "Post doesn't exist",
   [ErrorCodes.COMMENT_NOT_FOUND]: "Comment doesn't exist",
   [ErrorCodes.DEVICE_NOT_FOUND]: "Device doesn't exist",
@@ -69,6 +72,8 @@ export const ErrorMessages: Record<ErrorCode, string> = {
     'Password recovery was not initiated',
   [ErrorCodes.USER_ALREADY_HAS_ACTIVE_GAME]:
     'You are already participating in an active game',
+  [ErrorCodes.NOT_PARTICIPATING_IN_GAME]:
+    'You are not participating in this game',
   [ErrorCodes.NOT_ENOUGH_PUBLISHED_QUESTIONS]:
     'Not enough published questions. Please add more or publish existed ones',
 };

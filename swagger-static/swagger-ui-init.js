@@ -2095,7 +2095,23 @@ window.onload = function() {
           "parameters": [],
           "responses": {
             "200": {
-              "description": ""
+              "description": "Returns current pair game",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/GameViewDto"
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Unauthorized"
+            },
+            "403": {
+              "description": "If current user is already participating in active pair"
+            },
+            "409": {
+              "description": "If there are not enough published questions to start game"
             }
           },
           "security": [
@@ -2103,6 +2119,96 @@ window.onload = function() {
               "bearer": []
             }
           ],
+          "summary": "Connect current user to a quiz game pair",
+          "tags": [
+            "Games"
+          ]
+        }
+      },
+      "/api/pair-game-quiz/pairs/my-current": {
+        "get": {
+          "operationId": "GamesController_getUserCurrentGame",
+          "parameters": [],
+          "responses": {
+            "200": {
+              "description": "Success",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/GameViewDto"
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Unauthorized"
+            },
+            "404": {
+              "description": "No active pair for current user"
+            }
+          },
+          "security": [
+            {
+              "bearer": []
+            }
+          ],
+          "summary": "Returns current unfinished pair game for current user",
+          "tags": [
+            "Games"
+          ]
+        }
+      },
+      "/api/pair-game-quiz/pairs/{id}": {
+        "get": {
+          "operationId": "GamesController_getGameById",
+          "parameters": [
+            {
+              "name": "id",
+              "required": true,
+              "in": "path",
+              "description": "Existing game id",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/GameViewDto"
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "If id has invalid format",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/SwaggerErrorsMessagesViewDto"
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Unauthorized"
+            },
+            "403": {
+              "description": "If current user is not participating in this game"
+            },
+            "404": {
+              "description": "Not Found"
+            }
+          },
+          "security": [
+            {
+              "bearer": []
+            }
+          ],
+          "summary": "Returns pair game by id",
           "tags": [
             "Games"
           ]
@@ -2860,6 +2966,148 @@ window.onload = function() {
           },
           "required": [
             "published"
+          ]
+        },
+        "Answer": {
+          "type": "object",
+          "properties": {
+            "questionId": {
+              "type": "string"
+            },
+            "answerStatus": {
+              "type": "string",
+              "enum": [
+                "Correct",
+                "Incorrect"
+              ]
+            },
+            "addedAt": {
+              "format": "date-time",
+              "type": "string"
+            }
+          },
+          "required": [
+            "questionId",
+            "answerStatus",
+            "addedAt"
+          ]
+        },
+        "Player": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "login": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "login"
+          ]
+        },
+        "PlayerProgress": {
+          "type": "object",
+          "properties": {
+            "answers": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/Answer"
+              }
+            },
+            "player": {
+              "$ref": "#/components/schemas/Player"
+            },
+            "score": {
+              "type": "number",
+              "description": "Player score"
+            }
+          },
+          "required": [
+            "answers",
+            "player",
+            "score"
+          ]
+        },
+        "Question": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "body": {
+              "type": "string",
+              "description": "Here is the question itself"
+            }
+          },
+          "required": [
+            "id",
+            "body"
+          ]
+        },
+        "GameViewDto": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "Id of pair"
+            },
+            "firstPlayerProgress": {
+              "$ref": "#/components/schemas/PlayerProgress"
+            },
+            "secondPlayerProgress": {
+              "nullable": true,
+              "type": "object",
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/PlayerProgress"
+                }
+              ]
+            },
+            "questions": {
+              "nullable": true,
+              "description": "Questions for both players (can be null if second player haven't connected yet)",
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/Question"
+              }
+            },
+            "status": {
+              "type": "string",
+              "enum": [
+                "PendingSecondPlayer",
+                "Active",
+                "Finished"
+              ]
+            },
+            "pairCreatedDate": {
+              "format": "date-time",
+              "type": "string",
+              "description": "Date when first player initialized the pair"
+            },
+            "startGameDate": {
+              "format": "date-time",
+              "type": "string",
+              "nullable": true,
+              "description": "Game starts immediately after second player connection to this pair"
+            },
+            "finishGameDate": {
+              "format": "date-time",
+              "type": "string",
+              "nullable": true,
+              "description": "Game finishes immediately after both players have answered all the questions"
+            }
+          },
+          "required": [
+            "id",
+            "firstPlayerProgress",
+            "secondPlayerProgress",
+            "questions",
+            "status",
+            "pairCreatedDate",
+            "startGameDate",
+            "finishGameDate"
           ]
         }
       }
