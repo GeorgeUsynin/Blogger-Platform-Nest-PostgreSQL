@@ -1,9 +1,9 @@
 import { BaseDBEntity } from '../../../../shared/entities';
 import { DB_TABLE_NAMES } from '../../../../../constants';
 import { Column, Entity, OneToMany } from 'typeorm';
-import { GameToQuestionEntity } from './game-to-question.entity';
+import type { GameToQuestionEntity } from './game-to-question.entity';
 import { GameStatus } from '../../domain/types/game.types';
-import { PlayerProgressEntity } from './player-progress.entity';
+import type { PlayerProgressEntity } from './player-progress.entity';
 
 @Entity({ name: DB_TABLE_NAMES.GAMES })
 export class GameEntity extends BaseDBEntity {
@@ -24,15 +24,15 @@ export class GameEntity extends BaseDBEntity {
   startGameDate: Date | null;
 
   @OneToMany(
-    () => GameToQuestionEntity,
-    (gameToQuestion) => gameToQuestion.game,
+    'GameToQuestionEntity',
+    (gameToQuestion: GameToQuestionEntity) => gameToQuestion.game,
     { cascade: true },
   )
   gameToQuestions: GameToQuestionEntity[];
 
   @OneToMany(
-    () => PlayerProgressEntity,
-    (playerProgress) => playerProgress.game,
+    'PlayerProgressEntity',
+    (playerProgress: PlayerProgressEntity) => playerProgress.game,
     { cascade: true },
   )
   playersProgresses: PlayerProgressEntity[];

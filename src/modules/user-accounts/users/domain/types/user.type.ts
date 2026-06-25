@@ -1,4 +1,5 @@
-import { EmailConfirmation, PasswordRecovery } from '../value-objects/';
+import { EmailConfirmation } from '../value-objects/email-confirmation.vo';
+import { PasswordRecovery } from '../value-objects/password-recovery.vo';
 
 export type CreateConfirmedUserInput = {
   login: string;

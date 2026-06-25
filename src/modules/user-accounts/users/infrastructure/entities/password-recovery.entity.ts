@@ -1,5 +1,5 @@
 import { Column, Entity, JoinColumn, OneToOne, PrimaryColumn } from 'typeorm';
-import { UserEntity } from './user.entity';
+import type { UserEntity } from './user.entity';
 import { DB_TABLE_NAMES } from '../../../../../constants';
 
 @Entity({ name: DB_TABLE_NAMES.PASSWORD_RECOVERIES })
@@ -13,7 +13,7 @@ export class PasswordRecoveryEntity {
   @Column({ type: 'timestamp with time zone', nullable: true })
   expirationDate: Date | null;
 
-  @OneToOne(() => UserEntity, { nullable: false })
+  @OneToOne('UserEntity', { nullable: false })
   @JoinColumn({ name: 'userId', referencedColumnName: 'id' })
   user: UserEntity;
 }

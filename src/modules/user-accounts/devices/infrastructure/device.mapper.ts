@@ -1,5 +1,5 @@
 import { Device } from '../domain';
-import { DeviceEntity } from './entities';
+import { DeviceEntity } from './entities/device.entity';
 
 export class DeviceMapper {
   static toDomain(entity: DeviceEntity): Device {

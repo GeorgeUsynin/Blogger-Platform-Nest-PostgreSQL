@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ILikesRepository } from './interfaces';
 import { Like } from '../../domain';
-import { PostLikeEntity } from '../entities';
+import { PostLikeEntity } from '../entities/post-like.entity';
 import { LikeMapper } from '../like.mapper';
 import { WithId } from '../../../../../types/common';
 

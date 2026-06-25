@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, SelectQueryBuilder } from 'typeorm';
-import { GameQueryModel } from './model';
+import { GameQueryModel } from './model/GameQueryModel';
 import { GameEntity } from '../../entities/game.entity';
 import { PlayerProgressEntity } from '../../entities/player-progress.entity';
 import { GameScoreCalculator } from '../../../domain/helpers';

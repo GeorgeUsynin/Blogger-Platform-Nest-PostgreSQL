@@ -1,5 +1,5 @@
 import { Post } from '../domain';
-import { PostEntity } from './entities';
+import { PostEntity } from './entities/post.entity';
 import { WithId } from '../../../../types/common';
 
 export class PostMapper {

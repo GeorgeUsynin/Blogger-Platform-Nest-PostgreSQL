@@ -4,7 +4,7 @@ import {
   NotParticipatingInGameError,
 } from '../../../../../core/exceptions';
 import { GamesQueryRepository } from '../../infrastructure/repositories/query/games.query-repository';
-import { GameQueryModel } from '../../infrastructure/repositories/query/model';
+import { GameQueryModel } from '../../infrastructure/repositories/query/model/GameQueryModel';
 
 export class GetGameByIdQuery extends Query<GameQueryModel> {
   constructor(

@@ -7,7 +7,7 @@ import {
   ManyToOne,
   PrimaryColumn,
 } from 'typeorm';
-import { UserEntity } from '../../../users/infrastructure/entities';
+import { UserEntity } from '../../../users/infrastructure/entities/user.entity';
 
 @Entity({ name: DB_TABLE_NAMES.DEVICES })
 export class DeviceEntity {

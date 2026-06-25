@@ -3,7 +3,7 @@ import { DB_TABLE_NAMES } from '../../../../../constants';
 import { BaseDBEntity } from '../../../../shared/entities';
 import { contentCheckConstraints, contentConstraints } from './constraints';
 import { UserEntity } from '../../../../user-accounts/users/infrastructure/entities/user.entity';
-import { PostEntity } from '../../../posts/infrastructure';
+import { PostEntity } from '../../../posts/infrastructure/entities/post.entity';
 
 Check(contentCheckConstraints);
 @Entity({ name: DB_TABLE_NAMES.COMMENTS })

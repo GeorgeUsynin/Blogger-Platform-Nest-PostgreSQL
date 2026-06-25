@@ -6,7 +6,7 @@ import {
 import {
   EmailConfirmationState,
   ReconstructEmailConfirmationInput,
-} from '../types';
+} from '../types/email-confirmation.type';
 
 export class EmailConfirmation {
   private constructor(private props: EmailConfirmationState) {}

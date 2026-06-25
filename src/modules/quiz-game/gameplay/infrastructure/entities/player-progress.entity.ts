@@ -8,9 +8,9 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { UserEntity } from '../../../../user-accounts/users/infrastructure/entities/user.entity';
-import { GameEntity } from './game.entity';
-import { AnswerEntity } from './answer.entity';
+import type { UserEntity } from '../../../../user-accounts/users/infrastructure/entities/user.entity';
+import type { GameEntity } from './game.entity';
+import type { AnswerEntity } from './answer.entity';
 
 @Entity({ name: DB_TABLE_NAMES.PLAYER_PROGRESSES })
 export class PlayerProgressEntity {
@@ -26,19 +26,19 @@ export class PlayerProgressEntity {
   @CreateDateColumn({ type: 'timestamp with time zone' })
   createdAt: Date;
 
-  @ManyToOne(() => UserEntity, (user) => user.playerProgresses, {
+  @ManyToOne('UserEntity', (user: UserEntity) => user.playerProgresses, {
     nullable: false,
   })
   @JoinColumn({ name: 'userId', referencedColumnName: 'id' })
   playerAccount: UserEntity;
 
-  @ManyToOne(() => GameEntity, (game) => game.playersProgresses, {
+  @ManyToOne('GameEntity', (game: GameEntity) => game.playersProgresses, {
     nullable: false,
   })
   @JoinColumn({ name: 'gameId', referencedColumnName: 'id' })
   game: GameEntity;
 
-  @OneToMany(() => AnswerEntity, (answer) => answer.playerProgress, {
+  @OneToMany('AnswerEntity', (answer: AnswerEntity) => answer.playerProgress, {
     cascade: true,
   })
   answers: AnswerEntity[];

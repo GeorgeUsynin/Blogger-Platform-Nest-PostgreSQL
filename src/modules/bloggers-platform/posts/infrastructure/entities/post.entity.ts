@@ -6,7 +6,7 @@ import {
   shortDescriptionConstraints,
   contentConstraints,
 } from './constraints';
-import { BlogEntity } from '../../../blogs/infrastructure/entities/blog.entity';
+import type { BlogEntity } from '../../../blogs/infrastructure/entities/blog.entity';
 
 @Entity({ name: DB_TABLE_NAMES.POSTS })
 export class PostEntity extends BaseDBEntity {
@@ -22,7 +22,7 @@ export class PostEntity extends BaseDBEntity {
   @Column({ type: 'varchar', length: contentConstraints.maxLength })
   content: string;
 
-  @ManyToOne(() => BlogEntity, { nullable: false })
+  @ManyToOne('BlogEntity', { nullable: false })
   @JoinColumn({ name: 'blogId', referencedColumnName: 'id' })
   blog: BlogEntity;
 }

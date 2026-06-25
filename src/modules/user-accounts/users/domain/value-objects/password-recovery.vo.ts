@@ -6,7 +6,7 @@ import {
   CreatePasswordRecoveryInput,
   PasswordRecoveryState,
   ReconstructPasswordRecoveryInput,
-} from '../types';
+} from '../types/password-recovery.type';
 
 export class PasswordRecovery {
   private constructor(private props: PasswordRecoveryState) {}

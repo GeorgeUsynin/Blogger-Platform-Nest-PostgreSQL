@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { LikeStatus } from '../../../../likes/domain';
-import { PostQueryModel } from '../../../infrastructure';
+import { PostQueryModel } from '../../../infrastructure/repositories/query/model/PostQueryModel';
 
 class NewestLike {
   @ApiProperty({ type: Date })

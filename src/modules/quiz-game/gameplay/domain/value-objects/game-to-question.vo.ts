@@ -2,7 +2,7 @@ import {
   CreateGameToQuestionInput,
   GameToQuestionState,
   ReconstructGameToQuestionInput,
-} from '../types';
+} from '../types/game-to-question.types';
 
 export class GameToQuestion {
   private constructor(private props: GameToQuestionState) {}

@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository, SelectQueryBuilder } from 'typeorm';
-import { GetPostsQueryParamsInputDto } from '../../../api/dto';
-import { PostQueryModel, TNewestLike } from './model';
+import { GetPostsQueryParamsInputDto } from '../../../api/dto/input-dto/get-posts-query-params.input-dto';
+import { PostQueryModel, TNewestLike } from './model/PostQueryModel';
 import { PostSortByFields } from '../../../api/dto/input-dto/posts-sort-by-fields';
 import { SortDirection } from '../../../../../../core/dto/base.query-params.input-dto';
-import { PostEntity } from '../../entities';
+import { PostEntity } from '../../entities/post.entity';
 import { PostLikeEntity } from '../../../../likes/infrastructure/entities/post-like.entity';
 import { LikeStatus } from '../../../../likes/domain';
 import { UserEntity } from '../../../../../user-accounts/users/infrastructure/entities/user.entity';

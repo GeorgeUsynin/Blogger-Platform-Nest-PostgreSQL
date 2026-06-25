@@ -7,9 +7,9 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { PlayerProgressEntity } from './player-progress.entity';
+import type { PlayerProgressEntity } from './player-progress.entity';
 import { AnswerStatus } from '../../domain/types/game.types';
-import { QuestionEntity } from '../../../questions/infrastructure/entities/question.entity';
+import type { QuestionEntity } from '../../../questions/infrastructure/entities/question.entity';
 
 @Entity({ name: DB_TABLE_NAMES.ANSWERS })
 export class AnswerEntity {
@@ -34,11 +34,11 @@ export class AnswerEntity {
   @CreateDateColumn({ type: 'timestamp with time zone' })
   createdAt: Date;
 
-  @ManyToOne(() => QuestionEntity, { nullable: false })
+  @ManyToOne('QuestionEntity', { nullable: false })
   @JoinColumn({ name: 'questionId', referencedColumnName: 'id' })
   question: QuestionEntity;
 
-  @ManyToOne(() => PlayerProgressEntity, { nullable: false })
+  @ManyToOne('PlayerProgressEntity', { nullable: false })
   @JoinColumn({ name: 'playerProgressId', referencedColumnName: 'id' })
   playerProgress: PlayerProgressEntity;
 }

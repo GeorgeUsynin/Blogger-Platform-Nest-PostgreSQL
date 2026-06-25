@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { CommentEntity } from '../entities';
+import { CommentEntity } from '../entities/comment.entity';
 import { CommentMapper } from '../comment.mapper';
 import { Comment } from '../../domain';
 import { WithId } from '../../../../../types/common';

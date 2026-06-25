@@ -1,4 +1,4 @@
-import { AnswerStatus } from '../types';
+import { AnswerStatus } from '../types/game.types';
 
 type Answer = {
   answerStatus: AnswerStatus;

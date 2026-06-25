@@ -7,8 +7,8 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { QuestionEntity } from '../../../questions/infrastructure/entities/question.entity';
-import { GameEntity } from './game.entity';
+import type { QuestionEntity } from '../../../questions/infrastructure/entities/question.entity';
+import type { GameEntity } from './game.entity';
 
 @Index(['gameId', 'questionId'], { unique: true })
 @Entity({ name: DB_TABLE_NAMES.GAMES_TO_QUESTIONS })
@@ -25,13 +25,13 @@ export class GameToQuestionEntity {
   @Column()
   order: number;
 
-  @ManyToOne(() => QuestionEntity, (question) => question.gameToQuestions, {
+  @ManyToOne('QuestionEntity', (question: QuestionEntity) => question.gameToQuestions, {
     nullable: false,
   })
   @JoinColumn({ name: 'questionId', referencedColumnName: 'id' })
   question: QuestionEntity;
 
-  @ManyToOne(() => GameEntity, (game) => game.gameToQuestions, {
+  @ManyToOne('GameEntity', (game: GameEntity) => game.gameToQuestions, {
     nullable: false,
   })
   @JoinColumn({ name: 'gameId', referencedColumnName: 'id' })

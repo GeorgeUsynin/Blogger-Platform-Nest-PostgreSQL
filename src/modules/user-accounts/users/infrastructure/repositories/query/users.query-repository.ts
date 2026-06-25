@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { GetUsersQueryParamsInputDto } from '../../../api/dto';
+import { GetUsersQueryParamsInputDto } from '../../../api/dto/input-dto/get-users-query-params.input-dto';
 import { FindOptionsWhere, ILike, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserSortByFields } from '../../../api/dto/input-dto/user-sort-by-fields';
 import { SortDirection } from '../../../../../../core/dto/base.query-params.input-dto';
 import { UserEntity } from '../../entities/user.entity';
-import { UserQueryModel } from './model';
+import { UserQueryModel } from './model/UserQueryModel';
 
 @Injectable()
 export class UsersQueryRepository {

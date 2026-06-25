@@ -1,5 +1,6 @@
 import { ParentType, Like } from '../domain';
-import { PostLikeEntity, CommentLikeEntity } from './entities';
+import { CommentLikeEntity } from './entities/comment-like.entity';
+import { PostLikeEntity } from './entities/post-like.entity';
 import { WithId } from '../../../../types/common';
 
 export class LikeMapper {

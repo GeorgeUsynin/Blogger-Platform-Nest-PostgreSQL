@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { BlogEntity } from '../entities';
+import { BlogEntity } from '../entities/blog.entity';
 import { Blog } from '../../domain';
 import { BlogMapper } from '../blog.mapper';
 import { WithId } from '../../../../../types/common';

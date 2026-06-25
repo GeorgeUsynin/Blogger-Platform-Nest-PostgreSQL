@@ -7,9 +7,9 @@ import {
 } from './constraints';
 import { DB_TABLE_NAMES } from '../../../../../constants';
 import { BaseDBEntity } from '../../../../shared/entities';
-import { EmailConfirmationEntity } from './email-confirmation.entity';
-import { PasswordRecoveryEntity } from './password-recovery.entity';
-import { PlayerProgressEntity } from '../../../../quiz-game/gameplay/infrastructure/entities/player-progress.entity';
+import type { EmailConfirmationEntity } from './email-confirmation.entity';
+import type { PasswordRecoveryEntity } from './password-recovery.entity';
+import type { PlayerProgressEntity } from '../../../../quiz-game/gameplay/infrastructure/entities/player-progress.entity';
 
 @Check(loginCheckConstraints)
 @Check(emailCheckConstraints)
@@ -24,18 +24,18 @@ export class UserEntity extends BaseDBEntity {
   @Column({ type: 'varchar' })
   passwordHash: string;
 
-  @OneToOne(() => EmailConfirmationEntity, (ec) => ec.user, {
+  @OneToOne('EmailConfirmationEntity', (ec: EmailConfirmationEntity) => ec.user, {
     cascade: true,
     eager: true,
   })
   emailConfirmation: EmailConfirmationEntity;
 
-  @OneToOne(() => PasswordRecoveryEntity, (pr) => pr.user, {
+  @OneToOne('PasswordRecoveryEntity', (pr: PasswordRecoveryEntity) => pr.user, {
     cascade: true,
     eager: true,
   })
   passwordRecovery: PasswordRecoveryEntity | null;
 
-  @OneToMany(() => PlayerProgressEntity, (pp) => pp.playerAccount)
+  @OneToMany('PlayerProgressEntity', (pp: PlayerProgressEntity) => pp.playerAccount)
   playerProgresses: PlayerProgressEntity[];
 }

@@ -1,7 +1,7 @@
 import { OmitType } from '@nestjs/mapped-types';
 import { ApiProperty } from '@nestjs/swagger';
 import { UserViewDto } from './user.view-dto';
-import { UserQueryModel } from '../../../infrastructure';
+import { UserQueryModel } from '../../../infrastructure/repositories/query/model/UserQueryModel';
 
 export class MeViewDto extends OmitType(UserViewDto, [
   'createdAt',

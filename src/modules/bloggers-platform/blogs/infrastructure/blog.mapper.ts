@@ -1,5 +1,5 @@
 import { Blog } from '../domain';
-import { BlogEntity } from './entities';
+import { BlogEntity } from './entities/blog.entity';
 import { WithId } from '../../../../types/common';
 
 export class BlogMapper {

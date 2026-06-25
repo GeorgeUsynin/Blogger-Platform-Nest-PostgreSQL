@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindOptionsWhere, ILike, Repository } from 'typeorm';
-import { GetBlogsQueryParamsInputDto } from '../../../api/dto';
+import { GetBlogsQueryParamsInputDto } from '../../../api/dto/input-dto/get-blogs-query-params.input-dto';
 import { BlogSortByFields } from '../../../api/dto/input-dto/blog-sort-by-fields';
 import { SortDirection } from '../../../../../../core/dto/base.query-params.input-dto';
-import { BlogEntity } from '../../entities';
-import { BlogQueryModel } from './model';
+import { BlogEntity } from '../../entities/blog.entity';
+import { BlogQueryModel } from './model/BlogQueryModel';
 
 @Injectable()
 export class BlogsQueryRepository {

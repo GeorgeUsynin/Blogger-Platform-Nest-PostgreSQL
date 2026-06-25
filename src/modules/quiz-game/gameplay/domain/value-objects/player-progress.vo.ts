@@ -1,4 +1,7 @@
-import { PlayerProgressState, ReconstructPlayerProgressInput } from '../types';
+import {
+  PlayerProgressState,
+  ReconstructPlayerProgressInput,
+} from '../types/player-progress.types';
 
 export class PlayerProgress {
   private constructor(private props: PlayerProgressState) {}

@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { BlogQueryModel } from '../../../infrastructure';
+import { BlogQueryModel } from '../../../infrastructure/repositories/query/model/BlogQueryModel';
 
 export class BlogViewDto {
   @ApiProperty()

@@ -7,7 +7,7 @@ import {
   websiteUrlCheckConstraints,
   websiteUrlConstraints,
 } from './constraints';
-import { PostEntity } from '../../../posts/infrastructure';
+import type { PostEntity } from '../../../posts/infrastructure/entities/post.entity';
 
 @Check(websiteUrlCheckConstraints)
 @Entity({ name: DB_TABLE_NAMES.BLOGS })
@@ -24,6 +24,6 @@ export class BlogEntity extends BaseDBEntity {
   @Column({ type: 'boolean', default: false })
   isMembership: boolean;
 
-  @OneToMany(() => PostEntity, (post) => post.blog)
+  @OneToMany('PostEntity', (post: PostEntity) => post.blog)
   posts: PostEntity[];
 }

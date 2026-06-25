@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { GetCommentsQueryParamsInputDto } from '../../../api/dto';
-import { CommentQueryModel } from './model';
+import { GetCommentsQueryParamsInputDto } from '../../../api/dto/input-dto/get-comments-query-params.input-dto';
+import { CommentQueryModel } from './model/CommentQueryModel';
 import { LikeStatus } from '../../../../likes/domain';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, SelectQueryBuilder } from 'typeorm';
 import { CommentSortByFields } from '../../../api/dto/input-dto/comment-sort-by-fields';
 import { SortDirection } from '../../../../../../core/dto/base.query-params.input-dto';
-import { CommentEntity } from '../../entities';
+import { CommentEntity } from '../../entities/comment.entity';
 import { CommentLikeEntity } from '../../../../likes/infrastructure/entities/comment-like.entity';
 
 type FindCommentsFilter = Partial<Pick<CommentEntity, 'postId'>>;
