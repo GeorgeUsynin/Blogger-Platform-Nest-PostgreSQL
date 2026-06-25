@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { QuestionQueryModel } from '../../../infrastructure/repositories/query/model';
+import { QuestionQueryModel } from '../../../infrastructure/repositories/query/model/QuestionQueryModel';
 
 export class QuestionViewDto {
   @ApiProperty()

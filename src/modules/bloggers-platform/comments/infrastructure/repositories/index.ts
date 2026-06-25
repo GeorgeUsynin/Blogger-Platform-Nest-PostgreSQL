@@ -1,2 +1,2 @@
 export { CommentsRepository } from './comments.repository';
-export * from './query';
+export { CommentsQueryRepository } from './query/comments.query-repository';

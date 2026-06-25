@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { AnswerStatus, GameStatus } from '../../../domain/types/game.types';
-import { GameQueryModel } from '../../../infrastructure/repositories/query/model';
+import { GameQueryModel } from '../../../infrastructure/repositories/query/model/GameQueryModel';
 
 class Answer {
   @ApiProperty()

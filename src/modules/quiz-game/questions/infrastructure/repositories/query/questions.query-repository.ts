@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindOptionsWhere, ILike, Repository } from 'typeorm';
 import { QuestionEntity } from '../../entities/question.entity';
-import { QuestionQueryModel } from './model';
+import { QuestionQueryModel } from './model/QuestionQueryModel';
 import { GetQuestionsQueryParamsInputDto } from '../../../api/dto';
 import { QuestionSortByFields } from '../../../api/dto/input-dto/question-sort-by-fields';
 import { SortDirection } from '../../../../../../core/dto/base.query-params.input-dto';

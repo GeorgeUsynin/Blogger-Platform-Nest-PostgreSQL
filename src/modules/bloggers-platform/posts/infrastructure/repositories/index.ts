@@ -1,2 +1,2 @@
 export { PostsRepository } from './posts.repository';
-export * from './query';
+export { PostsQueryRepository } from './query/posts.query-repository';

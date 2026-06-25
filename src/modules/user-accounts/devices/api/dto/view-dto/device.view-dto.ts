@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { DeviceQueryModel } from '../../../infrastructure';
+import { DeviceQueryModel } from '../../../infrastructure/repositories/query/model/device.query-model';
 
 export class DeviceViewDto {
   @ApiProperty()
