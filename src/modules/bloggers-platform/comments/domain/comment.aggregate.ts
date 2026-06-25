@@ -5,7 +5,7 @@ import {
   ReconstructCommentInput,
   UpdateCommentInput,
 } from './types';
-import { NotAnOwnerOfThisComment } from '../../../../core/exceptions';
+import { NotAnOwnerOfThisCommentDomainError } from './domainErrors';
 
 export class Comment extends AggregateRoot {
   private constructor(private props: CommentState) {
@@ -37,7 +37,7 @@ export class Comment extends AggregateRoot {
 
   public ensureCommentOwner(userId: number) {
     if (this.authorId !== userId) {
-      throw new NotAnOwnerOfThisComment();
+      throw new NotAnOwnerOfThisCommentDomainError();
     }
   }
 

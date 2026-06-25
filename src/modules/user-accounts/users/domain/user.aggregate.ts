@@ -1,6 +1,6 @@
 import { AggregateRoot } from '@nestjs/cqrs';
 import { EmailConfirmation, PasswordRecovery } from './value-objects';
-import { PasswordRecoveryNotInitiated } from '../../../../core/exceptions';
+import { PasswordRecoveryNotInitiatedDomainError } from './domainErrors';
 import {
   EmailConfirmationRequestedEvent,
   PasswordRecoveryRequestedEvent,
@@ -94,7 +94,7 @@ export class User extends AggregateRoot {
 
   private validateAndClearPasswordRecovery(recoveryCode: string): void {
     if (!this.passwordRecovery) {
-      throw new PasswordRecoveryNotInitiated();
+      throw new PasswordRecoveryNotInitiatedDomainError();
     }
 
     this.passwordRecovery.ensureValidRecoveryCode(recoveryCode);

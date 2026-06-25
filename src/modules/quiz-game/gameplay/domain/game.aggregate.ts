@@ -7,11 +7,11 @@ import {
 import { GameToQuestion, PlayerProgress } from './value-objects';
 import { GameRules } from './constants';
 import {
-  GameIsNotActiveError,
-  GameNotAcceptingPlayersError,
-  PlayerNotInGameError,
-  NotEnoughPublishedQuestions,
-} from '../../../../core/exceptions';
+  GameIsNotActiveDomainError,
+  GameNotAcceptingPlayersDomainError,
+  NotEnoughPublishedQuestionsDomainError,
+  PlayerNotInGameDomainError,
+} from './domainErrors';
 
 export class Game extends AggregateRoot {
   private constructor(private props: GameState) {
@@ -52,7 +52,7 @@ export class Game extends AggregateRoot {
     );
 
     if (!playerProgress) {
-      throw new PlayerNotInGameError();
+      throw new PlayerNotInGameDomainError();
     }
 
     playerProgress.addAnswer(body, this.questionsOfTheGame);
@@ -66,7 +66,7 @@ export class Game extends AggregateRoot {
 
   private addQuestions(questionIds: number[]): void {
     if (questionIds.length !== GameRules.QUESTIONS_PER_GAME) {
-      throw new NotEnoughPublishedQuestions();
+      throw new NotEnoughPublishedQuestionsDomainError();
     }
 
     questionIds.forEach((id: number, idx: number) => {
@@ -98,13 +98,13 @@ export class Game extends AggregateRoot {
 
   public ensureActiveGame(): void {
     if (this.status !== GameStatus.Active) {
-      throw new GameIsNotActiveError();
+      throw new GameIsNotActiveDomainError();
     }
   }
 
   public ensureCanAcceptPlayers(): void {
     if (this.status !== GameStatus.PendingSecondPlayer) {
-      throw new GameNotAcceptingPlayersError();
+      throw new GameNotAcceptingPlayersDomainError();
     }
   }
 

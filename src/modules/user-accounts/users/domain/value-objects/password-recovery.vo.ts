@@ -1,7 +1,7 @@
 import {
-  InvalidPasswordRecoveryCode,
-  PasswordRecoveryCodeExpired,
-} from '../../../../../core/exceptions';
+  InvalidPasswordRecoveryCodeDomainError,
+  PasswordRecoveryCodeExpiredDomainError,
+} from '../domainErrors';
 import {
   CreatePasswordRecoveryInput,
   PasswordRecoveryState,
@@ -39,13 +39,13 @@ export class PasswordRecovery {
 
   private ensureCodeMatches(code: string): void {
     if (this.recoveryCode !== code) {
-      throw new InvalidPasswordRecoveryCode();
+      throw new InvalidPasswordRecoveryCodeDomainError();
     }
   }
 
   private ensureNotExpired(): void {
     if (this.isExpired()) {
-      throw new PasswordRecoveryCodeExpired();
+      throw new PasswordRecoveryCodeExpiredDomainError();
     }
   }
 

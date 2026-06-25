@@ -1,8 +1,8 @@
 import {
-  ConfirmationCodeExpired,
-  EmailAlreadyConfirmedByCode,
-  InvalidConfirmationCode,
-} from '../../../../../core/exceptions';
+  ConfirmationCodeExpiredDomainError,
+  EmailAlreadyConfirmedByCodeDomainError,
+  InvalidConfirmationCodeDomainError,
+} from '../domainErrors';
 import {
   EmailConfirmationState,
   ReconstructEmailConfirmationInput,
@@ -55,19 +55,19 @@ export class EmailConfirmation {
 
   private ensureNotConfirmed(): void {
     if (this.isConfirmed) {
-      throw new EmailAlreadyConfirmedByCode();
+      throw new EmailAlreadyConfirmedByCodeDomainError();
     }
   }
 
   private ensureCodeIsValid(code: string): void {
     if (this.confirmationCode !== code) {
-      throw new InvalidConfirmationCode();
+      throw new InvalidConfirmationCodeDomainError();
     }
   }
 
   private ensureNotExpired(): void {
     if (this.isExpired()) {
-      throw new ConfirmationCodeExpired();
+      throw new ConfirmationCodeExpiredDomainError();
     }
   }
 

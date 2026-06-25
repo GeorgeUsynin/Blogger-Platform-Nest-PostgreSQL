@@ -1,5 +1,5 @@
-import { ErrorCodes } from '../constants';
-import { BaseDomainException } from './BaseDomainException';
+import { BaseDomainException } from '../../../../../core/exceptions';
+import { ErrorCodes } from '../../../../../core/exceptions/constants';
 
 export class CorrectAnswersNotDefinedDomainError extends BaseDomainException {
   constructor() {

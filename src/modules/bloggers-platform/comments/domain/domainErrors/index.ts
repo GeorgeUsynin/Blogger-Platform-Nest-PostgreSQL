@@ -1,0 +1,1 @@
+export { NotAnOwnerOfThisCommentDomainError } from './NotAnOwnerOfThisCommentDomainError';

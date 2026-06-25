@@ -5,7 +5,7 @@ import {
   ReconstructDeviceInput,
   UpdateSessionInput,
 } from './types';
-import { NotAnOwnerOfThisDevice } from '../../../../core/exceptions';
+import { NotAnOwnerOfThisDeviceDomainError } from './domainErrors';
 
 export class Device extends AggregateRoot {
   private constructor(private props: DeviceState) {
@@ -43,7 +43,7 @@ export class Device extends AggregateRoot {
 
   public ensureDeviceOwner(userId: number) {
     if (this.userId !== userId) {
-      throw new NotAnOwnerOfThisDevice();
+      throw new NotAnOwnerOfThisDeviceDomainError();
     }
   }
 
