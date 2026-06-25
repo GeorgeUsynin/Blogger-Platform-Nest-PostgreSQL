@@ -2178,7 +2178,7 @@ window.onload = function() {
           ]
         }
       },
-      "/api/pair-game-quiz/pairs/answers": {
+      "/api/pair-game-quiz/pairs/my-current/answers": {
         "post": {
           "operationId": "GamesController_createAnswer",
           "parameters": [],

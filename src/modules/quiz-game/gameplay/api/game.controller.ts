@@ -74,7 +74,7 @@ export class GamesController {
     return GameViewDto.mapToView(game);
   }
 
-  @Post(`${ROUTES.ANSWERS}`)
+  @Post(`${ROUTES.MY_CURRENT}/${ROUTES.ANSWERS}`)
   @ApiBearerAuth()
   @HttpCode(HttpStatus.OK)
   @CreateAnswerApi()
