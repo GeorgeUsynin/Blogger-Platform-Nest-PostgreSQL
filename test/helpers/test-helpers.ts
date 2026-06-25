@@ -81,7 +81,7 @@ export const createUser = async (
   },
 ) => {
   const { body } = await request(app.getHttpServer())
-    .post('/api/users')
+    .post('/api/sa/users')
     .set(basicAuthorization)
     .send(payload)
     .expect(HttpStatus.CREATED);

@@ -41,7 +41,7 @@ describe('AuthController (e2e) - registration-related endpoints', () => {
 
   const findUserByEmail = async (email: string) => {
     const { body } = await request(app.getHttpServer())
-      .get('/api/users')
+      .get('/api/sa/users')
       .set(basicAuthorization)
       .query({ searchTermEmail: email, searchEmailTerm: email })
       .expect(HttpStatus.OK);
@@ -278,7 +278,7 @@ describe('AuthController (e2e) - registration-related endpoints', () => {
 
     it('returns 400 when user is already confirmed', async () => {
       await request(app.getHttpServer())
-        .post('/api/users')
+        .post('/api/sa/users')
         .set(basicAuthorization)
         .send(registrationPayload)
         .expect(HttpStatus.CREATED);

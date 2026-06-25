@@ -4,7 +4,7 @@ import request from 'supertest';
 import { CreateUserInputDto } from '../../src/modules/user-accounts/users/api/dto';
 import { createUser, runAfterAllSetup, runBeforeAllSetup } from '../helpers';
 
-describe('UsersController (e2e) - /api/users', () => {
+describe('UsersController (e2e) - /api/sa/users', () => {
   let app: INestApplication;
   let basicAuthorization: { Authorization: string };
 
@@ -41,7 +41,7 @@ describe('UsersController (e2e) - /api/users', () => {
     });
 
     const { body: usersList } = await request(app.getHttpServer())
-      .get('/api/users')
+      .get('/api/sa/users')
       .set(basicAuthorization)
       .expect(HttpStatus.OK);
 
@@ -62,12 +62,12 @@ describe('UsersController (e2e) - /api/users', () => {
     });
 
     await request(app.getHttpServer())
-      .delete(`/api/users/${createdUser.id}`)
+      .delete(`/api/sa/users/${createdUser.id}`)
       .set(basicAuthorization)
       .expect(HttpStatus.NO_CONTENT);
 
     const { body: usersList } = await request(app.getHttpServer())
-      .get('/api/users')
+      .get('/api/sa/users')
       .set(basicAuthorization)
       .expect(HttpStatus.OK);
 
@@ -88,7 +88,7 @@ describe('UsersController (e2e) - /api/users', () => {
     };
 
     const { body } = await request(app.getHttpServer())
-      .post('/api/users')
+      .post('/api/sa/users')
       .set(basicAuthorization)
       .send(invalidUser)
       .expect(HttpStatus.BAD_REQUEST);
@@ -106,16 +106,16 @@ describe('UsersController (e2e) - /api/users', () => {
     };
 
     await request(app.getHttpServer())
-      .post('/api/users')
+      .post('/api/sa/users')
       .send(newUser)
       .expect(HttpStatus.UNAUTHORIZED);
 
     await request(app.getHttpServer())
-      .get('/api/users')
+      .get('/api/sa/users')
       .expect(HttpStatus.UNAUTHORIZED);
 
     await request(app.getHttpServer())
-      .delete('/api/users/507f1f77bcf86cd799439011')
+      .delete('/api/sa/users/507f1f77bcf86cd799439011')
       .expect(HttpStatus.UNAUTHORIZED);
   });
 });
