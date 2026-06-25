@@ -30,7 +30,8 @@ export const ErrorCodes = {
   INVALID_CREDENTIALS: 'INVALID_CREDENTIALS',
   EMAIL_NOT_CONFIRMED: 'EMAIL_NOT_CONFIRMED',
   PASSWORD_RECOVERY_NOT_INITIATED: 'PASSWORD_RECOVERY_NOT_INITIATED',
-  USER_ALREADY_HAS_ACTIVE_GAME: 'USER_ALREADY_HAS_ACTIVE_GAME',
+  USER_ALREADY_HAS_PENDING_OR_ACTIVE_GAME:
+    'USER_ALREADY_HAS_PENDING_OR_ACTIVE_GAME',
   NOT_PARTICIPATING_IN_ACTIVE_GAME: 'NOT_PARTICIPATING_IN_ACTIVE_GAME',
   PLAYER_NOT_IN_GAME: 'PLAYER_NOT_IN_GAME',
   GAME_IS_NOT_ACTIVE: 'GAME_IS_NOT_ACTIVE',
@@ -80,8 +81,8 @@ export const ErrorMessages: Record<ErrorCode, string> = {
   [ErrorCodes.EMAIL_NOT_CONFIRMED]: 'Email address is not confirmed',
   [ErrorCodes.PASSWORD_RECOVERY_NOT_INITIATED]:
     'Password recovery was not initiated',
-  [ErrorCodes.USER_ALREADY_HAS_ACTIVE_GAME]:
-    'You are already participating in an active game',
+  [ErrorCodes.USER_ALREADY_HAS_PENDING_OR_ACTIVE_GAME]:
+    'You are already participating in a pending or active game',
   [ErrorCodes.NOT_PARTICIPATING_IN_ACTIVE_GAME]:
     'You are not participating in active game',
   [ErrorCodes.PLAYER_NOT_IN_GAME]: 'Player is not in this game',

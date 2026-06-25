@@ -328,7 +328,7 @@ describe('QuizGameplayController (e2e) - /api/pair-game-quiz/pairs', () => {
     expect(finishedGame.secondPlayerProgress?.score).toBe(1);
   });
 
-  it('returns 403 when the current user is already participating in an active game', async () => {
+  it('returns 403 when the current user is already participating in a pending or active game', async () => {
     await createPublishedQuestions();
     const { firstPlayer, secondPlayer } = await createPlayers();
 
@@ -343,8 +343,27 @@ describe('QuizGameplayController (e2e) - /api/pair-game-quiz/pairs', () => {
     expectForbiddenError(
       body,
       CONNECTION_URL,
-      'USER_ALREADY_HAS_ACTIVE_GAME',
-      'You are already participating in an active game',
+      'USER_ALREADY_HAS_PENDING_OR_ACTIVE_GAME',
+      'You are already participating in a pending or active game',
+    );
+  });
+
+  it('returns 403 when the current user tries to connect to their own pending game', async () => {
+    await createPublishedQuestions();
+    const { firstPlayer } = await createPlayers();
+
+    await connectToGame(firstPlayer);
+
+    const { body } = await request(app.getHttpServer())
+      .post(CONNECTION_URL)
+      .set(authHeader(firstPlayer.token))
+      .expect(HttpStatus.FORBIDDEN);
+
+    expectForbiddenError(
+      body,
+      CONNECTION_URL,
+      'USER_ALREADY_HAS_PENDING_OR_ACTIVE_GAME',
+      'You are already participating in a pending or active game',
     );
   });
 

@@ -21,7 +21,8 @@
     "migration:generate": "typeorm-ts-node-commonjs migration:generate -d typeorm.config.ts",
     "migration:run": "typeorm-ts-node-commonjs migration:run -d typeorm.config.ts",
     "migration:revert": "typeorm-ts-node-commonjs migration:revert -d typeorm.config.ts",
-    "migration:run:test": "cross-env NODE_ENV=testing npm run migration:run"
+    "migration:run:test": "cross-env NODE_ENV=testing npm run migration:run",
+    "migration:revert:test": "cross-env NODE_ENV=testing typeorm-ts-node-commonjs migration:revert -d typeorm.config.ts"
   },
   "dependencies": {
     "@nestjs-modules/mailer": "^2.0.2",

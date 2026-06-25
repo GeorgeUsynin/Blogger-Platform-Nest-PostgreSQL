@@ -9,12 +9,14 @@ export class PlayerProgressesRepository {
     private playerProgressesRepo: Repository<PlayerProgressEntity>,
   ) {}
 
-  async hasActiveGame(userId: number): Promise<boolean> {
+  async hasPendingOrActiveGame(userId: number): Promise<boolean> {
     return this.playerProgressesRepo
       .createQueryBuilder('pp')
       .innerJoin('pp.game', 'g')
       .where('pp.userId = :userId', { userId })
-      .andWhere('g.status = :status', { status: GameStatus.Active })
+      .andWhere('g.status IN (:...statuses)', {
+        statuses: [GameStatus.PendingSecondPlayer, GameStatus.Active],
+      })
       .getExists();
   }
 }

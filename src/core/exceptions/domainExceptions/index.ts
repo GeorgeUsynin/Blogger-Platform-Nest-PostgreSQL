@@ -23,7 +23,7 @@ import { PostAlreadyDeleted } from './PostAlreadyDeleted';
 import { CommentAlreadyDeleted } from './CommentAlreadyDeleted';
 import { UserAlreadyDeleted } from './UserAlreadyDeleted';
 import { EmailNotConfirmedError } from './EmailNotConfirmed';
-import { AlreadyParticipatingInActiveGame } from './AlreadyParticipatingInActiveGame';
+import { AlreadyParticipatingInPendingOrActiveGame } from './AlreadyParticipatingInPendingOrActiveGame';
 import { NotParticipatingInActiveGameError } from './NotParticipatingInActiveGameError';
 
 export {
@@ -52,6 +52,6 @@ export {
   CommentAlreadyDeleted,
   UserAlreadyDeleted,
   EmailNotConfirmedError,
-  AlreadyParticipatingInActiveGame,
+  AlreadyParticipatingInPendingOrActiveGame,
   NotParticipatingInActiveGameError,
 };

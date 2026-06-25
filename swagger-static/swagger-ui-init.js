@@ -25,7 +25,7 @@ window.onload = function() {
           ]
         }
       },
-      "/api/testing/all-data": {
+      "/testing/all-data": {
         "delete": {
           "operationId": "TestingController_deleteAll",
           "parameters": [],
@@ -40,7 +40,7 @@ window.onload = function() {
           ]
         }
       },
-      "/api/blogs": {
+      "/blogs": {
         "get": {
           "operationId": "BlogsController_getAllBlogs",
           "parameters": [
@@ -181,7 +181,7 @@ window.onload = function() {
           ]
         }
       },
-      "/api/blogs/{id}": {
+      "/blogs/{id}": {
         "get": {
           "operationId": "BlogsController_getBlogById",
           "parameters": [
@@ -305,7 +305,7 @@ window.onload = function() {
           ]
         }
       },
-      "/api/blogs/{blogId}/posts": {
+      "/blogs/{blogId}/posts": {
         "get": {
           "operationId": "BlogsController_getPostsByBlogId",
           "parameters": [
@@ -468,7 +468,7 @@ window.onload = function() {
           ]
         }
       },
-      "/api/posts": {
+      "/posts": {
         "get": {
           "operationId": "PostsController_getAllPosts",
           "parameters": [
@@ -606,7 +606,7 @@ window.onload = function() {
           ]
         }
       },
-      "/api/posts/{id}": {
+      "/posts/{id}": {
         "get": {
           "operationId": "PostsController_getPostById",
           "parameters": [
@@ -735,7 +735,7 @@ window.onload = function() {
           ]
         }
       },
-      "/api/posts/{postId}/comments": {
+      "/posts/{postId}/comments": {
         "get": {
           "operationId": "PostsController_getAllCommentsByPostId",
           "parameters": [
@@ -896,7 +896,7 @@ window.onload = function() {
           ]
         }
       },
-      "/api/posts/{postId}/like-status": {
+      "/posts/{postId}/like-status": {
         "put": {
           "operationId": "PostsController_createUpdatePostLikeStatus",
           "parameters": [
@@ -953,7 +953,7 @@ window.onload = function() {
           ]
         }
       },
-      "/api/comments/{id}": {
+      "/comments/{id}": {
         "get": {
           "operationId": "CommentsController_getCommentById",
           "parameters": [
@@ -1088,7 +1088,7 @@ window.onload = function() {
           ]
         }
       },
-      "/api/comments/{commentId}/like-status": {
+      "/comments/{commentId}/like-status": {
         "put": {
           "operationId": "CommentsController_createUpdateCommentLikeStatus",
           "parameters": [
@@ -1145,7 +1145,7 @@ window.onload = function() {
           ]
         }
       },
-      "/api/sa/users": {
+      "/sa/users": {
         "get": {
           "operationId": "UsersController_getAllUsers",
           "parameters": [
@@ -1304,7 +1304,7 @@ window.onload = function() {
           ]
         }
       },
-      "/api/sa/users/{id}": {
+      "/sa/users/{id}": {
         "get": {
           "operationId": "UsersController_getUserById",
           "parameters": [
@@ -1373,7 +1373,7 @@ window.onload = function() {
           ]
         }
       },
-      "/api/auth/me": {
+      "/auth/me": {
         "get": {
           "operationId": "AuthController_me",
           "parameters": [],
@@ -1403,7 +1403,7 @@ window.onload = function() {
           ]
         }
       },
-      "/api/auth/login": {
+      "/auth/login": {
         "post": {
           "operationId": "AuthController_login",
           "parameters": [],
@@ -1451,7 +1451,7 @@ window.onload = function() {
           ]
         }
       },
-      "/api/auth/logout": {
+      "/auth/logout": {
         "post": {
           "operationId": "AuthController_logout",
           "parameters": [],
@@ -1474,7 +1474,7 @@ window.onload = function() {
           ]
         }
       },
-      "/api/auth/refresh-token": {
+      "/auth/refresh-token": {
         "post": {
           "operationId": "AuthController_refreshToken",
           "parameters": [],
@@ -1504,7 +1504,7 @@ window.onload = function() {
           ]
         }
       },
-      "/api/auth/password-recovery": {
+      "/auth/password-recovery": {
         "post": {
           "operationId": "AuthController_passwordRecovery",
           "parameters": [],
@@ -1542,7 +1542,7 @@ window.onload = function() {
           ]
         }
       },
-      "/api/auth/new-password": {
+      "/auth/new-password": {
         "post": {
           "operationId": "AuthController_newPassword",
           "parameters": [],
@@ -1580,7 +1580,7 @@ window.onload = function() {
           ]
         }
       },
-      "/api/auth/registration-confirmation": {
+      "/auth/registration-confirmation": {
         "post": {
           "operationId": "AuthController_registrationConfirmation",
           "parameters": [],
@@ -1618,7 +1618,7 @@ window.onload = function() {
           ]
         }
       },
-      "/api/auth/registration": {
+      "/auth/registration": {
         "post": {
           "operationId": "AuthController_registration",
           "parameters": [],
@@ -1656,7 +1656,7 @@ window.onload = function() {
           ]
         }
       },
-      "/api/auth/registration-email-resending": {
+      "/auth/registration-email-resending": {
         "post": {
           "operationId": "AuthController_registrationEmailResending",
           "parameters": [],
@@ -1694,7 +1694,7 @@ window.onload = function() {
           ]
         }
       },
-      "/api/security/devices": {
+      "/security/devices": {
         "get": {
           "operationId": "DevicesController_getAllDevices",
           "parameters": [],
@@ -1748,7 +1748,7 @@ window.onload = function() {
           ]
         }
       },
-      "/api/security/devices/{deviceId}": {
+      "/security/devices/{deviceId}": {
         "delete": {
           "operationId": "DevicesController_deleteDeviceById",
           "parameters": [
@@ -1787,7 +1787,7 @@ window.onload = function() {
           ]
         }
       },
-      "/api/sa/quiz/questions": {
+      "/sa/quiz/questions": {
         "get": {
           "operationId": "QuizQuestionsController_getAllQuestions",
           "parameters": [
@@ -1941,7 +1941,7 @@ window.onload = function() {
           ]
         }
       },
-      "/api/sa/quiz/questions/{id}": {
+      "/sa/quiz/questions/{id}": {
         "put": {
           "operationId": "QuizQuestionsController_updateQuestionById",
           "parameters": [
@@ -2032,7 +2032,7 @@ window.onload = function() {
           ]
         }
       },
-      "/api/sa/quiz/questions/{id}/publish": {
+      "/sa/quiz/questions/{id}/publish": {
         "put": {
           "operationId": "QuizQuestionsController_updateQuestionPublishedStatusById",
           "parameters": [
@@ -2089,7 +2089,7 @@ window.onload = function() {
           ]
         }
       },
-      "/api/pair-game-quiz/pairs/my-current": {
+      "/pair-game-quiz/pairs/my-current": {
         "get": {
           "operationId": "GamesController_getUserActiveGame",
           "parameters": [],
@@ -2122,7 +2122,7 @@ window.onload = function() {
           ]
         }
       },
-      "/api/pair-game-quiz/pairs/{id}": {
+      "/pair-game-quiz/pairs/{id}": {
         "get": {
           "operationId": "GamesController_getGameById",
           "parameters": [
@@ -2178,7 +2178,7 @@ window.onload = function() {
           ]
         }
       },
-      "/api/pair-game-quiz/pairs/my-current/answers": {
+      "/pair-game-quiz/pairs/my-current/answers": {
         "post": {
           "operationId": "GamesController_createAnswer",
           "parameters": [],
@@ -2232,7 +2232,7 @@ window.onload = function() {
           ]
         }
       },
-      "/api/pair-game-quiz/pairs/connection": {
+      "/pair-game-quiz/pairs/connection": {
         "post": {
           "operationId": "GamesController_createGameConnection",
           "parameters": [],
@@ -2956,7 +2956,8 @@ window.onload = function() {
             },
             "updatedAt": {
               "format": "date-time",
-              "type": "string"
+              "type": "string",
+              "nullable": true
             }
           },
           "required": [

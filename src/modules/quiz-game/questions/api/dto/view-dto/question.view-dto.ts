@@ -26,8 +26,8 @@ export class QuestionViewDto {
   @ApiProperty({ type: Date })
   createdAt: Date;
 
-  @ApiProperty({ type: Date })
-  updatedAt: Date;
+  @ApiProperty({ type: Date, nullable: true })
+  updatedAt: Date | null;
 
   public static mapToView(question: QuestionQueryModel): QuestionViewDto {
     const dto = new QuestionViewDto();

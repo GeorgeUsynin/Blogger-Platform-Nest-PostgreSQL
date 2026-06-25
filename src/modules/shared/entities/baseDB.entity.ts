@@ -12,7 +12,9 @@ export abstract class BaseDBEntity {
   @CreateDateColumn({ type: 'timestamp with time zone' })
   createdAt: Date;
 
-  @UpdateDateColumn({ type: 'timestamp with time zone' })
+  @UpdateDateColumn({
+    type: 'timestamp with time zone',
+  })
   updatedAt: Date;
 
   @DeleteDateColumn({ type: 'timestamp with time zone' })

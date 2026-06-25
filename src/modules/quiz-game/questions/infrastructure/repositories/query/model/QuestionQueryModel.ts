@@ -4,5 +4,5 @@ export type QuestionQueryModel = {
   correctAnswers: string[];
   isPublished: boolean;
   createdAt: Date;
-  updatedAt: Date;
+  updatedAt: Date | null;
 };

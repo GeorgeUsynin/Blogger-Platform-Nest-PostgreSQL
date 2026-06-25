@@ -1,5 +1,5 @@
 import { Command, CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { AlreadyParticipatingInActiveGame } from '../../../../../core/exceptions';
+import { AlreadyParticipatingInPendingOrActiveGame } from '../../../../../core/exceptions';
 import { PlayerProgressesRepository } from '../../infrastructure/repositories/player-progresses.repository';
 import { GamesRepository } from '../../infrastructure/repositories/games.repository';
 import { Game } from '../../domain/game.aggregate';
@@ -25,11 +25,11 @@ export class CreateGameConnectionUseCase implements ICommandHandler<
   ) {}
 
   async execute({ userId }: CreateGameConnectionCommand): Promise<number> {
-    const hasActiveGame =
-      await this.playerProgressesRepository.hasActiveGame(userId);
+    const hasPendingOrActiveGame =
+      await this.playerProgressesRepository.hasPendingOrActiveGame(userId);
 
-    if (hasActiveGame) {
-      throw new AlreadyParticipatingInActiveGame();
+    if (hasPendingOrActiveGame) {
+      throw new AlreadyParticipatingInPendingOrActiveGame();
     }
 
     let game: WithOptionalId<Game> | null =

@@ -39,7 +39,7 @@ export class DomainExceptionsFilter extends BaseExceptionFilter {
         return HttpStatus.NOT_FOUND;
       case ErrorCodes.NOT_AN_OWNER_OF_THIS_DEVICE:
       case ErrorCodes.NOT_AN_OWNER_OF_THIS_COMMENT:
-      case ErrorCodes.USER_ALREADY_HAS_ACTIVE_GAME:
+      case ErrorCodes.USER_ALREADY_HAS_PENDING_OR_ACTIVE_GAME:
       case ErrorCodes.NOT_PARTICIPATING_IN_ACTIVE_GAME:
       case ErrorCodes.PLAYER_NOT_IN_GAME:
       case ErrorCodes.GAME_IS_NOT_ACTIVE:
