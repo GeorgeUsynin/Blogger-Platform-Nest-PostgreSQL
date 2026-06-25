@@ -8,7 +8,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { LikeStatus, ParentType, type NonNoneLikeStatus } from '../../domain';
-import { UserEntity } from '../../../../user-accounts/users/infrastructure';
+import { UserEntity } from '../../../../user-accounts/users/infrastructure/entities/user.entity';
 
 @Unique(['authorId', 'parentId'])
 export abstract class BaseLikeEntity {

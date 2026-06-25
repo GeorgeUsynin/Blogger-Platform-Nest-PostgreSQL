@@ -4,7 +4,7 @@ import { FindOptionsWhere, ILike, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserSortByFields } from '../../../api/dto/input-dto/user-sort-by-fields';
 import { SortDirection } from '../../../../../../core/dto/base.query-params.input-dto';
-import { UserEntity } from '../../entities';
+import { UserEntity } from '../../entities/user.entity';
 import { UserQueryModel } from './model';
 
 @Injectable()

@@ -2,7 +2,7 @@ import { Check, Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 import { DB_TABLE_NAMES } from '../../../../../constants';
 import { BaseDBEntity } from '../../../../shared/entities';
 import { contentCheckConstraints, contentConstraints } from './constraints';
-import { UserEntity } from '../../../../user-accounts/users/infrastructure';
+import { UserEntity } from '../../../../user-accounts/users/infrastructure/entities/user.entity';
 import { PostEntity } from '../../../posts/infrastructure';
 
 Check(contentCheckConstraints);

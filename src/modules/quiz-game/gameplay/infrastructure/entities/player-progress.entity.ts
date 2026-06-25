@@ -8,7 +8,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { UserEntity } from '../../../../user-accounts/users/infrastructure';
+import { UserEntity } from '../../../../user-accounts/users/infrastructure/entities/user.entity';
 import { GameEntity } from './game.entity';
 import { AnswerEntity } from './answer.entity';
 

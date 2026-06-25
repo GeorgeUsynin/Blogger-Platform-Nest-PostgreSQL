@@ -8,7 +8,7 @@ import { SortDirection } from '../../../../../../core/dto/base.query-params.inpu
 import { PostEntity } from '../../entities';
 import { PostLikeEntity } from '../../../../likes/infrastructure/entities/post-like.entity';
 import { LikeStatus } from '../../../../likes/domain';
-import { UserEntity } from '../../../../../user-accounts/users/infrastructure';
+import { UserEntity } from '../../../../../user-accounts/users/infrastructure/entities/user.entity';
 
 type FindPostsFilter = Partial<Pick<PostEntity, 'blogId'>>;
 const newestLikesLimit = 3;
