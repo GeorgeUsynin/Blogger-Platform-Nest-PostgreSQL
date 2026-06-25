@@ -1,7 +1,7 @@
 import { IQueryHandler, Query, QueryHandler } from '@nestjs/cqrs';
 import {
   GameNotFoundError,
-  NotParticipatingInGameError,
+  NotParticipatingInActiveGameError,
 } from '../../../../../core/exceptions';
 import { GamesQueryRepository } from '../../infrastructure/repositories/query/games.query-repository';
 import { GameQueryModel } from '../../infrastructure/repositories/query/model/GameQueryModel';
@@ -16,9 +16,10 @@ export class GetGameByIdQuery extends Query<GameQueryModel> {
 }
 
 @QueryHandler(GetGameByIdQuery)
-export class GetGameByIdUseCase
-  implements IQueryHandler<GetGameByIdQuery, GameQueryModel>
-{
+export class GetGameByIdUseCase implements IQueryHandler<
+  GetGameByIdQuery,
+  GameQueryModel
+> {
   constructor(private gamesQueryRepository: GamesQueryRepository) {}
 
   async execute({ gameId, userId }: GetGameByIdQuery): Promise<GameQueryModel> {
@@ -33,7 +34,7 @@ export class GetGameByIdUseCase
     );
 
     if (!isUsersGame) {
-      throw new NotParticipatingInGameError();
+      throw new NotParticipatingInActiveGameError();
     }
 
     return game;

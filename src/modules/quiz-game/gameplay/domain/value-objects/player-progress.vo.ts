@@ -45,7 +45,7 @@ export class PlayerProgress {
       throw new CorrectAnswersNotDefinedDomainError();
     }
 
-    const answerStatus = question.correctAnswers.includes(body)
+    const answerStatus = question.correctAnswers.includes(body.toLowerCase())
       ? AnswerStatus.Correct
       : AnswerStatus.Incorrect;
 
@@ -55,7 +55,7 @@ export class PlayerProgress {
 
     this.answers.push(
       Answer.create({
-        questionId: question.id,
+        questionId: question.questionId,
         answerStatus,
         body,
       }),

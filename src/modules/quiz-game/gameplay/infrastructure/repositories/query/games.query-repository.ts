@@ -21,6 +21,7 @@ export class GamesQueryRepository {
       this.gamesRepo.createQueryBuilder('g'),
     )
       .where('g.id = :id', { id })
+      .orderBy('gtq.order', 'ASC')
       .getOne();
 
     return game ? this.gameQueryModelMapper(game) : null;
@@ -35,12 +36,14 @@ export class GamesQueryRepository {
     )
       .where('g.status = :status', { status: GameStatus.Active })
       .andWhere('userPlayer.id = :userId', { userId })
+      .orderBy('gtq.order', 'ASC')
       .getOne();
 
     return game ? this.gameQueryModelMapper(game) : null;
   }
 
-  async getLastAnswerForUserInActiveGame(
+  async getLastAnswerForUserInGame(
+    gameId: number,
     userId: number,
   ): Promise<AnswerQueryModel | null> {
     const answer = await this.gamesRepo
@@ -52,7 +55,7 @@ export class GamesQueryRepository {
         'a.answerStatus AS "answerStatus"',
         'a.createdAt AS "createdAt"',
       ])
-      .where('g.status = :status', { status: GameStatus.Active })
+      .where('g.id = :gameId', { gameId })
       .andWhere('pp.userId = :userId', { userId })
       .orderBy('a.createdAt', 'DESC')
       .getRawOne<AnswerQueryModel>();

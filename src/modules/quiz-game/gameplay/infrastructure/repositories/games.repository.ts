@@ -17,8 +17,17 @@ export class GamesRepository {
     const entity = await this.gamesRepo.findOne({
       where: { status: GameStatus.PendingSecondPlayer },
       relations: {
-        playersProgresses: true,
-        gameToQuestions: true,
+        playersProgresses: {
+          answers: true,
+        },
+        gameToQuestions: {
+          question: true,
+        },
+      },
+      order: {
+        gameToQuestions: {
+          order: 'ASC',
+        },
       },
       select: {
         id: true,
@@ -28,11 +37,21 @@ export class GamesRepository {
         playersProgresses: {
           id: true,
           userId: true,
+          answers: {
+            id: true,
+            questionId: true,
+            body: true,
+            answerStatus: true,
+          },
         },
         gameToQuestions: {
           id: true,
           questionId: true,
           order: true,
+          question: {
+            id: true,
+            correctAnswers: true,
+          },
         },
       },
     });
@@ -46,7 +65,6 @@ export class GamesRepository {
       .innerJoin('g.playersProgresses', 'userProgress')
       .innerJoin('userProgress.playerAccount', 'userPlayer')
       .leftJoin('g.playersProgresses', 'pp')
-      .leftJoin('pp.playerAccount', 'p')
       .leftJoin('pp.answers', 'a')
       .leftJoin('g.gameToQuestions', 'gtq')
       .leftJoin('gtq.question', 'q')
@@ -58,10 +76,8 @@ export class GamesRepository {
         'g.finishGameDate',
 
         'pp.id',
+        'pp.userId',
         'pp.createdAt',
-
-        'p.id',
-        'p.login',
 
         'a.id',
         'a.questionId',
@@ -69,12 +85,14 @@ export class GamesRepository {
         'a.createdAt',
 
         'gtq.id',
+        'gtq.questionId',
+        'gtq.order',
 
-        'q.id',
-        'q.body',
+        'q.correctAnswers',
       ])
       .where('g.status = :status', { status: GameStatus.Active })
       .andWhere('userPlayer.id = :userId', { userId })
+      .orderBy('gtq.order', 'ASC')
       .getOne();
 
     return game ? this.mapToDomain(game) : null;

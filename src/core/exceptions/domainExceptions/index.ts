@@ -24,7 +24,7 @@ import { CommentAlreadyDeleted } from './CommentAlreadyDeleted';
 import { UserAlreadyDeleted } from './UserAlreadyDeleted';
 import { EmailNotConfirmedError } from './EmailNotConfirmed';
 import { AlreadyParticipatingInActiveGame } from './AlreadyParticipatingInActiveGame';
-import { NotParticipatingInGameError } from './NotParticipatingInGameError';
+import { NotParticipatingInActiveGameError } from './NotParticipatingInActiveGameError';
 
 export {
   BaseDomainException,
@@ -53,5 +53,5 @@ export {
   UserAlreadyDeleted,
   EmailNotConfirmedError,
   AlreadyParticipatingInActiveGame,
-  NotParticipatingInGameError,
+  NotParticipatingInActiveGameError,
 };

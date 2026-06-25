@@ -82,10 +82,13 @@ export class GamesController {
     @Body() body: CreateAnswerInputDto,
     @ExtractUserFromRequest() user: UserContextDto,
   ): Promise<AnswerViewDto> {
-    await this.commandBus.execute(new CreateAnswerCommand(body, user.userId));
+    const gameId = await this.commandBus.execute(
+      new CreateAnswerCommand(body, user.userId),
+    );
 
     const createdAnswer =
-      await this.gamesQueryRepository.getLastAnswerForUserInActiveGame(
+      await this.gamesQueryRepository.getLastAnswerForUserInGame(
+        gameId,
         user.userId,
       );
 
