@@ -70,7 +70,7 @@ describe('QuizQuestionsController (e2e) - /api/sa/quiz/questions', () => {
       ...newQuestion,
       published: false,
       createdAt: expect.any(String),
-      updatedAt: expect.any(String),
+      updatedAt: null,
     });
 
     const { body } = await request(app.getHttpServer())
@@ -275,7 +275,7 @@ describe('QuizQuestionsController (e2e) - /api/sa/quiz/questions', () => {
       .query({
         pageNumber: 'invalid',
         pageSize: 0,
-        sortBy: 'body',
+        sortBy: 'invalid',
         sortDirection: 'invalid',
         publishedStatus: 'invalid',
       })
