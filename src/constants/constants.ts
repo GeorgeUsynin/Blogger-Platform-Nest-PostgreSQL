@@ -62,6 +62,7 @@ export const ROUTES = {
   LOGIN: 'login',
   LOGOUT: 'logout',
   ME: 'me',
+  MY: 'my',
   MY_CURRENT: 'my-current',
   NEW_PASSWORD: 'new-password',
   PAIR_GAME_QUIZ: 'pair-game-quiz',

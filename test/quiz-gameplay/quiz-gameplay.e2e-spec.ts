@@ -11,6 +11,7 @@ const QUESTIONS_URL = '/api/sa/quiz/questions';
 const PAIRS_URL = '/api/pair-game-quiz/pairs';
 const CONNECTION_URL = `${PAIRS_URL}/connection`;
 const MY_CURRENT_GAME_URL = `${PAIRS_URL}/my-current`;
+const MY_GAMES_URL = `${PAIRS_URL}/my`;
 const ANSWERS_URL = `${MY_CURRENT_GAME_URL}/answers`;
 
 type BasicAuthorization = {
@@ -51,6 +52,14 @@ type GameView = {
   pairCreatedDate: string;
   startGameDate: string | null;
   finishGameDate: string | null;
+};
+
+type PaginatedGamesView = {
+  pagesCount: number;
+  page: number;
+  pageSize: number;
+  totalCount: number;
+  items: GameView[];
 };
 
 type QuestionView = {
@@ -170,6 +179,15 @@ describe('QuizGameplayController (e2e) - /api/pair-game-quiz/pairs', () => {
     return body as GameView;
   };
 
+  const getMyGames = async (player: AuthUser, query = '') => {
+    const { body } = await request(app.getHttpServer())
+      .get(`${MY_GAMES_URL}${query}`)
+      .set(authHeader(player.token))
+      .expect(HttpStatus.OK);
+
+    return body as PaginatedGamesView;
+  };
+
   const answer = async (
     player: AuthUser,
     answerBody: 'correct' | 'wrong',
@@ -201,6 +219,31 @@ describe('QuizGameplayController (e2e) - /api/pair-game-quiz/pairs', () => {
         answerBody === 'correct' ? 'Correct' : 'Incorrect',
       );
     }
+  };
+
+  const createFinishedGame = async (
+    firstPlayer: AuthUser,
+    secondPlayer: AuthUser,
+  ) => {
+    const pendingGame = await connectToGame(firstPlayer);
+    await connectToGame(secondPlayer);
+
+    await answerMany(firstPlayer, [
+      'correct',
+      'wrong',
+      'correct',
+      'wrong',
+      'correct',
+    ]);
+    await answerMany(secondPlayer, [
+      'wrong',
+      'correct',
+      'wrong',
+      'correct',
+      'wrong',
+    ]);
+
+    return getGameById(firstPlayer, pendingGame.id);
   };
 
   const wait = (ms: number) =>
@@ -326,6 +369,57 @@ describe('QuizGameplayController (e2e) - /api/pair-game-quiz/pairs', () => {
     expect(finishedGame.finishGameDate).toEqual(expect.any(String));
     expect(finishedGame.firstPlayerProgress.score).toBe(0);
     expect(finishedGame.secondPlayerProgress?.score).toBe(1);
+  });
+
+  it('returns current user games sorted by status and then by pairCreatedDate desc when statuses are equal', async () => {
+    await createPublishedQuestions();
+    const firstPlayer = await createUserAndGetToken(app, basicAuthorization, {
+      prefix: 'p1',
+    });
+    const secondPlayer = await createUserAndGetToken(app, basicAuthorization, {
+      prefix: 'p2',
+    });
+    const thirdPlayer = await createUserAndGetToken(app, basicAuthorization, {
+      prefix: 'p3',
+    });
+    const fourthPlayer = await createUserAndGetToken(app, basicAuthorization, {
+      prefix: 'p4',
+    });
+
+    const oldestGame = await createFinishedGame(firstPlayer, secondPlayer);
+    await wait(10);
+    const middleGame = await createFinishedGame(firstPlayer, thirdPlayer);
+    await wait(10);
+    const newestGame = await createFinishedGame(firstPlayer, fourthPlayer);
+
+    const response = await getMyGames(
+      firstPlayer,
+      '?sortBy=status&sortDirection=asc&pageNumber=1&pageSize=10',
+    );
+
+    expect(response).toEqual({
+      pagesCount: 1,
+      page: 1,
+      pageSize: 10,
+      totalCount: 3,
+      items: expect.any(Array),
+    });
+    expect(response.items).toHaveLength(3);
+    expect(response.items.map((game) => game.status)).toEqual([
+      'Finished',
+      'Finished',
+      'Finished',
+    ]);
+    expect(response.items.map((game) => game.id)).toEqual([
+      newestGame.id,
+      middleGame.id,
+      oldestGame.id,
+    ]);
+    expect(response.items.map((game) => game.pairCreatedDate)).toEqual([
+      newestGame.pairCreatedDate,
+      middleGame.pairCreatedDate,
+      oldestGame.pairCreatedDate,
+    ]);
   });
 
   it('returns 403 when the current user is already participating in a pending or active game', async () => {

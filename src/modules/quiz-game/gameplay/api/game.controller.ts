@@ -7,6 +7,7 @@ import {
   Param,
   ParseIntPipe,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
@@ -15,7 +16,12 @@ import { ROUTES } from '../../../../constants';
 import { JwtHeaderAuthGuard } from '../../../user-accounts/users/guards/bearer';
 import { ExtractUserFromRequest } from '../../../user-accounts/users/guards/decorators';
 import { UserContextDto } from '../../../user-accounts/users/guards/dto';
-import { AnswerViewDto, CreateAnswerInputDto, GameViewDto } from './dto';
+import {
+  AnswerViewDto,
+  CreateAnswerInputDto,
+  GameViewDto,
+  GetGamesQueryParamsInputDto,
+} from './dto';
 import {
   AnswerCreationFailedError,
   GameConnectionCreationFailedError,
@@ -32,7 +38,9 @@ import {
   CreateGameConnectionApi,
   GetCurrentGameApi,
   GetGameApi,
+  GetMyGamesApi,
 } from './swagger';
+import { PaginatedViewDto } from '../../../../core/dto';
 
 @Controller(`${ROUTES.PAIR_GAME_QUIZ}/${ROUTES.PAIRS}`)
 @UseGuards(JwtHeaderAuthGuard)
@@ -57,6 +65,30 @@ export class GamesController {
     }
 
     return GameViewDto.mapToView(game);
+  }
+
+  @ApiBearerAuth()
+  @Get(`${ROUTES.MY}`)
+  @HttpCode(HttpStatus.OK)
+  @GetMyGamesApi()
+  async getUserGames(
+    @Query() query: GetGamesQueryParamsInputDto,
+    @ExtractUserFromRequest() user: UserContextDto,
+  ): Promise<PaginatedViewDto<GameViewDto>> {
+    const { items, totalCount } =
+      await this.gamesQueryRepository.getUserActiveAndFinishedGames(
+        user.userId,
+        query,
+      );
+
+    const mappedItems = items.map(GameViewDto.mapToView);
+
+    return PaginatedViewDto.mapToView({
+      items: mappedItems,
+      page: query.pageNumber,
+      size: query.pageSize,
+      totalCount,
+    });
   }
 
   @ApiBearerAuth()

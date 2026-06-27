@@ -25,7 +25,7 @@ window.onload = function() {
           ]
         }
       },
-      "/testing/all-data": {
+      "/api/testing/all-data": {
         "delete": {
           "operationId": "TestingController_deleteAll",
           "parameters": [],
@@ -40,7 +40,7 @@ window.onload = function() {
           ]
         }
       },
-      "/blogs": {
+      "/api/blogs": {
         "get": {
           "operationId": "BlogsController_getAllBlogs",
           "parameters": [
@@ -181,7 +181,7 @@ window.onload = function() {
           ]
         }
       },
-      "/blogs/{id}": {
+      "/api/blogs/{id}": {
         "get": {
           "operationId": "BlogsController_getBlogById",
           "parameters": [
@@ -305,7 +305,7 @@ window.onload = function() {
           ]
         }
       },
-      "/blogs/{blogId}/posts": {
+      "/api/blogs/{blogId}/posts": {
         "get": {
           "operationId": "BlogsController_getPostsByBlogId",
           "parameters": [
@@ -468,7 +468,7 @@ window.onload = function() {
           ]
         }
       },
-      "/posts": {
+      "/api/posts": {
         "get": {
           "operationId": "PostsController_getAllPosts",
           "parameters": [
@@ -606,7 +606,7 @@ window.onload = function() {
           ]
         }
       },
-      "/posts/{id}": {
+      "/api/posts/{id}": {
         "get": {
           "operationId": "PostsController_getPostById",
           "parameters": [
@@ -735,7 +735,7 @@ window.onload = function() {
           ]
         }
       },
-      "/posts/{postId}/comments": {
+      "/api/posts/{postId}/comments": {
         "get": {
           "operationId": "PostsController_getAllCommentsByPostId",
           "parameters": [
@@ -896,7 +896,7 @@ window.onload = function() {
           ]
         }
       },
-      "/posts/{postId}/like-status": {
+      "/api/posts/{postId}/like-status": {
         "put": {
           "operationId": "PostsController_createUpdatePostLikeStatus",
           "parameters": [
@@ -953,7 +953,7 @@ window.onload = function() {
           ]
         }
       },
-      "/comments/{id}": {
+      "/api/comments/{id}": {
         "get": {
           "operationId": "CommentsController_getCommentById",
           "parameters": [
@@ -1088,7 +1088,7 @@ window.onload = function() {
           ]
         }
       },
-      "/comments/{commentId}/like-status": {
+      "/api/comments/{commentId}/like-status": {
         "put": {
           "operationId": "CommentsController_createUpdateCommentLikeStatus",
           "parameters": [
@@ -1145,7 +1145,7 @@ window.onload = function() {
           ]
         }
       },
-      "/sa/users": {
+      "/api/sa/users": {
         "get": {
           "operationId": "UsersController_getAllUsers",
           "parameters": [
@@ -1304,7 +1304,7 @@ window.onload = function() {
           ]
         }
       },
-      "/sa/users/{id}": {
+      "/api/sa/users/{id}": {
         "get": {
           "operationId": "UsersController_getUserById",
           "parameters": [
@@ -1373,7 +1373,7 @@ window.onload = function() {
           ]
         }
       },
-      "/auth/me": {
+      "/api/auth/me": {
         "get": {
           "operationId": "AuthController_me",
           "parameters": [],
@@ -1403,7 +1403,7 @@ window.onload = function() {
           ]
         }
       },
-      "/auth/login": {
+      "/api/auth/login": {
         "post": {
           "operationId": "AuthController_login",
           "parameters": [],
@@ -1451,7 +1451,7 @@ window.onload = function() {
           ]
         }
       },
-      "/auth/logout": {
+      "/api/auth/logout": {
         "post": {
           "operationId": "AuthController_logout",
           "parameters": [],
@@ -1474,7 +1474,7 @@ window.onload = function() {
           ]
         }
       },
-      "/auth/refresh-token": {
+      "/api/auth/refresh-token": {
         "post": {
           "operationId": "AuthController_refreshToken",
           "parameters": [],
@@ -1504,7 +1504,7 @@ window.onload = function() {
           ]
         }
       },
-      "/auth/password-recovery": {
+      "/api/auth/password-recovery": {
         "post": {
           "operationId": "AuthController_passwordRecovery",
           "parameters": [],
@@ -1542,7 +1542,7 @@ window.onload = function() {
           ]
         }
       },
-      "/auth/new-password": {
+      "/api/auth/new-password": {
         "post": {
           "operationId": "AuthController_newPassword",
           "parameters": [],
@@ -1580,7 +1580,7 @@ window.onload = function() {
           ]
         }
       },
-      "/auth/registration-confirmation": {
+      "/api/auth/registration-confirmation": {
         "post": {
           "operationId": "AuthController_registrationConfirmation",
           "parameters": [],
@@ -1618,7 +1618,7 @@ window.onload = function() {
           ]
         }
       },
-      "/auth/registration": {
+      "/api/auth/registration": {
         "post": {
           "operationId": "AuthController_registration",
           "parameters": [],
@@ -1656,7 +1656,7 @@ window.onload = function() {
           ]
         }
       },
-      "/auth/registration-email-resending": {
+      "/api/auth/registration-email-resending": {
         "post": {
           "operationId": "AuthController_registrationEmailResending",
           "parameters": [],
@@ -1694,7 +1694,7 @@ window.onload = function() {
           ]
         }
       },
-      "/security/devices": {
+      "/api/security/devices": {
         "get": {
           "operationId": "DevicesController_getAllDevices",
           "parameters": [],
@@ -1748,7 +1748,7 @@ window.onload = function() {
           ]
         }
       },
-      "/security/devices/{deviceId}": {
+      "/api/security/devices/{deviceId}": {
         "delete": {
           "operationId": "DevicesController_deleteDeviceById",
           "parameters": [
@@ -1787,7 +1787,7 @@ window.onload = function() {
           ]
         }
       },
-      "/sa/quiz/questions": {
+      "/api/sa/quiz/questions": {
         "get": {
           "operationId": "QuizQuestionsController_getAllQuestions",
           "parameters": [
@@ -1942,7 +1942,7 @@ window.onload = function() {
           ]
         }
       },
-      "/sa/quiz/questions/{id}": {
+      "/api/sa/quiz/questions/{id}": {
         "put": {
           "operationId": "QuizQuestionsController_updateQuestionById",
           "parameters": [
@@ -2033,7 +2033,7 @@ window.onload = function() {
           ]
         }
       },
-      "/sa/quiz/questions/{id}/publish": {
+      "/api/sa/quiz/questions/{id}/publish": {
         "put": {
           "operationId": "QuizQuestionsController_updateQuestionPublishedStatusById",
           "parameters": [
@@ -2090,7 +2090,7 @@ window.onload = function() {
           ]
         }
       },
-      "/pair-game-quiz/pairs/my-current": {
+      "/api/pair-game-quiz/pairs/my-current": {
         "get": {
           "operationId": "GamesController_getUserActiveGame",
           "parameters": [],
@@ -2123,7 +2123,100 @@ window.onload = function() {
           ]
         }
       },
-      "/pair-game-quiz/pairs/{id}": {
+      "/api/pair-game-quiz/pairs/my": {
+        "get": {
+          "operationId": "GamesController_getUserGames",
+          "parameters": [
+            {
+              "name": "pageNumber",
+              "required": false,
+              "in": "query",
+              "description": "pageNumber is number of portions that should be returned",
+              "schema": {
+                "default": 1,
+                "type": "number"
+              }
+            },
+            {
+              "name": "pageSize",
+              "required": false,
+              "in": "query",
+              "description": "pageSize is portions size that should be returned",
+              "schema": {
+                "default": 10,
+                "type": "number"
+              }
+            },
+            {
+              "name": "sortDirection",
+              "required": false,
+              "in": "query",
+              "schema": {
+                "default": "desc",
+                "type": "string",
+                "enum": [
+                  "asc",
+                  "desc"
+                ]
+              }
+            },
+            {
+              "name": "sortBy",
+              "required": false,
+              "in": "query",
+              "schema": {
+                "default": "createdAt",
+                "type": "string",
+                "enum": [
+                  "createdAt",
+                  "startGameDate",
+                  "finishGameDate",
+                  "status"
+                ]
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "allOf": [
+                      {
+                        "$ref": "#/components/schemas/PaginatedViewDto"
+                      },
+                      {
+                        "properties": {
+                          "items": {
+                            "type": "array",
+                            "items": {
+                              "$ref": "#/components/schemas/GameViewDto"
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Unauthorized"
+            }
+          },
+          "security": [
+            {
+              "bearer": []
+            }
+          ],
+          "summary": "Returns all my games (closed games and current)",
+          "tags": [
+            "Games"
+          ]
+        }
+      },
+      "/api/pair-game-quiz/pairs/{id}": {
         "get": {
           "operationId": "GamesController_getGameById",
           "parameters": [
@@ -2179,7 +2272,7 @@ window.onload = function() {
           ]
         }
       },
-      "/pair-game-quiz/pairs/my-current/answers": {
+      "/api/pair-game-quiz/pairs/my-current/answers": {
         "post": {
           "operationId": "GamesController_createAnswer",
           "parameters": [],
@@ -2233,7 +2326,7 @@ window.onload = function() {
           ]
         }
       },
-      "/pair-game-quiz/pairs/connection": {
+      "/api/pair-game-quiz/pairs/connection": {
         "post": {
           "operationId": "GamesController_createGameConnection",
           "parameters": [],
