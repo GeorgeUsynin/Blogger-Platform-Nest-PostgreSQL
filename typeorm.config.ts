@@ -4,7 +4,7 @@ import * as path from 'path';
 import { ENVIRONMENTS } from './src/constants';
 
 const env = process.env.NODE_ENV || ENVIRONMENTS.DEVELOPMENT;
-const envFile = `.env.${env}`;
+const envFile = `.env.${env}.local`;
 
 config({
   path: path.resolve(__dirname, 'src/env', envFile),

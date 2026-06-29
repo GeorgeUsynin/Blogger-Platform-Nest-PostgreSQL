@@ -7,8 +7,8 @@ export class GetGamesQueryParamsInputDto extends BaseQueryParamsInputDto {
   @ApiProperty({
     enum: GameSortByFields,
     required: false,
-    default: GameSortByFields.PairCreatedDate,
+    default: GameSortByFields.CreatedAt,
   })
   @IsEnum(GameSortByFields)
-  sortBy: GameSortByFields = GameSortByFields.PairCreatedDate;
+  sortBy: GameSortByFields = GameSortByFields.CreatedAt;
 }
