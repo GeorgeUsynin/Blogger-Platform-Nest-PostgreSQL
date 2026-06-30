@@ -23,6 +23,9 @@ export class PlayerProgressEntity {
   @Column({ type: 'integer' })
   gameId: number;
 
+  @Column({ type: 'integer', default: 0 })
+  score: number;
+
   @CreateDateColumn({ type: 'timestamp with time zone' })
   createdAt: Date;
 

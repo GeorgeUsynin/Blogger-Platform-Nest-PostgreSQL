@@ -1,7 +1,6 @@
 import { DB_TABLE_NAMES } from '../../../../../constants';
 import {
   Column,
-  CreateDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
@@ -31,7 +30,7 @@ export class AnswerEntity {
   })
   answerStatus: AnswerStatus;
 
-  @CreateDateColumn({ type: 'timestamp with time zone' })
+  @Column({ type: 'timestamp with time zone' })
   createdAt: Date;
 
   @ManyToOne('QuestionEntity', { nullable: false })

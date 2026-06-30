@@ -21,12 +21,14 @@ export class GameMapper {
         PlayerProgress.reconstruct({
           id: pp.id,
           userId: pp.userId,
+          score: pp.score,
           answers: pp.answers.map((a) =>
             Answer.reconstruct({
               id: a.id,
               questionId: a.questionId,
               body: a.body,
               answerStatus: a.answerStatus,
+              createdAt: a.createdAt,
             }),
           ),
         }),
@@ -59,6 +61,7 @@ export class GameMapper {
         playerProgressEntity.id = pp.id;
       }
 
+      playerProgressEntity.score = pp.score;
       playerProgressEntity.gameId = entity.id;
       playerProgressEntity.userId = pp.userId;
       playerProgressEntity.answers = pp.answers.map((a) => {
@@ -67,6 +70,7 @@ export class GameMapper {
           answerEntity.id = a.id;
         }
 
+        answerEntity.createdAt = a.createdAt;
         answerEntity.questionId = a.questionId;
         answerEntity.body = a.body;
         answerEntity.answerStatus = a.answerStatus;

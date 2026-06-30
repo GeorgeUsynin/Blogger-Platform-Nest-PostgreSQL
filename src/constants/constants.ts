@@ -64,6 +64,7 @@ export const ROUTES = {
   ME: 'me',
   MY: 'my',
   MY_CURRENT: 'my-current',
+  MY_STATISTIC: 'my-statistic',
   NEW_PASSWORD: 'new-password',
   PAIR_GAME_QUIZ: 'pair-game-quiz',
   PAIRS: 'pairs',

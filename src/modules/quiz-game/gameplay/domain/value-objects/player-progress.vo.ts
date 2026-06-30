@@ -23,6 +23,7 @@ export class PlayerProgress {
       id: undefined,
       userId,
       answers: [],
+      score: 0,
     });
   }
 
@@ -33,7 +34,7 @@ export class PlayerProgress {
   // ---------- domain logic ----------
 
   public addAnswer(body: string, questions: GameToQuestion[]) {
-    this.ensureCaAnswerNewQuestion();
+    this.ensureCaAnswerNewQuestion(GameRules.QUESTIONS_PER_GAME);
 
     const question = questions.find((q) => q.order === this.nextAnswerOrder);
 
@@ -64,21 +65,25 @@ export class PlayerProgress {
 
   // ---------- guards ----------
 
-  private ensureCaAnswerNewQuestion(): void {
+  private ensureCaAnswerNewQuestion(questionsPerGame: number): void {
     const playerAnswersCount = this.answers.length;
 
-    if (playerAnswersCount === GameRules.QUESTIONS_PER_GAME) {
+    if (playerAnswersCount === questionsPerGame) {
       throw new AllQuestionsAlreadyAnsweredDomainError();
     }
   }
 
   // ---------- state queries ----------
 
-  public isLastAnswer(): boolean {
-    return this.answers.length === GameRules.QUESTIONS_PER_GAME;
+  public isLastAnswer(questionsPerGame: number): boolean {
+    return this.answers.length === questionsPerGame;
   }
 
   // ---------- state mutation ----------
+
+  public setScore(score: number): void {
+    this.props.score = score;
+  }
 
   // ---------- getters ---------
 
@@ -92,6 +97,10 @@ export class PlayerProgress {
 
   public get answers(): PlayerProgressState['answers'] {
     return this.props.answers;
+  }
+
+  public get score(): PlayerProgressState['score'] {
+    return this.props.score;
   }
 
   public get nextAnswerOrder(): number {

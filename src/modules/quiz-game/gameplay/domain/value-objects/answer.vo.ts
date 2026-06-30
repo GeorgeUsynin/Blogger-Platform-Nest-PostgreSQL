@@ -15,6 +15,7 @@ export class Answer {
       questionId: input.questionId,
       answerStatus: input.answerStatus,
       body: input.body,
+      createdAt: new Date(),
     });
   }
 
@@ -46,5 +47,9 @@ export class Answer {
 
   public get body(): AnswerState['body'] {
     return this.props.body;
+  }
+
+  public get createdAt(): AnswerState['createdAt'] {
+    return this.props.createdAt;
   }
 }

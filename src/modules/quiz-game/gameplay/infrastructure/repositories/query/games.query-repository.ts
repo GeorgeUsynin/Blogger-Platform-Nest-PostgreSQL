@@ -4,8 +4,6 @@ import { Repository, SelectQueryBuilder } from 'typeorm';
 import { GameQueryModel } from './model/GameQueryModel';
 import { GameEntity } from '../../entities/game.entity';
 import { PlayerProgressEntity } from '../../entities/player-progress.entity';
-import { GameScoreCalculator } from '../../../domain/helpers';
-import { GameRules } from '../../../domain/constants';
 import { GameStatus } from '../../../domain/types/game.types';
 import { AnswerQueryModel } from './model/AnswerQueryModel';
 import {
@@ -13,6 +11,7 @@ import {
   GetGamesQueryParamsInputDto,
 } from '../../../api/dto';
 import { SortDirection } from '../../../../../../core/dto/base.query-params.input-dto';
+import { StatisticQueryModel } from './model/StatisticQueryModel';
 
 @Injectable()
 export class GamesQueryRepository {
@@ -153,6 +152,39 @@ export class GamesQueryRepository {
     };
   }
 
+  async getGameStatisticByUserId(
+    userId: number,
+  ): Promise<StatisticQueryModel | undefined> {
+    const gameStats = await this.gamesRepo
+      .createQueryBuilder('g')
+      .innerJoin('g.playersProgresses', 'my')
+      .innerJoin(
+        'g.playersProgresses',
+        'opponent',
+        'opponent.userId != my.userId',
+      )
+      .select('COALESCE(SUM(my.score), 0)::int', 'sumScore')
+      .addSelect('COALESCE(AVG(my.score), 0)::float', 'avgScores')
+      .addSelect('COUNT(*)::int', 'gamesCount')
+      .addSelect(
+        'COUNT(*) FILTER (WHERE my.score > opponent.score)::int',
+        'winsCount',
+      )
+      .addSelect(
+        'COUNT(*) FILTER (WHERE my.score < opponent.score)::int',
+        'lossesCount',
+      )
+      .addSelect(
+        'COUNT(*) FILTER (WHERE my.score = opponent.score)::int',
+        'drawsCount',
+      )
+      .where('g.status = :status', { status: GameStatus.Finished })
+      .andWhere('my.userId = :userId', { userId })
+      .getRawOne<StatisticQueryModel>();
+
+    return gameStats;
+  }
+
   private applyGameViewSelect(
     qb: SelectQueryBuilder<GameEntity>,
   ): SelectQueryBuilder<GameEntity> {
@@ -170,6 +202,7 @@ export class GamesQueryRepository {
         'g.finishGameDate',
 
         'pp.id',
+        'pp.score',
         'pp.createdAt',
 
         'p.id',
@@ -209,17 +242,7 @@ export class GamesQueryRepository {
                 createdAt: answer.createdAt,
               })),
             player: pp.playerAccount,
-            score:
-              GameScoreCalculator.calculate(
-                GameRules.QUESTIONS_PER_GAME,
-                game.playersProgresses.map((pp) => ({
-                  id: pp.id,
-                  answers: pp.answers.map((answer) => ({
-                    answerStatus: answer.answerStatus,
-                    createdAt: answer.createdAt,
-                  })),
-                })),
-              ).find((score) => score.id === pp.id)?.score ?? 0,
+            score: pp.score,
           };
         }),
       questions: game.gameToQuestions.map(({ question }) => ({

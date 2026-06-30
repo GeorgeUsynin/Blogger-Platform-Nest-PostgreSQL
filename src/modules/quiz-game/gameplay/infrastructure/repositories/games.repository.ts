@@ -37,11 +37,13 @@ export class GamesRepository {
         playersProgresses: {
           id: true,
           userId: true,
+          score: true,
           answers: {
             id: true,
             questionId: true,
             body: true,
             answerStatus: true,
+            createdAt: true,
           },
         },
         gameToQuestions: {
@@ -77,10 +79,12 @@ export class GamesRepository {
 
         'pp.id',
         'pp.userId',
+        'pp.score',
         'pp.createdAt',
 
         'a.id',
         'a.questionId',
+        'a.body',
         'a.answerStatus',
         'a.createdAt',
 

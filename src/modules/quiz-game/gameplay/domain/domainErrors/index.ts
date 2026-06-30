@@ -1,4 +1,5 @@
 export { AllQuestionsAlreadyAnsweredDomainError } from './AllQuestionsAlreadyAnsweredDomainError';
+export { AnswerCreatedDateIsMissingDomainError } from './AnswerCreatedDateIsMissingDomainError';
 export { CorrectAnswersNotDefinedDomainError } from './CorrectAnswersNotDefinedDomainError';
 export { GameIsNotActiveDomainError } from './GameIsNotActiveDomainError';
 export { GameNotAcceptingPlayersDomainError } from './GameNotAcceptingPlayersDomainError';

@@ -2216,6 +2216,36 @@ window.onload = function() {
           ]
         }
       },
+      "/api/pair-game-quiz/pairs/my-statistic": {
+        "get": {
+          "operationId": "GamesController_getUserGameStatistic",
+          "parameters": [],
+          "responses": {
+            "200": {
+              "description": "Success",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/StatisticViewDto"
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Unauthorized"
+            }
+          },
+          "security": [
+            {
+              "bearer": []
+            }
+          ],
+          "summary": "Returns current user game statistics",
+          "tags": [
+            "Games"
+          ]
+        }
+      },
       "/api/pair-game-quiz/pairs/{id}": {
         "get": {
           "operationId": "GamesController_getGameById",
@@ -3257,6 +3287,40 @@ window.onload = function() {
             "pairCreatedDate",
             "startGameDate",
             "finishGameDate"
+          ]
+        },
+        "StatisticViewDto": {
+          "type": "object",
+          "properties": {
+            "sumScore": {
+              "type": "number",
+              "description": "Sum scores of all games"
+            },
+            "avgScores": {
+              "type": "number",
+              "description": "Average score of all games rounded to 2 decimal places"
+            },
+            "gamesCount": {
+              "type": "number",
+              "description": "All played games count"
+            },
+            "winsCount": {
+              "type": "number"
+            },
+            "lossesCount": {
+              "type": "number"
+            },
+            "drawsCount": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "sumScore",
+            "avgScores",
+            "gamesCount",
+            "winsCount",
+            "lossesCount",
+            "drawsCount"
           ]
         },
         "SwaggerCreateAnswerInputDto": {

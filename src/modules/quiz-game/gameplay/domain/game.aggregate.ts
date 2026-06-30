@@ -12,6 +12,7 @@ import {
   NotEnoughPublishedQuestionsDomainError,
   PlayerNotInGameDomainError,
 } from './domainErrors';
+import { GameScoreCalculator } from './helpers';
 
 export class Game extends AggregateRoot {
   private constructor(private props: GameState) {
@@ -56,8 +57,13 @@ export class Game extends AggregateRoot {
     }
 
     playerProgress.addAnswer(body, this.questionsOfTheGame);
+    this.updatePlayersScores();
 
-    if (this.playersProgresses.every((pp) => pp.isLastAnswer())) {
+    if (
+      this.playersProgresses.every((pp) =>
+        pp.isLastAnswer(GameRules.QUESTIONS_PER_GAME),
+      )
+    ) {
       this.finish();
     }
   }
@@ -85,6 +91,24 @@ export class Game extends AggregateRoot {
     this.addQuestions(questionIds);
     this.setStatus(GameStatus.Active);
     this.setStartGameDate(new Date());
+  }
+
+  private updatePlayersScores(): void {
+    const scores = GameScoreCalculator.calculate(
+      GameRules.QUESTIONS_PER_GAME,
+      this.playersProgresses.map((pp, idx) => ({
+        id: idx,
+        answers: pp.answers.map((answer) => ({
+          answerStatus: answer.answerStatus,
+          createdAt: answer.createdAt,
+        })),
+      })),
+    );
+
+    this.playersProgresses.forEach((pp, idx) => {
+      const playerScore = scores.find((score) => score.id === idx);
+      pp.setScore(playerScore?.score ?? 0);
+    });
   }
 
   // ---------- guards ----------

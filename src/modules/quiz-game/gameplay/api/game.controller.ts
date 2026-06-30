@@ -21,6 +21,7 @@ import {
   CreateAnswerInputDto,
   GameViewDto,
   GetGamesQueryParamsInputDto,
+  StatisticViewDto,
 } from './dto';
 import {
   AnswerCreationFailedError,
@@ -31,6 +32,7 @@ import {
   CreateAnswerCommand,
   CreateGameConnectionCommand,
   GetGameByIdQuery,
+  GetGameStatisticByUserIdQuery,
 } from '../application/use-cases';
 import { GamesQueryRepository } from '../infrastructure/repositories/query/games.query-repository';
 import {
@@ -39,6 +41,7 @@ import {
   GetCurrentGameApi,
   GetGameApi,
   GetMyGamesApi,
+  GetMyStatisticsGamesApi,
 } from './swagger';
 import { PaginatedViewDto } from '../../../../core/dto';
 
@@ -89,6 +92,20 @@ export class GamesController {
       size: query.pageSize,
       totalCount,
     });
+  }
+
+  @ApiBearerAuth()
+  @Get(`${ROUTES.MY_STATISTIC}`)
+  @HttpCode(HttpStatus.OK)
+  @GetMyStatisticsGamesApi()
+  async getUserGameStatistic(
+    @ExtractUserFromRequest() user: UserContextDto,
+  ): Promise<StatisticViewDto> {
+    const stats = await this.queryBus.execute(
+      new GetGameStatisticByUserIdQuery(user.userId),
+    );
+
+    return StatisticViewDto.mapToView(stats);
   }
 
   @ApiBearerAuth()

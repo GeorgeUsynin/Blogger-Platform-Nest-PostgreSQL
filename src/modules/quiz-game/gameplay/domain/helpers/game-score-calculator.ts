@@ -1,4 +1,5 @@
 import { AnswerStatus } from '../types/game.types';
+import { AnswerCreatedDateIsMissingDomainError } from '../domainErrors';
 
 type Answer = {
   answerStatus: AnswerStatus;
@@ -59,10 +60,13 @@ export class GameScoreCalculator {
 
     if (playersStats.every((stat) => stat.answersCount === questionsCount)) {
       return [...playersStats]
-        .sort(
-          (ps1, ps2) =>
-            ps1.lastAnswerDate!.getTime() - ps2.lastAnswerDate!.getTime(),
-        )
+        .sort((ps1, ps2) => {
+          if (!ps1.lastAnswerDate || !ps2.lastAnswerDate) {
+            throw new AnswerCreatedDateIsMissingDomainError();
+          }
+
+          return ps1.lastAnswerDate.getTime() - ps2.lastAnswerDate.getTime();
+        })
         .map((ps: Stats, idx: number) => {
           const hasSpeedBonus = idx === 0 && ps.correctAnswersCount > 0;
 
