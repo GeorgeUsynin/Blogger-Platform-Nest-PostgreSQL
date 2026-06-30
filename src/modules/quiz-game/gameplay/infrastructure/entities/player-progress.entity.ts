@@ -3,6 +3,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  Index,
   JoinColumn,
   ManyToOne,
   OneToMany,
@@ -13,6 +14,8 @@ import type { GameEntity } from './game.entity';
 import type { AnswerEntity } from './answer.entity';
 
 @Entity({ name: DB_TABLE_NAMES.PLAYER_PROGRESSES })
+@Index('idx_player_progresses_game_id', ['gameId'])
+@Index('idx_player_progresses_user_id_game_id', ['userId', 'gameId'])
 export class PlayerProgressEntity {
   @PrimaryGeneratedColumn()
   id: number;

@@ -2,6 +2,7 @@ import { DB_TABLE_NAMES } from '../../../../../constants';
 import {
   Column,
   Entity,
+  Index,
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
@@ -10,6 +11,11 @@ import type { PlayerProgressEntity } from './player-progress.entity';
 import { AnswerStatus } from '../../domain/types/game.types';
 import type { QuestionEntity } from '../../../questions/infrastructure/entities/question.entity';
 
+@Index('idx_answers_player_progress_id_created_at', [
+  'playerProgressId',
+  'createdAt',
+])
+@Index('idx_answers_question_id', ['questionId'])
 @Entity({ name: DB_TABLE_NAMES.ANSWERS })
 export class AnswerEntity {
   @PrimaryGeneratedColumn()

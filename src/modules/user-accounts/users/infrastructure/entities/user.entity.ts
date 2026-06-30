@@ -1,4 +1,4 @@
-import { Check, Column, Entity, OneToMany, OneToOne } from 'typeorm';
+import { Check, Column, Entity, Index, OneToMany, OneToOne } from 'typeorm';
 import {
   loginCheckConstraints,
   emailCheckConstraints,
@@ -13,6 +13,9 @@ import type { PlayerProgressEntity } from '../../../../quiz-game/gameplay/infras
 
 @Check(loginCheckConstraints)
 @Check(emailCheckConstraints)
+@Index('idx_users_created_at', ['createdAt'])
+@Index('idx_users_login_trgm', { synchronize: false })
+@Index('idx_users_email_trgm', { synchronize: false })
 @Entity({ name: DB_TABLE_NAMES.USERS })
 export class UserEntity extends BaseDBEntity {
   @Column({ type: 'varchar', length: loginConstraints.maxLength, unique: true })
@@ -24,10 +27,14 @@ export class UserEntity extends BaseDBEntity {
   @Column({ type: 'varchar' })
   passwordHash: string;
 
-  @OneToOne('EmailConfirmationEntity', (ec: EmailConfirmationEntity) => ec.user, {
-    cascade: true,
-    eager: true,
-  })
+  @OneToOne(
+    'EmailConfirmationEntity',
+    (ec: EmailConfirmationEntity) => ec.user,
+    {
+      cascade: true,
+      eager: true,
+    },
+  )
   emailConfirmation: EmailConfirmationEntity;
 
   @OneToOne('PasswordRecoveryEntity', (pr: PasswordRecoveryEntity) => pr.user, {
@@ -36,6 +43,9 @@ export class UserEntity extends BaseDBEntity {
   })
   passwordRecovery: PasswordRecoveryEntity | null;
 
-  @OneToMany('PlayerProgressEntity', (pp: PlayerProgressEntity) => pp.playerAccount)
+  @OneToMany(
+    'PlayerProgressEntity',
+    (pp: PlayerProgressEntity) => pp.playerAccount,
+  )
   playerProgresses: PlayerProgressEntity[];
 }

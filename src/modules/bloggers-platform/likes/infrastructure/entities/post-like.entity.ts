@@ -1,8 +1,13 @@
-import { Entity, JoinColumn, ManyToOne } from 'typeorm';
+import { Entity, Index, JoinColumn, ManyToOne } from 'typeorm';
 import { DB_TABLE_NAMES } from '../../../../../constants';
 import { BaseLikeEntity } from './base-like.entity';
 import { PostEntity } from '../../../posts/infrastructure/entities/post.entity';
 
+@Index('idx_post_likes_parent_status_created_at', [
+  'parentId',
+  'likeStatus',
+  'createdAt',
+])
 @Entity({ name: DB_TABLE_NAMES.POST_LIKES })
 export class PostLikeEntity extends BaseLikeEntity {
   @ManyToOne(() => PostEntity, { nullable: false })

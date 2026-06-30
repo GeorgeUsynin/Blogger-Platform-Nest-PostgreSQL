@@ -6,6 +6,8 @@ import { GameStatus } from '../../domain/types/game.types';
 import type { PlayerProgressEntity } from './player-progress.entity';
 
 @Entity({ name: DB_TABLE_NAMES.GAMES })
+@Index('idx_games_created_at', ['createdAt'])
+@Index('idx_games_status_created_at', ['status', 'createdAt'])
 export class GameEntity extends BaseDBEntity {
   @Index('status_idx')
   @Column({

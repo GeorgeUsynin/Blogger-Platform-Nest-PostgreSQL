@@ -11,6 +11,7 @@ import type { QuestionEntity } from '../../../questions/infrastructure/entities/
 import type { GameEntity } from './game.entity';
 
 @Index(['gameId', 'questionId'], { unique: true })
+@Index('idx_games_to_questions_game_id_order', ['gameId', 'order'])
 @Entity({ name: DB_TABLE_NAMES.GAMES_TO_QUESTIONS })
 export class GameToQuestionEntity {
   @PrimaryGeneratedColumn()
@@ -25,9 +26,13 @@ export class GameToQuestionEntity {
   @Column()
   order: number;
 
-  @ManyToOne('QuestionEntity', (question: QuestionEntity) => question.gameToQuestions, {
-    nullable: false,
-  })
+  @ManyToOne(
+    'QuestionEntity',
+    (question: QuestionEntity) => question.gameToQuestions,
+    {
+      nullable: false,
+    },
+  )
   @JoinColumn({ name: 'questionId', referencedColumnName: 'id' })
   question: QuestionEntity;
 

@@ -1,7 +1,15 @@
-import { Column, Entity, JoinColumn, OneToOne, PrimaryColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  Index,
+  JoinColumn,
+  OneToOne,
+  PrimaryColumn,
+} from 'typeorm';
 import type { UserEntity } from './user.entity';
 import { DB_TABLE_NAMES } from '../../../../../constants';
 
+@Index('idx_password_recoveries_recovery_code', ['recoveryCode'])
 @Entity({ name: DB_TABLE_NAMES.PASSWORD_RECOVERIES })
 export class PasswordRecoveryEntity {
   @PrimaryColumn({ type: 'integer' })

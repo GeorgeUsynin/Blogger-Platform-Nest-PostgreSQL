@@ -1,7 +1,15 @@
 import { DB_TABLE_NAMES } from '../../../../../constants';
-import { Column, Entity, JoinColumn, OneToOne, PrimaryColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  Index,
+  JoinColumn,
+  OneToOne,
+  PrimaryColumn,
+} from 'typeorm';
 import type { UserEntity } from './user.entity';
 
+@Index('idx_email_confirmations_confirmation_code', ['confirmationCode'])
 @Entity({ name: DB_TABLE_NAMES.EMAIL_CONFIRMATIONS })
 export class EmailConfirmationEntity {
   @PrimaryColumn({ type: 'integer' })

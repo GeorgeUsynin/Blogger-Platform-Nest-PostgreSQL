@@ -1,4 +1,4 @@
-import { Check, Column, Entity, OneToMany } from 'typeorm';
+import { Check, Column, Entity, Index, OneToMany } from 'typeorm';
 import { DB_TABLE_NAMES } from '../../../../../constants';
 import { BaseDBEntity } from '../../../../shared/entities';
 import {
@@ -10,6 +10,8 @@ import {
 import type { PostEntity } from '../../../posts/infrastructure/entities/post.entity';
 
 @Check(websiteUrlCheckConstraints)
+@Index('idx_blogs_created_at', ['createdAt'])
+@Index('idx_blogs_name_trgm', { synchronize: false })
 @Entity({ name: DB_TABLE_NAMES.BLOGS })
 export class BlogEntity extends BaseDBEntity {
   @Column({ type: 'varchar', length: nameConstraints.maxLength })

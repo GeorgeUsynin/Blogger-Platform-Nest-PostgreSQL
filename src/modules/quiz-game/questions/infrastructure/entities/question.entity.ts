@@ -6,6 +6,7 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  Index,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -13,6 +14,9 @@ import { bodyCheckConstraints, bodyConstraints } from './constraints';
 import type { GameToQuestionEntity } from '../../../gameplay/infrastructure/entities/game-to-question.entity';
 
 @Check(bodyCheckConstraints)
+@Index('idx_questions_created_at', ['createdAt'])
+@Index('idx_questions_is_published', ['isPublished'])
+@Index('idx_questions_body_trgm', { synchronize: false })
 @Entity({ name: DB_TABLE_NAMES.QUESTIONS })
 export class QuestionEntity {
   @PrimaryGeneratedColumn()
