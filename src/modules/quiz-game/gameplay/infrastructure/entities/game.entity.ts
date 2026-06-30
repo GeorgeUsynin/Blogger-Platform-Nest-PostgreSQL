@@ -1,12 +1,13 @@
 import { BaseDBEntity } from '../../../../shared/entities';
 import { DB_TABLE_NAMES } from '../../../../../constants';
-import { Column, Entity, OneToMany } from 'typeorm';
+import { Column, Entity, Index, OneToMany } from 'typeorm';
 import type { GameToQuestionEntity } from './game-to-question.entity';
 import { GameStatus } from '../../domain/types/game.types';
 import type { PlayerProgressEntity } from './player-progress.entity';
 
 @Entity({ name: DB_TABLE_NAMES.GAMES })
 export class GameEntity extends BaseDBEntity {
+  @Index('status_idx')
   @Column({
     type: 'enum',
     enum: [
