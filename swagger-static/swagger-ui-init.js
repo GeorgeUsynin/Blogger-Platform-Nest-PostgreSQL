@@ -2216,7 +2216,7 @@ window.onload = function() {
           ]
         }
       },
-      "/api/pair-game-quiz/pairs/my-statistic": {
+      "/api/pair-game-quiz/users/my-statistic": {
         "get": {
           "operationId": "GamesController_getUserGameStatistic",
           "parameters": [],

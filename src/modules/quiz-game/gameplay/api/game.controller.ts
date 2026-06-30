@@ -45,7 +45,7 @@ import {
 } from './swagger';
 import { PaginatedViewDto } from '../../../../core/dto';
 
-@Controller(`${ROUTES.PAIR_GAME_QUIZ}/${ROUTES.PAIRS}`)
+@Controller(`${ROUTES.PAIR_GAME_QUIZ}`)
 @UseGuards(JwtHeaderAuthGuard)
 export class GamesController {
   constructor(
@@ -55,7 +55,7 @@ export class GamesController {
   ) {}
 
   @ApiBearerAuth()
-  @Get(`${ROUTES.MY_CURRENT}`)
+  @Get(`${ROUTES.PAIRS}/${ROUTES.MY_CURRENT}`)
   @HttpCode(HttpStatus.OK)
   @GetCurrentGameApi()
   async getUserActiveGame(
@@ -71,7 +71,7 @@ export class GamesController {
   }
 
   @ApiBearerAuth()
-  @Get(`${ROUTES.MY}`)
+  @Get(`${ROUTES.PAIRS}/${ROUTES.MY}`)
   @HttpCode(HttpStatus.OK)
   @GetMyGamesApi()
   async getUserGames(
@@ -95,7 +95,7 @@ export class GamesController {
   }
 
   @ApiBearerAuth()
-  @Get(`${ROUTES.MY_STATISTIC}`)
+  @Get(`${ROUTES.USERS}/${ROUTES.MY_STATISTIC}`)
   @HttpCode(HttpStatus.OK)
   @GetMyStatisticsGamesApi()
   async getUserGameStatistic(
@@ -109,7 +109,7 @@ export class GamesController {
   }
 
   @ApiBearerAuth()
-  @Get(':id')
+  @Get(`${ROUTES.PAIRS}/:id`)
   @HttpCode(HttpStatus.OK)
   @GetGameApi()
   async getGameById(
@@ -123,7 +123,7 @@ export class GamesController {
     return GameViewDto.mapToView(game);
   }
 
-  @Post(`${ROUTES.MY_CURRENT}/${ROUTES.ANSWERS}`)
+  @Post(`${ROUTES.PAIRS}/${ROUTES.MY_CURRENT}/${ROUTES.ANSWERS}`)
   @ApiBearerAuth()
   @HttpCode(HttpStatus.OK)
   @CreateAnswerApi()
@@ -149,7 +149,7 @@ export class GamesController {
   }
 
   @ApiBearerAuth()
-  @Post(`${ROUTES.CONNECTION}`)
+  @Post(`${ROUTES.PAIRS}/${ROUTES.CONNECTION}`)
   @HttpCode(HttpStatus.OK)
   @CreateGameConnectionApi()
   async createGameConnection(

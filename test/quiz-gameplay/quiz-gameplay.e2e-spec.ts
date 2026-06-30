@@ -13,6 +13,7 @@ const CONNECTION_URL = `${PAIRS_URL}/connection`;
 const MY_CURRENT_GAME_URL = `${PAIRS_URL}/my-current`;
 const MY_GAMES_URL = `${PAIRS_URL}/my`;
 const ANSWERS_URL = `${MY_CURRENT_GAME_URL}/answers`;
+const MY_STATISTIC_URL = '/api/pair-game-quiz/users/my-statistic';
 
 type BasicAuthorization = {
   Authorization: string;
@@ -60,6 +61,15 @@ type PaginatedGamesView = {
   pageSize: number;
   totalCount: number;
   items: GameView[];
+};
+
+type StatisticView = {
+  sumScore: number;
+  avgScores: number;
+  gamesCount: number;
+  winsCount: number;
+  lossesCount: number;
+  drawsCount: number;
 };
 
 type QuestionView = {
@@ -188,6 +198,15 @@ describe('QuizGameplayController (e2e) - /api/pair-game-quiz/pairs', () => {
     return body as PaginatedGamesView;
   };
 
+  const getMyStatistic = async (player: AuthUser) => {
+    const { body } = await request(app.getHttpServer())
+      .get(MY_STATISTIC_URL)
+      .set(authHeader(player.token))
+      .expect(HttpStatus.OK);
+
+    return body as StatisticView;
+  };
+
   const answer = async (
     player: AuthUser,
     answerBody: 'correct' | 'wrong',
@@ -224,24 +243,26 @@ describe('QuizGameplayController (e2e) - /api/pair-game-quiz/pairs', () => {
   const createFinishedGame = async (
     firstPlayer: AuthUser,
     secondPlayer: AuthUser,
+    firstPlayerAnswers: ('correct' | 'wrong')[] = [
+      'correct',
+      'wrong',
+      'correct',
+      'wrong',
+      'correct',
+    ],
+    secondPlayerAnswers: ('correct' | 'wrong')[] = [
+      'wrong',
+      'correct',
+      'wrong',
+      'correct',
+      'wrong',
+    ],
   ) => {
     const pendingGame = await connectToGame(firstPlayer);
     await connectToGame(secondPlayer);
 
-    await answerMany(firstPlayer, [
-      'correct',
-      'wrong',
-      'correct',
-      'wrong',
-      'correct',
-    ]);
-    await answerMany(secondPlayer, [
-      'wrong',
-      'correct',
-      'wrong',
-      'correct',
-      'wrong',
-    ]);
+    await answerMany(firstPlayer, firstPlayerAnswers);
+    await answerMany(secondPlayer, secondPlayerAnswers);
 
     return getGameById(firstPlayer, pendingGame.id);
   };
@@ -422,6 +443,115 @@ describe('QuizGameplayController (e2e) - /api/pair-game-quiz/pairs', () => {
     ]);
   });
 
+  it('returns paginated active and finished games for the current user', async () => {
+    await createPublishedQuestions();
+    const firstPlayer = await createUserAndGetToken(app, basicAuthorization, {
+      prefix: 'p1',
+    });
+    const secondPlayer = await createUserAndGetToken(app, basicAuthorization, {
+      prefix: 'p2',
+    });
+    const thirdPlayer = await createUserAndGetToken(app, basicAuthorization, {
+      prefix: 'p3',
+    });
+
+    const finishedGame = await createFinishedGame(firstPlayer, secondPlayer);
+    await wait(10);
+    const activeGame = await connectToGame(firstPlayer);
+    await connectToGame(thirdPlayer);
+
+    const response = await getMyGames(
+      firstPlayer,
+      '?sortBy=createdAt&sortDirection=asc&pageNumber=1&pageSize=1',
+    );
+
+    expect(response).toEqual({
+      pagesCount: 2,
+      page: 1,
+      pageSize: 1,
+      totalCount: 2,
+      items: expect.any(Array),
+    });
+    expect(response.items).toHaveLength(1);
+    expect(response.items[0].id).toBe(finishedGame.id);
+
+    const secondPage = await getMyGames(
+      firstPlayer,
+      '?sortBy=createdAt&sortDirection=asc&pageNumber=2&pageSize=1',
+    );
+
+    expect(secondPage.items).toHaveLength(1);
+    expect(secondPage.items[0].id).toBe(activeGame.id);
+  });
+
+  it('returns zero statistics when the current user has no finished games', async () => {
+    const player = await createUserAndGetToken(app, basicAuthorization, {
+      prefix: 'p1',
+    });
+
+    const response = await getMyStatistic(player);
+
+    expect(response).toEqual({
+      sumScore: 0,
+      avgScores: 0,
+      gamesCount: 0,
+      winsCount: 0,
+      lossesCount: 0,
+      drawsCount: 0,
+    });
+  });
+
+  it('returns aggregated statistics for the current user by finished games only', async () => {
+    await createPublishedQuestions();
+    const firstPlayer = await createUserAndGetToken(app, basicAuthorization, {
+      prefix: 'p1',
+    });
+    const secondPlayer = await createUserAndGetToken(app, basicAuthorization, {
+      prefix: 'p2',
+    });
+    const thirdPlayer = await createUserAndGetToken(app, basicAuthorization, {
+      prefix: 'p3',
+    });
+    const fourthPlayer = await createUserAndGetToken(app, basicAuthorization, {
+      prefix: 'p4',
+    });
+    const fifthPlayer = await createUserAndGetToken(app, basicAuthorization, {
+      prefix: 'p5',
+    });
+
+    await createFinishedGame(
+      firstPlayer,
+      secondPlayer,
+      ['correct', 'correct', 'correct', 'correct', 'correct'],
+      ['wrong', 'wrong', 'wrong', 'wrong', 'wrong'],
+    );
+    await createFinishedGame(
+      firstPlayer,
+      thirdPlayer,
+      ['wrong', 'wrong', 'wrong', 'wrong', 'wrong'],
+      ['correct', 'correct', 'correct', 'correct', 'correct'],
+    );
+    await createFinishedGame(
+      firstPlayer,
+      fourthPlayer,
+      ['correct', 'wrong', 'wrong', 'correct', 'wrong'],
+      ['correct', 'correct', 'wrong', 'correct', 'wrong'],
+    );
+    await connectToGame(firstPlayer);
+    await connectToGame(fifthPlayer);
+
+    const response = await getMyStatistic(firstPlayer);
+
+    expect(response).toEqual({
+      sumScore: 9,
+      avgScores: 3,
+      gamesCount: 3,
+      winsCount: 1,
+      lossesCount: 1,
+      drawsCount: 1,
+    });
+  });
+
   it('returns 403 when the current user is already participating in a pending or active game', async () => {
     await createPublishedQuestions();
     const { firstPlayer, secondPlayer } = await createPlayers();
@@ -500,6 +630,29 @@ describe('QuizGameplayController (e2e) - /api/pair-game-quiz/pairs', () => {
       'NOT_PARTICIPATING_IN_ACTIVE_GAME',
       'You are not participating in active game',
     );
+  });
+
+  it('returns 404 when the current user has no pending or active game', async () => {
+    const player = await createUserAndGetToken(app, basicAuthorization, {
+      prefix: 'p1',
+    });
+
+    const { body } = await request(app.getHttpServer())
+      .get(MY_CURRENT_GAME_URL)
+      .set(authHeader(player.token))
+      .expect(HttpStatus.NOT_FOUND);
+
+    expect(body).toEqual({
+      timestamp: expect.any(String),
+      path: MY_CURRENT_GAME_URL,
+      status: HttpStatus.NOT_FOUND,
+      errorsMessages: [
+        {
+          message: "Game doesn't exist",
+          code: 'GAME_NOT_FOUND',
+        },
+      ],
+    });
   });
 
   it('returns 403 when a player has already answered all questions in an active game', async () => {
