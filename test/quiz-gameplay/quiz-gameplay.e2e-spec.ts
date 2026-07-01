@@ -14,6 +14,7 @@ const MY_CURRENT_GAME_URL = `${PAIRS_URL}/my-current`;
 const MY_GAMES_URL = `${PAIRS_URL}/my`;
 const ANSWERS_URL = `${MY_CURRENT_GAME_URL}/answers`;
 const MY_STATISTIC_URL = '/api/pair-game-quiz/users/my-statistic';
+const TOP_USERS_STATISTIC_URL = '/api/pair-game-quiz/users/top';
 
 type BasicAuthorization = {
   Authorization: string;
@@ -70,6 +71,21 @@ type StatisticView = {
   winsCount: number;
   lossesCount: number;
   drawsCount: number;
+};
+
+type TopUserStatisticView = StatisticView & {
+  player: {
+    id: string;
+    login: string;
+  };
+};
+
+type PaginatedTopUsersStatisticView = {
+  pagesCount: number;
+  page: number;
+  pageSize: number;
+  totalCount: number;
+  items: TopUserStatisticView[];
 };
 
 type QuestionView = {
@@ -205,6 +221,14 @@ describe('QuizGameplayController (e2e) - /api/pair-game-quiz/pairs', () => {
       .expect(HttpStatus.OK);
 
     return body as StatisticView;
+  };
+
+  const getTopUsersStatistic = async (query = '') => {
+    const { body } = await request(app.getHttpServer())
+      .get(`${TOP_USERS_STATISTIC_URL}${query}`)
+      .expect(HttpStatus.OK);
+
+    return body as PaginatedTopUsersStatisticView;
   };
 
   const answer = async (
@@ -549,6 +573,120 @@ describe('QuizGameplayController (e2e) - /api/pair-game-quiz/pairs', () => {
       winsCount: 1,
       lossesCount: 1,
       drawsCount: 1,
+    });
+  });
+
+  it('returns empty top users statistics when there are no finished games', async () => {
+    const response = await getTopUsersStatistic();
+
+    expect(response).toEqual({
+      pagesCount: 0,
+      page: 1,
+      pageSize: 10,
+      totalCount: 0,
+      items: [],
+    });
+  });
+
+  it('returns top users statistics sorted by sumScore desc with pagination', async () => {
+    await createPublishedQuestions();
+    const firstPlayer = await createUserAndGetToken(app, basicAuthorization, {
+      prefix: 'p1',
+    });
+    const secondPlayer = await createUserAndGetToken(app, basicAuthorization, {
+      prefix: 'p2',
+    });
+    const thirdPlayer = await createUserAndGetToken(app, basicAuthorization, {
+      prefix: 'p3',
+    });
+    const fourthPlayer = await createUserAndGetToken(app, basicAuthorization, {
+      prefix: 'p4',
+    });
+    const fifthPlayer = await createUserAndGetToken(app, basicAuthorization, {
+      prefix: 'p5',
+    });
+
+    await createFinishedGame(
+      firstPlayer,
+      secondPlayer,
+      ['correct', 'correct', 'correct', 'correct', 'correct'],
+      ['wrong', 'wrong', 'wrong', 'wrong', 'wrong'],
+    );
+    await createFinishedGame(
+      thirdPlayer,
+      fourthPlayer,
+      ['correct', 'correct', 'wrong', 'wrong', 'wrong'],
+      ['wrong', 'wrong', 'wrong', 'wrong', 'wrong'],
+    );
+    await createFinishedGame(
+      fifthPlayer,
+      secondPlayer,
+      ['correct', 'wrong', 'wrong', 'wrong', 'wrong'],
+      ['wrong', 'wrong', 'wrong', 'wrong', 'wrong'],
+    );
+
+    const response = await getTopUsersStatistic(
+      '?sort=sumScore%20desc&pageNumber=1&pageSize=3',
+    );
+
+    expect(response).toEqual({
+      pagesCount: 2,
+      page: 1,
+      pageSize: 3,
+      totalCount: 5,
+      items: [
+        {
+          sumScore: 6,
+          avgScores: 6,
+          gamesCount: 1,
+          winsCount: 1,
+          lossesCount: 0,
+          drawsCount: 0,
+          player: {
+            id: firstPlayer.user.id,
+            login: firstPlayer.user.login,
+          },
+        },
+        {
+          sumScore: 3,
+          avgScores: 3,
+          gamesCount: 1,
+          winsCount: 1,
+          lossesCount: 0,
+          drawsCount: 0,
+          player: {
+            id: thirdPlayer.user.id,
+            login: thirdPlayer.user.login,
+          },
+        },
+        {
+          sumScore: 2,
+          avgScores: 2,
+          gamesCount: 1,
+          winsCount: 1,
+          lossesCount: 0,
+          drawsCount: 0,
+          player: {
+            id: fifthPlayer.user.id,
+            login: fifthPlayer.user.login,
+          },
+        },
+      ],
+    });
+  });
+
+  it('returns 400 when top users sort query has invalid format', async () => {
+    const { body } = await request(app.getHttpServer())
+      .get(`${TOP_USERS_STATISTIC_URL}?sort=sumScore`)
+      .expect(HttpStatus.BAD_REQUEST);
+
+    expect(body).toEqual({
+      timestamp: expect.any(String),
+      path: `${TOP_USERS_STATISTIC_URL}?sort=sumScore`,
+      status: HttpStatus.BAD_REQUEST,
+      errorsMessages: expect.arrayContaining([
+        expect.objectContaining({ field: 'sort' }),
+      ]),
     });
   });
 

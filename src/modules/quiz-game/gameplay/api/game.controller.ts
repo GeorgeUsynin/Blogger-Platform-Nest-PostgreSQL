@@ -21,7 +21,9 @@ import {
   CreateAnswerInputDto,
   GameViewDto,
   GetGamesQueryParamsInputDto,
+  GetTopUserStatisticInputDto,
   StatisticViewDto,
+  TopUserStatisticViewDto,
 } from './dto';
 import {
   AnswerCreationFailedError,
@@ -42,11 +44,11 @@ import {
   GetGameApi,
   GetMyGamesApi,
   GetMyStatisticsGamesApi,
+  GetTopUserStatisticApi,
 } from './swagger';
 import { PaginatedViewDto } from '../../../../core/dto';
 
 @Controller(`${ROUTES.PAIR_GAME_QUIZ}`)
-@UseGuards(JwtHeaderAuthGuard)
 export class GamesController {
   constructor(
     private gamesQueryRepository: GamesQueryRepository,
@@ -55,6 +57,7 @@ export class GamesController {
   ) {}
 
   @ApiBearerAuth()
+  @UseGuards(JwtHeaderAuthGuard)
   @Get(`${ROUTES.PAIRS}/${ROUTES.MY_CURRENT}`)
   @HttpCode(HttpStatus.OK)
   @GetCurrentGameApi()
@@ -71,6 +74,7 @@ export class GamesController {
   }
 
   @ApiBearerAuth()
+  @UseGuards(JwtHeaderAuthGuard)
   @Get(`${ROUTES.PAIRS}/${ROUTES.MY}`)
   @HttpCode(HttpStatus.OK)
   @GetMyGamesApi()
@@ -95,6 +99,7 @@ export class GamesController {
   }
 
   @ApiBearerAuth()
+  @UseGuards(JwtHeaderAuthGuard)
   @Get(`${ROUTES.USERS}/${ROUTES.MY_STATISTIC}`)
   @HttpCode(HttpStatus.OK)
   @GetMyStatisticsGamesApi()
@@ -108,7 +113,26 @@ export class GamesController {
     return StatisticViewDto.mapToView(stats);
   }
 
+  @Get(`${ROUTES.USERS}/${ROUTES.TOP}`)
+  @HttpCode(HttpStatus.OK)
+  @GetTopUserStatisticApi()
+  async getTopUsersStatistic(
+    @Query() query: GetTopUserStatisticInputDto,
+  ): Promise<PaginatedViewDto<TopUserStatisticViewDto>> {
+    const { items, totalCount } =
+      await this.gamesQueryRepository.getTopUsersStatistic(query);
+    const mappedItems = items.map(TopUserStatisticViewDto.mapToView);
+
+    return PaginatedViewDto.mapToView({
+      items: mappedItems,
+      page: query.pageNumber,
+      size: query.pageSize,
+      totalCount,
+    });
+  }
+
   @ApiBearerAuth()
+  @UseGuards(JwtHeaderAuthGuard)
   @Get(`${ROUTES.PAIRS}/:id`)
   @HttpCode(HttpStatus.OK)
   @GetGameApi()
@@ -125,6 +149,7 @@ export class GamesController {
 
   @Post(`${ROUTES.PAIRS}/${ROUTES.MY_CURRENT}/${ROUTES.ANSWERS}`)
   @ApiBearerAuth()
+  @UseGuards(JwtHeaderAuthGuard)
   @HttpCode(HttpStatus.OK)
   @CreateAnswerApi()
   async createAnswer(
@@ -149,6 +174,7 @@ export class GamesController {
   }
 
   @ApiBearerAuth()
+  @UseGuards(JwtHeaderAuthGuard)
   @Post(`${ROUTES.PAIRS}/${ROUTES.CONNECTION}`)
   @HttpCode(HttpStatus.OK)
   @CreateGameConnectionApi()

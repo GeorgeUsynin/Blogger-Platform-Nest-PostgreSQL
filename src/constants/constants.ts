@@ -78,6 +78,7 @@ export const ROUTES = {
   REGISTRATION: 'registration',
   REGISTRATION_CONFIRMATION: 'registration-confirmation',
   REGISTRATION_EMAIL_RESENDING: 'registration-email-resending',
+  TOP: 'top',
   SECURITY: 'security',
   USERS: 'users',
 };

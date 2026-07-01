@@ -4,3 +4,4 @@ export { GetCurrentGameApi } from './get-current-game.decorator';
 export { GetGameApi } from './get-game.decorator';
 export { GetMyGamesApi } from './get-my-games.decorator';
 export { GetMyStatisticsGamesApi } from './get-my-statistics-games.decorator';
+export { GetTopUserStatisticApi } from './get-top-user-statistic.decorator';

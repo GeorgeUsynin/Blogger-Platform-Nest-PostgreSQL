@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, SelectQueryBuilder } from 'typeorm';
+import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
+import { DataSource, Repository, SelectQueryBuilder } from 'typeorm';
 import { GameQueryModel } from './model/GameQueryModel';
 import { GameEntity } from '../../entities/game.entity';
 import { PlayerProgressEntity } from '../../entities/player-progress.entity';
@@ -9,15 +9,21 @@ import { AnswerQueryModel } from './model/AnswerQueryModel';
 import {
   GameSortByFields,
   GetGamesQueryParamsInputDto,
+  GetTopUserStatisticInputDto,
 } from '../../../api/dto';
 import { SortDirection } from '../../../../../../core/dto/base.query-params.input-dto';
 import { StatisticQueryModel } from './model/StatisticQueryModel';
+import { TopUserStatisticQueryModel } from './model/TopUserStatisticQueryModel';
+
+const PLAYER_GAME_RESULT_CTE = 'player_game_result';
+const PLAYER_GAME_RESULT_ALIAS = 'pgr';
 
 @Injectable()
 export class GamesQueryRepository {
   constructor(
     @InjectRepository(GameEntity)
     private gamesRepo: Repository<GameEntity>,
+    @InjectDataSource() private dataSource: DataSource,
   ) {}
 
   async getGameById(id: number): Promise<GameQueryModel | null> {
@@ -155,34 +161,125 @@ export class GamesQueryRepository {
   async getGameStatisticByUserId(
     userId: number,
   ): Promise<StatisticQueryModel | undefined> {
-    const gameStats = await this.gamesRepo
+    return this.createStatisticsAggregationQb()
+      .where(`${PLAYER_GAME_RESULT_ALIAS}."userId" = :userId`, { userId })
+      .getRawOne<StatisticQueryModel>();
+  }
+
+  async getTopUsersStatistic(query: GetTopUserStatisticInputDto) {
+    const { sort, pageSize } = query;
+
+    const topUsersStatisticsQb = this.createStatisticsAggregationQb()
+      .addSelect([
+        `${PLAYER_GAME_RESULT_ALIAS}."userId"`,
+        `${PLAYER_GAME_RESULT_ALIAS}."login" AS "userLogin"`,
+      ])
+      .groupBy(`${PLAYER_GAME_RESULT_ALIAS}."userId"`)
+      .addGroupBy(`${PLAYER_GAME_RESULT_ALIAS}."login"`);
+
+    this.applyTopUsersSort(topUsersStatisticsQb, sort);
+
+    const [topUserSatsRows, totalCountRow] = await Promise.all([
+      topUsersStatisticsQb
+        .clone()
+        .offset(query.calculateSkip())
+        .limit(pageSize)
+        .getRawMany<TopUserStatisticQueryModel>(),
+      this.countUsersWithFinishedGames(),
+    ]);
+
+    const totalCount = totalCountRow?.count ?? 0;
+
+    if (!topUserSatsRows.length) {
+      return {
+        items: [],
+        totalCount,
+      };
+    }
+
+    return {
+      items: topUserSatsRows,
+      totalCount,
+    };
+  }
+
+  private createStatisticsAggregationQb(): SelectQueryBuilder<GameEntity> {
+    return this.applyStatisticsSelect(this.createPlayerGameResultsCteQb());
+  }
+
+  private createPlayerGameResultsCteQb(): SelectQueryBuilder<GameEntity> {
+    const playerGameResultsQb = this.gamesRepo
       .createQueryBuilder('g')
-      .innerJoin('g.playersProgresses', 'my')
-      .innerJoin(
-        'g.playersProgresses',
-        'opponent',
-        'opponent.userId != my.userId',
+      .innerJoin('g.playersProgresses', 'pp')
+      .innerJoin('pp.playerAccount', 'pa')
+      .select([
+        'pp.gameId AS "gameId"',
+        'pp.userId AS "userId"',
+        'pp.score AS "score"',
+        'pa.login AS "login"',
+      ])
+      .addSelect(
+        `
+        CASE
+          WHEN MAX(pp.score) OVER (PARTITION BY pp."gameId") = MIN(pp.score) OVER (PARTITION BY pp."gameId") THEN 'draw'
+          WHEN pp.score = MAX(pp.score) OVER (PARTITION BY pp."gameId") THEN 'win'
+          ELSE 'loss'
+        END
+        `,
+        'result',
       )
-      .select('COALESCE(SUM(my.score), 0)::int', 'sumScore')
-      .addSelect('COALESCE(AVG(my.score), 0)::float', 'avgScores')
+      .where('g.status = :status', { status: GameStatus.Finished });
+
+    return this.dataSource
+      .createQueryBuilder()
+      .addCommonTableExpression(playerGameResultsQb, PLAYER_GAME_RESULT_CTE);
+  }
+
+  private applyStatisticsSelect(
+    qb: SelectQueryBuilder<GameEntity>,
+  ): SelectQueryBuilder<GameEntity> {
+    const alias = PLAYER_GAME_RESULT_ALIAS;
+
+    return qb
+      .addSelect(`COALESCE(SUM(${alias}.score), 0)::int`, 'sumScore')
+      .addSelect(`COALESCE(AVG(${alias}.score), 0)::float`, 'avgScores')
       .addSelect('COUNT(*)::int', 'gamesCount')
       .addSelect(
-        'COUNT(*) FILTER (WHERE my.score > opponent.score)::int',
+        `COUNT(*) FILTER (WHERE ${alias}.result = 'win')::int`,
         'winsCount',
       )
       .addSelect(
-        'COUNT(*) FILTER (WHERE my.score < opponent.score)::int',
+        `COUNT(*) FILTER (WHERE ${alias}.result = 'loss')::int`,
         'lossesCount',
       )
       .addSelect(
-        'COUNT(*) FILTER (WHERE my.score = opponent.score)::int',
+        `COUNT(*) FILTER (WHERE ${alias}.result = 'draw')::int`,
         'drawsCount',
       )
-      .where('g.status = :status', { status: GameStatus.Finished })
-      .andWhere('my.userId = :userId', { userId })
-      .getRawOne<StatisticQueryModel>();
+      .from(PLAYER_GAME_RESULT_CTE, alias);
+  }
 
-    return gameStats;
+  private applyTopUsersSort(
+    qb: SelectQueryBuilder<GameEntity>,
+    sort: GetTopUserStatisticInputDto['sort'],
+  ): void {
+    for (const sortItem of sort) {
+      qb.addOrderBy(
+        sortItem.sortField,
+        sortItem.sortDirection.toUpperCase() as 'ASC' | 'DESC',
+      );
+    }
+  }
+
+  private countUsersWithFinishedGames(): Promise<
+    { count: number } | undefined
+  > {
+    return this.gamesRepo
+      .createQueryBuilder('g')
+      .innerJoin('g.playersProgresses', 'pp')
+      .select('COUNT(DISTINCT pp.userId)::int', 'count')
+      .where('g.status = :status', { status: GameStatus.Finished })
+      .getRawOne<{ count: number }>();
   }
 
   private applyGameViewSelect(

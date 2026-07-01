@@ -2246,6 +2246,82 @@ window.onload = function() {
           ]
         }
       },
+      "/api/pair-game-quiz/users/top": {
+        "get": {
+          "operationId": "GamesController_getTopUsersStatistic",
+          "parameters": [
+            {
+              "name": "pageNumber",
+              "required": false,
+              "in": "query",
+              "description": "pageNumber is number of portions that should be returned",
+              "schema": {
+                "default": 1,
+                "type": "number"
+              }
+            },
+            {
+              "name": "pageSize",
+              "required": false,
+              "in": "query",
+              "description": "pageSize is portions size that should be returned",
+              "schema": {
+                "default": 10,
+                "type": "number"
+              }
+            },
+            {
+              "name": "sort",
+              "required": false,
+              "in": "query",
+              "description": "Default value : sort=avgScores desc&sort=sumScore desc",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "allOf": [
+                      {
+                        "$ref": "#/components/schemas/PaginatedViewDto"
+                      },
+                      {
+                        "properties": {
+                          "items": {
+                            "type": "array",
+                            "items": {
+                              "$ref": "#/components/schemas/TopUserStatisticViewDto"
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "If the query has incorrect values",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/SwaggerErrorsMessagesViewDto"
+                  }
+                }
+              }
+            }
+          },
+          "summary": "Returns top users statistics",
+          "tags": [
+            "Games"
+          ]
+        }
+      },
       "/api/pair-game-quiz/pairs/{id}": {
         "get": {
           "operationId": "GamesController_getGameById",
@@ -3321,6 +3397,44 @@ window.onload = function() {
             "winsCount",
             "lossesCount",
             "drawsCount"
+          ]
+        },
+        "TopUserStatisticViewDto": {
+          "type": "object",
+          "properties": {
+            "sumScore": {
+              "type": "number",
+              "description": "Sum scores of all games"
+            },
+            "avgScores": {
+              "type": "number",
+              "description": "Average score of all games rounded to 2 decimal places"
+            },
+            "gamesCount": {
+              "type": "number",
+              "description": "All played games count"
+            },
+            "winsCount": {
+              "type": "number"
+            },
+            "lossesCount": {
+              "type": "number"
+            },
+            "drawsCount": {
+              "type": "number"
+            },
+            "player": {
+              "$ref": "#/components/schemas/Player"
+            }
+          },
+          "required": [
+            "sumScore",
+            "avgScores",
+            "gamesCount",
+            "winsCount",
+            "lossesCount",
+            "drawsCount",
+            "player"
           ]
         },
         "SwaggerCreateAnswerInputDto": {

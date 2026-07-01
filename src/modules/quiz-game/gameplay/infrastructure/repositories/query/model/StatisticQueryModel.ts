@@ -5,4 +5,6 @@ export type StatisticQueryModel = {
   winsCount: number;
   lossesCount: number;
   drawsCount: number;
+  userId: number;
+  userLogin: string;
 };

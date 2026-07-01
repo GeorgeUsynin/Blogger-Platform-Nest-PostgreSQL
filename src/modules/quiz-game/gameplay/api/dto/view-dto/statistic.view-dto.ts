@@ -39,7 +39,7 @@ export class StatisticViewDto {
     return dto;
   }
 
-  private static roundToTwoDecimalPlaces(value: number): number {
+  protected static roundToTwoDecimalPlaces(value: number): number {
     return Math.round(value * 100) / 100;
   }
 }
